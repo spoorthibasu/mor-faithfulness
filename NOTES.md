@@ -2312,3 +2312,33 @@ it avoids. The next run measures both arms; "caching did not help, so 1.96x is t
 perfectly good outcome and would settle the question the other way.
 
 Patch is now 2 files, and the runner keeps its stock path untouched when the flag is off.
+
+## Entry 50 — `audit-fail-closed`, and why the next run needs it
+
+Entry 49's abstention and the planned 20-repeat straddling study are in direct conflict, which was not
+obvious until both were written down. Once the runner abstains under straddling, the per-group arm
+emits no verdict, so the quantity that arm exists to measure — the **false-positive rate of the
+behaviour being replaced** — stops being observable. Twenty repeats would produce twenty abstentions
+and no rate.
+
+`audit-fail-closed` (default **true**) is therefore a second test-only switch alongside
+`audit-require-single-survivor`. The per-group arm of Exp 2 runs with it false; the cross-group arm
+keeps it true, since that arm measures the shipping configuration. Both switches exist for the same
+reason: a safeguard that cannot be turned off cannot be shown to do anything, and a defect that has
+been fixed cannot be characterised.
+
+**Scope of the follow-up session** (Exp 3 not repeated; its two limits are settled):
+
+| | config | runs | est. |
+|---|---|---|---|
+| Exp 1 | 53 GB, 32 GB heap; arms `off` / `capture_cached` / `capture_uncached` | 15 | ~110 min |
+| Exp 2 | 20.3 GB in 11 groups; 20 per-group repeats (fail-closed off) + 3 cross-group | 23 | ~85 min |
+| setup | apt, uv, clone, gradle | | ~16 min |
+
+Roughly **3 h 30 m**, against 2 h 49 m for the three-experiment run. Driven by
+`MOR_EXPERIMENTS="exp1_cost exp2_correctness"`.
+
+Ingest dominates and is now measured rather than extrapolated: 230 s for Exp 1's table and ~112 s for
+Exp 2's, at roughly 500K rows/s. The one genuinely unknown is `capture_cached`'s compaction time — if
+caching wins it lands near 180 s and Exp 1 finishes sooner; if it loses to spill it could exceed the
+uncached 275 s and add ~15 min. Both outcomes are results.

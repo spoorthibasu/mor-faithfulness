@@ -33,7 +33,7 @@ from common import (ControlFailure, check_entropy, check_rewrote, emit, hostinfo
                     preflight, run_one)
 
 HEAP = os.environ.get("MOR_EXP2_HEAP", "32g")
-N_BASE = int(os.environ.get("MOR_EXP2_BASE_REPEATS", "6"))
+N_BASE = int(os.environ.get("MOR_EXP2_BASE_REPEATS", "20"))
 N_CROSS = int(os.environ.get("MOR_EXP2_CROSS_REPEATS", "3"))
 COMMITS = int(os.environ.get("MOR_EXP2_COMMITS", "28"))
 RPC = int(os.environ.get("MOR_EXP2_RPC", "2000000"))
@@ -44,6 +44,12 @@ GROUP_BYTES = int(os.environ.get("MOR_EXP2_GROUP_BYTES", str(2 * 1024 ** 3)))
 SYNTH = {"commits": COMMITS, "rows_per_commit": RPC, "payload_bytes": PAYLOAD, "delete_frac": 0.2,
          "ordering": "inverted", "dup_frac": 0.05, "files_per_commit": FPC}
 OPTS = f"max-file-group-size-bytes={GROUP_BYTES}"
+# The runner now abstains under straddling rather than publishing an unsound verdict. That is the
+# fix, but it also makes the quantity this arm measures -- the false-positive RATE of the behaviour
+# being replaced -- unobservable. The per-group arm therefore runs with the abstention suppressed,
+# which is the only way to characterise what was fixed. Cross-group runs keep it on, since they are
+# measuring the shipping configuration.
+BASE_OPTS = OPTS + ",audit-fail-closed=false"
 
 p = preflight("exp2", COMMITS, RPC, FPC, PAYLOAD)
 exp_groups = max(1, p["bytes_total"] // GROUP_BYTES)
@@ -56,7 +62,8 @@ failures = []
 
 
 def one(tag, i, cross):
-    res, wall = run_one(f"e2_{tag}_{i}", SYNTH, heap=HEAP, cross=cross, opts=OPTS)
+    res, wall = run_one(f"e2_{tag}_{i}", SYNTH, heap=HEAP, cross=cross,
+                        opts=(OPTS if cross else BASE_OPTS))
     if res.get("error"):
         failures.append(f"exp2/{tag}/r{i}: {res['error'][:300]}")
         print(f"  r{i} {tag}: FAILED {res['error'][:200]}", flush=True)

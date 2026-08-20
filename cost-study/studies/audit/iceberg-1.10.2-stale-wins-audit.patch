@@ -152,10 +152,10 @@ index a42ce0e..3676b32 100644
        String errorMessage =
            String.format(
 diff --git a/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/SparkBinPackFileRewriteRunner.java b/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/SparkBinPackFileRewriteRunner.java
-index 6d2ef58..8fabe76 100644
+index 6d2ef58..0237f51 100644
 --- a/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/SparkBinPackFileRewriteRunner.java
 +++ b/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/SparkBinPackFileRewriteRunner.java
-@@ -18,17 +18,131 @@
+@@ -18,17 +18,137 @@
   */
  package org.apache.iceberg.spark.actions;
  
@@ -228,6 +228,11 @@ index 6d2ef58..8fabe76 100644
 +  // between them is the obvious fix; leaving it off is kept measurable so the cost of the DESIGN can
 +  // be separated from the cost of the missing cache.
 +  static final String AUDIT_CACHE_SCAN = "audit-cache-scan";
++  // TEST-ONLY, and the second switch of its kind. Suppresses the straddling abstention so the
++  // behaviour it replaces can still be measured -- the false-positive RATE under straddling is a
++  // number the paper reports, and once the mechanism abstains that number is no longer observable.
++  // Never turn this off in production: it re-enables a known-unsound verdict.
++  static final String AUDIT_FAIL_CLOSED = "audit-fail-closed";
 +  // Above this many bytes the inline key list is spilled to a Puffin blob registered as a table
 +  // statistics file. The summary lives in metadata.json, which is re-read on every table load, so a
 +  // large inline list would bloat every read; 64 KB is ~10K keys at the measured 6.1 B/key (Entry 25).
@@ -259,6 +264,7 @@ index 6d2ef58..8fabe76 100644
 +  private boolean auditCrossGroup = false;
 +  private boolean auditRequireSingleSurvivor = true;
 +  private boolean auditCacheScan = true;
++  private boolean auditFailClosed = true;
 +  // Cross-group merge state (only populated when auditCrossGroup): per key, the max ordering value among
 +  // versions DISCARDED in any group, and the ordering value of the key's single surviving version
 +  // (whichever group holds it). A key is a cross-group stale-win iff maxDiscarded > survivor.
@@ -287,7 +293,7 @@ index 6d2ef58..8fabe76 100644
    SparkBinPackFileRewriteRunner(SparkSession spark, Table table) {
      super(spark, table);
    }
-@@ -38,9 +152,61 @@ class SparkBinPackFileRewriteRunner extends SparkDataFileRewriteRunner {
+@@ -38,9 +158,62 @@ class SparkBinPackFileRewriteRunner extends SparkDataFileRewriteRunner {
      return "BIN-PACK";
    }
  
@@ -296,7 +302,7 @@ index 6d2ef58..8fabe76 100644
 +    return ImmutableSet.of(
 +        AUDIT_STALE_WINS, AUDIT_ORDERING_COLUMN, AUDIT_KEY_COLUMNS, AUDIT_OUTPUT_PATH, AUDIT_GATE,
 +        AUDIT_CROSS_GROUP, AUDIT_SPILL_THRESHOLD, AUDIT_REQUIRE_SINGLE_SURVIVOR,
-+        AUDIT_CACHE_SCAN);
++        AUDIT_CACHE_SCAN, AUDIT_FAIL_CLOSED);
 +  }
 +
 +  @Override
@@ -308,6 +314,7 @@ index 6d2ef58..8fabe76 100644
 +      this.auditRequireSingleSurvivor =
 +          Boolean.parseBoolean(options.getOrDefault(AUDIT_REQUIRE_SINGLE_SURVIVOR, "true"));
 +      this.auditCacheScan = Boolean.parseBoolean(options.getOrDefault(AUDIT_CACHE_SCAN, "true"));
++      this.auditFailClosed = Boolean.parseBoolean(options.getOrDefault(AUDIT_FAIL_CLOSED, "true"));
 +      this.spillThresholdBytes =
 +          Long.parseLong(options.getOrDefault(AUDIT_SPILL_THRESHOLD, "65536"));
 +      if (auditCrossGroup && auditGate) {
@@ -350,7 +357,7 @@ index 6d2ef58..8fabe76 100644
      Dataset<Row> scanDF =
          spark()
              .read()
-@@ -50,7 +216,6 @@ class SparkBinPackFileRewriteRunner extends SparkDataFileRewriteRunner {
+@@ -50,7 +223,6 @@ class SparkBinPackFileRewriteRunner extends SparkDataFileRewriteRunner {
              .option(SparkReadOptions.FILE_OPEN_COST, "0")
              .load(groupId);
  
@@ -358,7 +365,7 @@ index 6d2ef58..8fabe76 100644
      scanDF
          .write()
          .format("iceberg")
-@@ -62,6 +227,371 @@ class SparkBinPackFileRewriteRunner extends SparkDataFileRewriteRunner {
+@@ -62,6 +234,371 @@ class SparkBinPackFileRewriteRunner extends SparkDataFileRewriteRunner {
          .save(groupId);
    }
  
@@ -600,7 +607,7 @@ index 6d2ef58..8fabe76 100644
 +    // one-sidedness for recall it does not even have in that regime. So we abstain: no key list, no
 +    // count, an explicit undecidable in its place. Cross-group mode makes the survivor count global
 +    // and is the way to get a verdict here.
-+    if (!auditCrossGroup && groupsTotal.get() > 1) {
++    if (auditFailClosed && !auditCrossGroup && groupsTotal.get() > 1) {
 +      props.put(SUMMARY_VERDICT, "undecidable");
 +      props.put(
 +          SUMMARY_UNDECIDABLE_REASON,
