@@ -97,17 +97,29 @@ print(f"table {tbl}: {n:,} live rows", flush=True)
 marked = spark.read.format("iceberg").load(tbl).select(
     "*", F.col("_deleted").alias("_del"))
 
+def _noop(df):
+    """Force full materialisation in the JVM and discard the rows.
+
+    NOT `foreach(lambda ...)`: a Python lambda ships every row to a Python worker, so the timing would
+    be dominated by serialisation round-trips that the real write path never pays. The write branch we
+    are modelling is entirely JVM-side, so the probe has to be too.
+    """
+    df.write.format("noop").mode("overwrite").save()
+
+
 ARMS = {
-    # three columns only: what the aggregation branch needs
+    # three columns only: what the aggregation branch needs. Already JVM-only -- no Python UDF.
     "aggregate_only": lambda: marked.groupBy("id").agg(
         F.max(F.when(F.col("_del"), F.col("lsn"))).alias("dmax"),
         F.max(F.when(~F.col("_del"), F.col("lsn"))).alias("smax"),
-        F.count(F.when(~F.col("_del"), F.lit(1))).alias("scnt")).count(),
-    # every column, one action: what the write branch has to materialise
-    "full_scan": lambda: marked.where(~F.col("_del")).select("id", "val", "lsn").foreach(lambda r: None),
-    # key+ordering only, no delete marking: isolates delete application from column width
-    "narrow_scan": lambda: spark.read.format("iceberg").load(tbl).select("id", "lsn").foreach(
-        lambda r: None),
+        F.count(F.when(~F.col("_del"), F.lit(1))).alias("scnt")).write.format("noop").mode(
+            "overwrite").save(),
+    # every column: what the write branch has to materialise, delete filter applied
+    "full_scan": lambda: _noop(marked.where(~F.col("_del")).select("id", "val", "lsn")),
+    # key+ordering only, delete filter still applied: separates column width from delete application
+    "narrow_scan": lambda: _noop(marked.where(~F.col("_del")).select("id", "lsn")),
+    # no delete marking at all: the floor, what a plain columnar read of two columns costs
+    "no_deletes": lambda: _noop(spark.read.format("iceberg").load(tbl).select("id", "lsn")),
 }
 
 out = {}
