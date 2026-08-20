@@ -2189,3 +2189,73 @@ checker's oracle. Construction-derived rather than measured either way, but a di
 
 Paper: the hedged paragraph in §6.3 is replaced by the proof; the repository `\CHECK` is removed (the
 repo will be public before submission, per the author). **No `\CHECK` or `\TODO` renders in the PDF.**
+
+## Entry 48 — Cloud run on i4i.4xlarge: the cost number changes, straddling reproduces
+
+2 h 49 m, all three experiments exit 0. 16 vCPU, 123 GiB RAM, warehouse on `/dev/nvme1n1`
+(instance store, dd probe 2.5 GB/s — EBS would be a fraction of that, so the probe positively
+confirms local NVMe rather than merely a different device name). Page cache dropped through
+`/proc/sys/vm/drop_caches`, which is exact; the laptop runs could only approximate it.
+
+### The machine finally held still
+
+| | laptop, cold | cloud |
+|---|---|---|
+| baseline spread | 1.44x | **1.03x** |
+| baseline CV | 15% | **1.1%** |
+| ingest control | 8.0% (3.8% excl. warmup) | **1.006x, no exclusion needed** |
+
+The warmup-exclusion rule written into §6.3 was a laptop artifact. Here the first run is
+indistinguishable from the rest, so the rule is removed rather than carried forward.
+
+### The cost figure was wrong: 1.96x, not 1.4x
+
+`gateOFF vs off` paired median **1.96** (range 1.92--2.00, 5/5 above 1) against the laptop's 1.42.
+The laptop figure came off a 15%-CV baseline; this one off 1.1%. The cloud number is also the one
+the design predicts: the audited path materialises the marked scan twice, and ~2x is what double
+materialisation costs. **Which raises the question of whether we are measuring the design or a
+missing `cache()`** — see Entry 49.
+
+`gateON vs off` is **1.01** (0.99--1.04), and the gate's positive control held in all five repeats
+(`1/1/0` when gating, `1/0/1` when forced to audit). A cheap gate-on result cannot be confused here
+with an audit that never ran.
+
+### Straddling reproduces, but its magnitude does not transfer
+
+20.3 GB over 11 groups, 380,000 expected violations, 20,000 duplicate traps.
+
+| mode | runs | recall | false positives |
+|---|---|---|---|
+| per-group | 6 | 0 of 380,000 in 6/6 | **1 in 1/6** (key 1999997) |
+| cross-group | 3 | **380,000 of 380,000 in 3/3** | **0 in 3/3** |
+
+The unsoundness is real on a second machine at a different scale. But it produced **1** false
+positive here against **180,000** locally. The defect reproduces; its size is a property of how
+bin-packing happened to fall, not of the mechanism. **180,000 must not be quoted as
+characteristic.** One occurrence in six runs is also too thin to carry a load-bearing claim, which
+is why Entry 50 re-runs this arm at twenty repeats.
+
+Cross-group cost 159 s against 86 s per-group, i.e. 1.85x, with full recall.
+
+### Exp 3: two different limits, and I nearly reported them as one
+
+| heap | keys | outcome |
+|---|---|---|
+| 8 GB | 20M | ok, 169 s |
+| 8 GB | 35M | **`java.lang.OutOfMemoryError: Java heap space`** |
+| 24 GB | 50M | ok, 324 s, 20M candidates |
+| 24 GB | 100M | `maxResultSize` 1027.9 MiB > 1024 MiB — **not an OOM** |
+
+At 8 GB the heap ceiling is genuinely between **20M and 35M** keys, tightening the laptop's
+20M--50M. At 24 GB the heap ceiling is **not established**: the 100M point died on Spark's default
+1 GB `spark.driver.maxResultSize`, a tunable config cap, before heap became the binding constraint.
+
+**That is a second, independent scaling limit and deserves reporting as one.** The cross-group merge
+collects more than 1 GB of serialised per-key partials somewhere between 50M and 100M distinct keys
+— roughly 10 bytes per key — and at a 24 GB heap it binds *first*.
+
+**Script bug, mine.** `exp3_ceiling.py` classifies a point as OOM only if `OutOfMemoryError` appears
+in the first 2000 characters of the error, and prints a summary line that lumps `OOM` and `error`
+into a single "ceiling between X and Y". That summary is misleading: it would have reported a config
+cap as a memory ceiling. The per-point outcome field was correct throughout; only the summary was
+wrong. Fix before the next run.

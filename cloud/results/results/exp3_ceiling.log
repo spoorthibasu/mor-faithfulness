@@ -1,0 +1,30 @@
+exp3: budget 75 min, per-point timeout 25 min
+host: {'nproc': '16', 'mem_total': '123 GiB', 'warehouse_dev': '/dev/nvme1n1', 'root_dev': '/dev/nvme0n1p1', 'kernel': '6.17.0-1017-aws', 'instance': 'i4i.4xlarge'}
+
+--- 20,000,000 distinct keys, heap 8g: 60,000,000 rows, ~1.3 GB, 12 files of 112 MB ---
+  ok: compact=169.298s ingest=26.379s candidates=8000000 groups=1
+
+--- 35,000,000 distinct keys, heap 8g: 105,000,000 rows, ~2.3 GB, 18 files of 130 MB ---
+  OOM after 250s -- this is the measurement: RuntimeError: driver iceberg_driver.py error: iceberg driver failed
+Traceback (most recent call last):
+  File "/opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapters/drivers/iceberg_driver.py",
+  SKIP 50,000,000 keys @ 8g: already failed lower down
+
+--- 50,000,000 distinct keys, heap 24g: 150,000,000 rows, ~3.3 GB, 24 files of 139 MB ---
+  ok: compact=324.025s ingest=64.208s candidates=20000000 groups=1
+
+--- 100,000,000 distinct keys, heap 24g: 300,000,000 rows, ~6.5 GB, 48 files of 139 MB ---
+  ERROR after 382s -- this is the measurement: RuntimeError: driver iceberg_driver.py error: iceberg driver failed
+Traceback (most recent call last):
+  File "/opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapters/drivers/iceberg_driver.py",
+
+============================================================================================
+heap 8g: ceiling between 20,000,000 and 35,000,000 distinct keys
+heap 24g: ceiling between 50,000,000 and 100,000,000 distinct keys
+local reference: 8 GB heap, ok at 20M (397 s compaction), OOM at 50M
+SKIPPED 1 point(s), named so this is not read as full coverage:
+  50,000,000 keys @ 8g: a smaller key count already failed at this heap
+
+PASS
+
+evidence -> /opt/mor/results/exp3_ceiling.json

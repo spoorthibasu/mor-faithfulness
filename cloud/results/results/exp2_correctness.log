@@ -1,0 +1,27 @@
+exp2: 56,000,000 rows, ~20.3 GB, 112 files of ~186 MB, group cap 2 GB => ~10 groups, heap 32g
+
+============================================================================================
+PER-GROUP mode, 6 repeats of one configuration
+============================================================================================
+  r0 base: groups 5/11 scored=stale-wins-keys exp=380,000 captured=1 TP=0 miss=380,000 FP=1 traps=20,000 compact=85.327s
+       FALSE POSITIVES: 1  first keys [1999997]
+  r1 base: groups 7/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=93.843s
+  r2 base: groups 6/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=86.549s
+  r3 base: groups 5/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=85.716s
+  r4 base: groups 5/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=82.168s
+  r5 base: groups 6/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=91.633s
+
+============================================================================================
+CROSS-GROUP mode, 3 repeats, scored on the merged property
+============================================================================================
+  r0 cross: groups 11/11 scored=cross-group-keys exp=380,000 captured=380,000 TP=380,000 miss=0 FP=0 traps=20,000 compact=159.624s
+  r1 cross: groups 11/11 scored=cross-group-keys exp=380,000 captured=380,000 TP=380,000 miss=0 FP=0 traps=20,000 compact=158.147s
+  r2 cross: groups 11/11 scored=cross-group-keys exp=380,000 captured=380,000 TP=380,000 miss=0 FP=0 traps=20,000 compact=159.1s
+
+============================================================================================
+PER-GROUP false positives: 1 of 6 runs (1 keys)   recall 0-0 of 380,000
+CROSS-GROUP: false positives 0; recall 380,000/380,000, 380,000/380,000, 380,000/380,000
+
+PASS
+
+evidence -> /opt/mor/results/exp2_correctness.json

@@ -1,0 +1,216 @@
+{
+ "config": {
+  "commits": 32,
+  "rows_per_commit": 3600000,
+  "payload_bytes": 400,
+  "delete_frac": 0.2,
+  "ordering": "contiguous",
+  "files_per_commit": 4,
+  "heap": "32g",
+  "repeats": 5
+ },
+ "plan": {
+  "rows_total": 115200000,
+  "bytes_total": 44928000000,
+  "rows_per_file": 900000,
+  "bytes_per_file": 351000000,
+  "files_total": 128
+ },
+ "host": {
+  "nproc": "16",
+  "mem_total": "123 GiB",
+  "warehouse_dev": "/dev/nvme1n1",
+  "root_dev": "/dev/nvme0n1p1",
+  "kernel": "6.17.0-1017-aws",
+  "instance": "i4i.4xlarge"
+ },
+ "arms": {
+  "off": [
+   {
+    "compact_s": 137.286,
+    "ingest_s": 230.296,
+    "evict_s": 4.44,
+    "on_disk_gb": 53.080468848347664,
+    "bytes_per_row": 494.74582847222223,
+    "live_rows": 29519890,
+    "groups_total": null,
+    "groups_gated": null,
+    "groups_audited": null,
+    "wall_s": 381.9
+   },
+   {
+    "compact_s": 140.408,
+    "ingest_s": 229.959,
+    "evict_s": 4.3,
+    "on_disk_gb": 53.08047642279416,
+    "bytes_per_row": 494.74589907118053,
+    "live_rows": 29519890,
+    "groups_total": null,
+    "groups_gated": null,
+    "groups_audited": null,
+    "wall_s": 384.1
+   },
+   {
+    "compact_s": 141.043,
+    "ingest_s": 229.849,
+    "evict_s": 4.16,
+    "on_disk_gb": 53.080479914322495,
+    "bytes_per_row": 494.74593161458336,
+    "live_rows": 29519890,
+    "groups_total": null,
+    "groups_gated": null,
+    "groups_audited": null,
+    "wall_s": 384.6
+   },
+   {
+    "compact_s": 139.781,
+    "ingest_s": 230.194,
+    "evict_s": 4.31,
+    "on_disk_gb": 53.08046881482005,
+    "bytes_per_row": 494.74582815972224,
+    "live_rows": 29519890,
+    "groups_total": null,
+    "groups_gated": null,
+    "groups_audited": null,
+    "wall_s": 383.9
+   },
+   {
+    "compact_s": 140.469,
+    "ingest_s": 230.455,
+    "evict_s": 4.48,
+    "on_disk_gb": 53.08047089446336,
+    "bytes_per_row": 494.74584754340276,
+    "live_rows": 29519890,
+    "groups_total": null,
+    "groups_gated": null,
+    "groups_audited": null,
+    "wall_s": 385.4
+   }
+  ],
+  "gateON": [
+   {
+    "compact_s": 142.243,
+    "ingest_s": 230.333,
+    "evict_s": 4.33,
+    "on_disk_gb": 53.08048455696553,
+    "bytes_per_row": 494.7459748871528,
+    "live_rows": 29519890,
+    "groups_total": "1",
+    "groups_gated": "1",
+    "groups_audited": "0",
+    "wall_s": 386.7
+   },
+   {
+    "compact_s": 138.628,
+    "ingest_s": 230.94,
+    "evict_s": 4.19,
+    "on_disk_gb": 53.08048172760755,
+    "bytes_per_row": 494.745948515625,
+    "live_rows": 29519890,
+    "groups_total": "1",
+    "groups_gated": "1",
+    "groups_audited": "0",
+    "wall_s": 383.3
+   },
+   {
+    "compact_s": 142.666,
+    "ingest_s": 230.627,
+    "evict_s": 4.19,
+    "on_disk_gb": 53.08046622388065,
+    "bytes_per_row": 494.7458040104167,
+    "live_rows": 29519890,
+    "groups_total": "1",
+    "groups_gated": "1",
+    "groups_audited": "0",
+    "wall_s": 387.2
+   },
+   {
+    "compact_s": 141.188,
+    "ingest_s": 230.245,
+    "evict_s": 4.29,
+    "on_disk_gb": 53.0804742006585,
+    "bytes_per_row": 494.745878359375,
+    "live_rows": 29519890,
+    "groups_total": "1",
+    "groups_gated": "1",
+    "groups_audited": "0",
+    "wall_s": 385.4
+   },
+   {
+    "compact_s": 139.48,
+    "ingest_s": 230.62,
+    "evict_s": 4.06,
+    "on_disk_gb": 53.08046566694975,
+    "bytes_per_row": 494.7457988194444,
+    "live_rows": 29519890,
+    "groups_total": "1",
+    "groups_gated": "1",
+    "groups_audited": "0",
+    "wall_s": 384.0
+   }
+  ],
+  "gateOFF": [
+   {
+    "compact_s": 274.456,
+    "ingest_s": 230.857,
+    "evict_s": 4.31,
+    "on_disk_gb": 53.080474995076656,
+    "bytes_per_row": 494.7458857638889,
+    "live_rows": 29519890,
+    "groups_total": "1",
+    "groups_gated": "0",
+    "groups_audited": "1",
+    "wall_s": 518.7
+   },
+   {
+    "compact_s": 269.626,
+    "ingest_s": 230.073,
+    "evict_s": 4.32,
+    "on_disk_gb": 53.08048724755645,
+    "bytes_per_row": 494.7459999652778,
+    "live_rows": 29519890,
+    "groups_total": "1",
+    "groups_gated": "0",
+    "groups_audited": "1",
+    "wall_s": 512.8
+   },
+   {
+    "compact_s": 273.839,
+    "ingest_s": 231.099,
+    "evict_s": 4.46,
+    "on_disk_gb": 53.08048435207456,
+    "bytes_per_row": 494.74597297743054,
+    "live_rows": 29519890,
+    "groups_total": "1",
+    "groups_gated": "0",
+    "groups_audited": "1",
+    "wall_s": 518.5
+   },
+   {
+    "compact_s": 274.875,
+    "ingest_s": 230.668,
+    "evict_s": 4.35,
+    "on_disk_gb": 53.08048003166914,
+    "bytes_per_row": 494.7459327083333,
+    "live_rows": 29519890,
+    "groups_total": "1",
+    "groups_gated": "0",
+    "groups_audited": "1",
+    "wall_s": 519.0
+   },
+   {
+    "compact_s": 274.733,
+    "ingest_s": 229.746,
+    "evict_s": 3.97,
+    "on_disk_gb": 53.080473901703954,
+    "bytes_per_row": 494.74587557291665,
+    "live_rows": 29519890,
+    "groups_total": "1",
+    "groups_gated": "0",
+    "groups_audited": "1",
+    "wall_s": 517.6
+   }
+  ]
+ },
+ "failures": []
+}

@@ -1,0 +1,3 @@
+exit_code=0
+duration_s=10129
+stamp=20260820T071115Z
