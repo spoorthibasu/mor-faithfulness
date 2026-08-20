@@ -165,3 +165,78 @@ def hostinfo():
                 "\"$(curl -s --max-time 2 -X PUT http://169.254.169.254/latest/api/token "
                 "-H 'X-aws-ec2-metadata-token-ttl-seconds: 60')\" "
                 "http://169.254.169.254/latest/meta-data/instance-type")}
+
+
+# ---------------------------------------------------------------------------------------------
+# Spark event-log attribution. Reading stage timings out of the log is the only way to say WHERE
+# time goes; every attempt in this study to infer it from a ratio instead has been wrong at least
+# once. Nothing here estimates -- each field is summed from the log's own task metrics.
+from collections import defaultdict  # noqa: E402
+
+EVENT_DIR = os.environ.get("MOR_EVENT_DIR", "/mnt/nvme/spark-events")
+
+
+def event_log_args(heap):
+    """PYSPARK_SUBMIT_ARGS with event logging on. The driver uses setdefault, so this wins."""
+    os.makedirs(EVENT_DIR, exist_ok=True)
+    return (f"--driver-memory {heap} --conf spark.eventLog.enabled=true "
+            f"--conf spark.eventLog.dir=file://{EVENT_DIR} pyspark-shell")
+
+
+def newest_event_log(before):
+    now = set(os.listdir(EVENT_DIR)) if os.path.isdir(EVENT_DIR) else set()
+    fresh = sorted(now - before)
+    return os.path.join(EVENT_DIR, fresh[-1]) if fresh else None
+
+
+def parse_event_log(path, min_wall_s=0.5):
+    """Per-stage wall, CPU, bytes read/written, shuffle and spill, straight from the log."""
+    if not path or not os.path.exists(path):
+        return []
+    stages, tasks = {}, defaultdict(lambda: defaultdict(int))
+    with open(path) as f:
+        for line in f:
+            try:
+                e = json.loads(line)
+            except Exception:
+                continue
+            ev = e.get("Event", "")
+            if ev == "SparkListenerStageCompleted":
+                si = e["Stage Info"]
+                sub, comp = si.get("Submission Time"), si.get("Completion Time")
+                stages[si["Stage ID"]] = {
+                    "name": si.get("Stage Name", "?")[:70],
+                    "tasks": si.get("Number of Tasks", 0),
+                    "wall_s": round((comp - sub) / 1000.0, 2) if sub and comp else None}
+            elif ev == "SparkListenerTaskEnd":
+                m = e.get("Task Metrics") or {}
+                t = tasks[e.get("Stage ID")]
+                t["run_ms"] += m.get("Executor Run Time", 0)
+                t["input"] += (m.get("Input Metrics") or {}).get("Bytes Read", 0)
+                t["output"] += (m.get("Output Metrics") or {}).get("Bytes Written", 0)
+                t["sw"] += (m.get("Shuffle Write Metrics") or {}).get("Shuffle Bytes Written", 0)
+                srm = m.get("Shuffle Read Metrics") or {}
+                t["sr"] += srm.get("Remote Bytes Read", 0) + srm.get("Local Bytes Read", 0)
+                t["spill"] += m.get("Disk Bytes Spilled", 0)
+    out = []
+    for sid, st in sorted(stages.items()):
+        if (st["wall_s"] or 0) < min_wall_s:
+            continue
+        t = tasks.get(sid, {})
+        out.append({"stage": sid, "name": st["name"], "tasks": st["tasks"], "wall_s": st["wall_s"],
+                    "cpu_s": round(t.get("run_ms", 0) / 1000.0, 1),
+                    "input_gb": round(t.get("input", 0) / 2**30, 2),
+                    "output_gb": round(t.get("output", 0) / 2**30, 2),
+                    "shuffle_write_gb": round(t.get("sw", 0) / 2**30, 3),
+                    "shuffle_read_gb": round(t.get("sr", 0) / 2**30, 3),
+                    "spill_gb": round(t.get("spill", 0) / 2**30, 2)})
+    return out
+
+
+def print_stages(stages, indent="    "):
+    print(f"{indent}{'stg':>3} {'tasks':>6} {'wall_s':>8} {'in_GB':>7} {'out_GB':>7} "
+          f"{'shufW':>7} {'shufR':>7}  name")
+    for s in stages:
+        print(f"{indent}{s['stage']:>3} {s['tasks']:>6} {str(s['wall_s']):>8} {s['input_gb']:>7} "
+              f"{s['output_gb']:>7} {s['shuffle_write_gb']:>7} {s['shuffle_read_gb']:>7}  "
+              f"{s['name']}", flush=True)
