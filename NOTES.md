@@ -2429,3 +2429,66 @@ to measure a floor or a component directly rather than reason from a total.
 **Page count:** 14 pages, body 13, over the 12-page limit. Cuts already made: §4 Hudi/Delta merged,
 `tab:scale` and the stage table folded to prose, straddle replication rows folded to prose, the
 group-size sweep condensed twice. Remaining candidates need an author decision.
+
+## Entry 53 — Two harness defaults were shaping the headline number, and the 91 s was never a mystery
+
+Third cloud session. Exp 4 completed 3 of 5 rounds before the instance was released; Exp 5 and Exp 6
+did not start. Exp 7 needed no instance time at all -- it parses event logs Exp 4 wrote as a side
+effect.
+
+### The 91 s partial aggregation: explained, and the framing was the error
+
+| stage | records read | bytes read | wall | GC |
+|---|---|---|---|---|
+| aggregation | **115,200,000** | 1.00 GB | 90.8 s | 48.7 s (27%) |
+| write | **115,200,000** | 44.38 GB | 135.3 s | 55.1 s |
+
+**Record ratio 1.00.** Both stages read every row. Column pruning narrows *columns*, not *rows*, and
+the aggregation must see every row including the ones the delete filter marks -- a discarded version
+is precisely what it is looking for. "90.8 s for 1.0 GB" was my description and it was wrong: it is
+90.8 s for 115.2M records over three columns, against the write's 135.3 s for the same records over
+all columns plus 29.5M rows of output. Nothing was unexplained. No spill, skew 1.97, and GC at 27% of
+executor time is the group-by's hash maps.
+
+This also retires the delete-reconstruction hypothesis for good: the deletes are applied once per
+stage in both stages, and the aggregation is *cheaper* than the write despite doing the same scan.
+
+### `spark.sql.shuffle.partitions = 1`
+
+The harness hardcoded it (`iceberg_driver.py:173`), correct for the KB-scale cells it was written for
+and wrong at GB scale, where it forces an entire aggregation shuffle through one core. Raising it to
+64 moves the final aggregation from 37.1--37.8 s to 13.8--14.1 s and the paired ratio from **1.925 to
+1.770**, three rounds of three, recovering ~18% of the overhead.
+
+My first attempt tested the wrong knob -- disabling AQE coalescing, on the assumption the single task
+was AQE collapsing 200 partitions. The config took effect and changed nothing, because there was never
+more than one partition. **The positive control caught it**: the fixed arm still reported one task, so
+the run would otherwise have reported "no improvement" for a config that could not improve anything.
+
+### `.master("local[2]")` -- every cloud measurement used 2 of 16 cores
+
+`iceberg_driver.py:161`. The event log confirms it: every stage shows `run/wall = 2.0`. The
+i4i.4xlarge was 87.5% idle across all three sessions.
+
+**What this does and does not invalidate.** The ratios stand -- both arms equally constrained, paired
+within a round, controls held. Absolute times do not, and neither does the implication that the cloud
+host removed the laptop's resource limits: it removed the *memory* limit, not the CPU one. The
+shuffle-partition result is also 2-thread-specific; the recoverable fraction would likely differ at
+real parallelism.
+
+Two harness defaults sized for a laptop, both silently carried onto hardware chosen for the property
+they suppress, both invisible until the event log was read. Same lesson as Entries 46, 51 and 52,
+now for configuration rather than interpretation.
+
+### The warmup exclusion, reinstated
+
+Exp 4's ingest spans **1.073x** including the first run of the session and **1.004x** excluding it.
+On the user's review I had removed the warmup-exclusion rule and written that it was "an artifact of
+the machine rather than a property of the workload". That generalisation is wrong: run 2's Exp 1
+genuinely showed no first-run effect, Exp 4 on the same host shows a 7% one. The claim about Table 4's
+specific run stands; the generalisation does not, and is narrowed.
+
+### Not measured
+
+Exp 5 (24 GB heap ceiling) and Exp 6 (scale curve) did not run. Both are worth doing *after* the
+harness parallelism is fixed, not before -- on `local[2]` they would measure the wrong machine.

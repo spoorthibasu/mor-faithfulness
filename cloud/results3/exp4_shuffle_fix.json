@@ -1,0 +1,392 @@
+{
+ "config": {
+  "commits": 32,
+  "rows_per_commit": 3600000,
+  "payload_bytes": 400,
+  "delete_frac": 0.2,
+  "ordering": "contiguous",
+  "files_per_commit": 4,
+  "heap": "32g"
+ },
+ "host": {
+  "nproc": "16",
+  "mem_total": "123 GiB",
+  "warehouse_dev": "/dev/nvme1n1",
+  "root_dev": "/dev/nvme0n1p1",
+  "kernel": "6.17.0-1017-aws",
+  "instance": "i4i.4xlarge"
+ },
+ "arms": {
+  "off": [
+   {
+    "compact_s": 136.34,
+    "ingest_s": 245.502,
+    "evict_s": 5.65,
+    "wall_s": 394.4,
+    "stages": [
+     {
+      "stage": 0,
+      "name": "save at SparkBinPackFileRewriteRunner.java:234",
+      "tasks": 128,
+      "wall_s": 134.89,
+      "cpu_s": 267.7,
+      "input_gb": 44.38,
+      "output_gb": 8.54,
+      "shuffle_write_gb": 0.0,
+      "shuffle_read_gb": 0.0,
+      "spill_gb": 0.0
+     }
+    ],
+    "final_agg_tasks": null,
+    "final_agg_wall_s": null
+   },
+   {
+    "compact_s": 137.617,
+    "ingest_s": 229.265,
+    "evict_s": 4.55,
+    "wall_s": 380.7,
+    "stages": [
+     {
+      "stage": 0,
+      "name": "save at SparkBinPackFileRewriteRunner.java:234",
+      "tasks": 128,
+      "wall_s": 136.13,
+      "cpu_s": 270.3,
+      "input_gb": 44.38,
+      "output_gb": 8.54,
+      "shuffle_write_gb": 0.0,
+      "shuffle_read_gb": 0.0,
+      "spill_gb": 0.0
+     }
+    ],
+    "final_agg_tasks": null,
+    "final_agg_wall_s": null
+   },
+   {
+    "compact_s": 139.655,
+    "ingest_s": 228.949,
+    "evict_s": 4.24,
+    "wall_s": 381.9,
+    "stages": [
+     {
+      "stage": 0,
+      "name": "save at SparkBinPackFileRewriteRunner.java:234",
+      "tasks": 128,
+      "wall_s": 138.22,
+      "cpu_s": 274.9,
+      "input_gb": 44.38,
+      "output_gb": 8.54,
+      "shuffle_write_gb": 0.0,
+      "shuffle_read_gb": 0.0,
+      "spill_gb": 0.0
+     }
+    ],
+    "final_agg_tasks": null,
+    "final_agg_wall_s": null
+   },
+   {
+    "compact_s": 136.795,
+    "ingest_s": 229.158,
+    "evict_s": 4.09,
+    "wall_s": 379.1,
+    "stages": [
+     {
+      "stage": 0,
+      "name": "save at SparkBinPackFileRewriteRunner.java:234",
+      "tasks": 128,
+      "wall_s": 135.32,
+      "cpu_s": 268.1,
+      "input_gb": 44.38,
+      "output_gb": 8.54,
+      "shuffle_write_gb": 0.0,
+      "shuffle_read_gb": 0.0,
+      "spill_gb": 0.0
+     }
+    ],
+    "final_agg_tasks": null,
+    "final_agg_wall_s": null
+   }
+  ],
+  "audited": [
+   {
+    "compact_s": 264.265,
+    "ingest_s": 228.73,
+    "evict_s": 4.54,
+    "wall_s": 506.4,
+    "stages": [
+     {
+      "stage": 0,
+      "name": "collectAsList at SparkBinPackFileRewriteRunner.java:318",
+      "tasks": 128,
+      "wall_s": 88.21,
+      "cpu_s": 174.5,
+      "input_gb": 1.0,
+      "output_gb": 0.0,
+      "shuffle_write_gb": 0.973,
+      "shuffle_read_gb": 0.0,
+      "spill_gb": 0.0
+     },
+     {
+      "stage": 1,
+      "name": "collectAsList at SparkBinPackFileRewriteRunner.java:318",
+      "tasks": 1,
+      "wall_s": 37.07,
+      "cpu_s": 37.0,
+      "input_gb": 0.0,
+      "output_gb": 0.0,
+      "shuffle_write_gb": 0.0,
+      "shuffle_read_gb": 0.973,
+      "spill_gb": 0.0
+     },
+     {
+      "stage": 2,
+      "name": "save at SparkBinPackFileRewriteRunner.java:332",
+      "tasks": 128,
+      "wall_s": 136.75,
+      "cpu_s": 272.4,
+      "input_gb": 44.38,
+      "output_gb": 8.54,
+      "shuffle_write_gb": 0.0,
+      "shuffle_read_gb": 0.0,
+      "spill_gb": 0.0
+     }
+    ],
+    "final_agg_tasks": 1,
+    "final_agg_wall_s": 37.07
+   },
+   {
+    "compact_s": 264.947,
+    "ingest_s": 229.571,
+    "evict_s": 4.29,
+    "wall_s": 507.8,
+    "stages": [
+     {
+      "stage": 0,
+      "name": "collectAsList at SparkBinPackFileRewriteRunner.java:318",
+      "tasks": 128,
+      "wall_s": 88.87,
+      "cpu_s": 176.3,
+      "input_gb": 1.0,
+      "output_gb": 0.0,
+      "shuffle_write_gb": 0.973,
+      "shuffle_read_gb": 0.0,
+      "spill_gb": 0.0
+     },
+     {
+      "stage": 1,
+      "name": "collectAsList at SparkBinPackFileRewriteRunner.java:318",
+      "tasks": 1,
+      "wall_s": 37.83,
+      "cpu_s": 37.8,
+      "input_gb": 0.0,
+      "output_gb": 0.0,
+      "shuffle_write_gb": 0.0,
+      "shuffle_read_gb": 0.973,
+      "spill_gb": 0.0
+     },
+     {
+      "stage": 2,
+      "name": "save at SparkBinPackFileRewriteRunner.java:332",
+      "tasks": 128,
+      "wall_s": 136.01,
+      "cpu_s": 271.1,
+      "input_gb": 44.38,
+      "output_gb": 8.54,
+      "shuffle_write_gb": 0.0,
+      "shuffle_read_gb": 0.0,
+      "spill_gb": 0.0
+     }
+    ],
+    "final_agg_tasks": 1,
+    "final_agg_wall_s": 37.83
+   },
+   {
+    "compact_s": 268.307,
+    "ingest_s": 229.479,
+    "evict_s": 4.41,
+    "wall_s": 511.1,
+    "stages": [
+     {
+      "stage": 0,
+      "name": "collectAsList at SparkBinPackFileRewriteRunner.java:318",
+      "tasks": 128,
+      "wall_s": 93.68,
+      "cpu_s": 186.0,
+      "input_gb": 1.0,
+      "output_gb": 0.0,
+      "shuffle_write_gb": 0.973,
+      "shuffle_read_gb": 0.0,
+      "spill_gb": 0.0
+     },
+     {
+      "stage": 1,
+      "name": "collectAsList at SparkBinPackFileRewriteRunner.java:318",
+      "tasks": 1,
+      "wall_s": 37.52,
+      "cpu_s": 37.5,
+      "input_gb": 0.0,
+      "output_gb": 0.0,
+      "shuffle_write_gb": 0.0,
+      "shuffle_read_gb": 0.973,
+      "spill_gb": 0.0
+     },
+     {
+      "stage": 2,
+      "name": "save at SparkBinPackFileRewriteRunner.java:332",
+      "tasks": 128,
+      "wall_s": 134.89,
+      "cpu_s": 267.8,
+      "input_gb": 44.38,
+      "output_gb": 8.54,
+      "shuffle_write_gb": 0.0,
+      "shuffle_read_gb": 0.0,
+      "spill_gb": 0.0
+     }
+    ],
+    "final_agg_tasks": 1,
+    "final_agg_wall_s": 37.52
+   }
+  ],
+  "audited_fx": [
+   {
+    "compact_s": 241.365,
+    "ingest_s": 228.976,
+    "evict_s": 4.57,
+    "wall_s": 483.9,
+    "stages": [
+     {
+      "stage": 0,
+      "name": "collectAsList at SparkBinPackFileRewriteRunner.java:318",
+      "tasks": 128,
+      "wall_s": 92.6,
+      "cpu_s": 184.2,
+      "input_gb": 1.0,
+      "output_gb": 0.0,
+      "shuffle_write_gb": 1.026,
+      "shuffle_read_gb": 0.0,
+      "spill_gb": 0.0
+     },
+     {
+      "stage": 1,
+      "name": "collectAsList at SparkBinPackFileRewriteRunner.java:318",
+      "tasks": 64,
+      "wall_s": 13.91,
+      "cpu_s": 27.6,
+      "input_gb": 0.0,
+      "output_gb": 0.0,
+      "shuffle_write_gb": 0.0,
+      "shuffle_read_gb": 1.026,
+      "spill_gb": 0.0
+     },
+     {
+      "stage": 2,
+      "name": "save at SparkBinPackFileRewriteRunner.java:332",
+      "tasks": 128,
+      "wall_s": 132.64,
+      "cpu_s": 263.7,
+      "input_gb": 44.38,
+      "output_gb": 8.54,
+      "shuffle_write_gb": 0.0,
+      "shuffle_read_gb": 0.0,
+      "spill_gb": 0.0
+     }
+    ],
+    "final_agg_tasks": 64,
+    "final_agg_wall_s": 13.91
+   },
+   {
+    "compact_s": 244.428,
+    "ingest_s": 229.376,
+    "evict_s": 4.4,
+    "wall_s": 486.9,
+    "stages": [
+     {
+      "stage": 0,
+      "name": "collectAsList at SparkBinPackFileRewriteRunner.java:318",
+      "tasks": 128,
+      "wall_s": 93.81,
+      "cpu_s": 186.5,
+      "input_gb": 1.0,
+      "output_gb": 0.0,
+      "shuffle_write_gb": 1.026,
+      "shuffle_read_gb": 0.0,
+      "spill_gb": 0.0
+     },
+     {
+      "stage": 1,
+      "name": "collectAsList at SparkBinPackFileRewriteRunner.java:318",
+      "tasks": 64,
+      "wall_s": 13.82,
+      "cpu_s": 27.4,
+      "input_gb": 0.0,
+      "output_gb": 0.0,
+      "shuffle_write_gb": 0.0,
+      "shuffle_read_gb": 1.026,
+      "spill_gb": 0.0
+     },
+     {
+      "stage": 2,
+      "name": "save at SparkBinPackFileRewriteRunner.java:332",
+      "tasks": 128,
+      "wall_s": 134.54,
+      "cpu_s": 268.1,
+      "input_gb": 44.38,
+      "output_gb": 8.54,
+      "shuffle_write_gb": 0.0,
+      "shuffle_read_gb": 0.0,
+      "spill_gb": 0.0
+     }
+    ],
+    "final_agg_tasks": 64,
+    "final_agg_wall_s": 13.82
+   },
+   {
+    "compact_s": 242.355,
+    "ingest_s": 229.688,
+    "evict_s": 4.53,
+    "wall_s": 485.2,
+    "stages": [
+     {
+      "stage": 0,
+      "name": "collectAsList at SparkBinPackFileRewriteRunner.java:318",
+      "tasks": 128,
+      "wall_s": 90.8,
+      "cpu_s": 180.5,
+      "input_gb": 1.0,
+      "output_gb": 0.0,
+      "shuffle_write_gb": 1.026,
+      "shuffle_read_gb": 0.0,
+      "spill_gb": 0.0
+     },
+     {
+      "stage": 1,
+      "name": "collectAsList at SparkBinPackFileRewriteRunner.java:318",
+      "tasks": 64,
+      "wall_s": 14.09,
+      "cpu_s": 27.9,
+      "input_gb": 0.0,
+      "output_gb": 0.0,
+      "shuffle_write_gb": 0.0,
+      "shuffle_read_gb": 1.026,
+      "spill_gb": 0.0
+     },
+     {
+      "stage": 2,
+      "name": "save at SparkBinPackFileRewriteRunner.java:332",
+      "tasks": 128,
+      "wall_s": 135.26,
+      "cpu_s": 269.9,
+      "input_gb": 44.38,
+      "output_gb": 8.54,
+      "shuffle_write_gb": 0.0,
+      "shuffle_read_gb": 0.0,
+      "spill_gb": 0.0
+     }
+    ],
+    "final_agg_tasks": 64,
+    "final_agg_wall_s": 14.09
+   }
+  ]
+ },
+ "failures": []
+}
