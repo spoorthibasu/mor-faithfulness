@@ -1,0 +1,29 @@
+{
+ "cases": {
+  "multigroup_base": {
+   "verdict": "undecidable",
+   "groups": 5,
+   "count": null,
+   "reason": "key versions may straddle 5 file groups; per-group detection cannot establish a global survivor count. Re-run with audit-cross-group=true for a decidable verdict.",
+   "has_keys": false,
+   "expected_stale": 19000
+  },
+  "singlegroup_base": {
+   "verdict": "decided",
+   "groups": 1,
+   "count": "19000",
+   "reason": null,
+   "has_keys": true,
+   "expected_stale": 19000
+  },
+  "multigroup_cross": {
+   "verdict": "decided",
+   "groups": 5,
+   "count": "19000",
+   "reason": null,
+   "has_keys": true,
+   "expected_stale": 19000
+  }
+ },
+ "failures": []
+}

@@ -2259,3 +2259,56 @@ in the first 2000 characters of the error, and prints a summary line that lumps 
 into a single "ceiling between X and Y". That summary is misleading: it would have reported a config
 cap as a memory ceiling. The per-point outcome field was correct throughout; only the summary was
 wrong. Fix before the next run.
+
+## Entry 49 — Fail closed on straddling, and cache the scan that was being read twice
+
+Two changes, both prompted by the cloud run.
+
+### 1. Straddling now abstains instead of reporting
+
+Entry 45 established that per-group detection is *unsound* once a key's versions span file groups, and
+Entry 48 reproduced it on other hardware. The paper's response was to state a precondition and point
+readers at cross-group mode. That is a documentation fix for a correctness bug.
+
+The runner now fails closed. If the rewrite formed more than one file group and cross-group mode is
+off, it publishes **no verdict at all**: no key list, no count, and an explicit
+`mor.audit.verdict=undecidable` with `mor.audit.undecidable-reason` naming the group count and the
+remedy. The measured unsoundness becomes an abstention.
+
+This is worth more than it costs. One-sidedness stops being conditional on a precondition the reader
+has to carry, and the mechanism now behaves the way the rest of the work already does — the checker
+abstains with `NEEDS_CONTEXT`, the formal development refuses to certify what physical state cannot
+establish, and this is the same discipline in the maintenance path.
+
+`test_straddle_abstention.py`, three cases, all passing:
+
+| case | groups | verdict |
+|---|---|---|
+| multi-group, per-group mode | 5 | **undecidable**, no keys, no count, reason recorded |
+| single group, per-group mode | 1 | decided, 19,000 keys |
+| multi-group, cross-group mode | 5 | decided, 19,000 keys |
+
+The second case matters as much as the first. An abstention that always fires is not a safeguard, it
+is a broken feature that would silently delete every result in the paper, so the test asserts it does
+**not** fire at one group and that the cross-group merge still decides at five.
+
+**Consequence for existing evidence:** `bench_straddle_repeat.py`'s per-group arm will now abstain
+rather than emit false positives. That is the point, but it means the 180,000-false-positive
+measurement is a record of the *old* behaviour and must be described as such.
+
+### 2. The scan is now cached between its two consumers
+
+§5.2 admitted the marked scan is consumed twice, by the aggregation and by the write, without caching.
+The cloud run measured forced capture at **1.96x**, and double materialisation alone predicts about
+2x. So the headline cost number may have been measuring a missing `cache()` rather than anything about
+the design — which would make it an implementation artifact we published as a property.
+
+`audit-cache-scan` (default **true**) persists the marked scan at `MEMORY_AND_DISK` between the two
+actions and unpersists after the write. The uncached path stays reachable so both are measurable.
+
+**Not assuming this helps.** The cached representation of wide rows can exceed the Parquet it came
+from, and at 53 GB with a 32 GB heap it will spill. Caching could plausibly cost more than the re-read
+it avoids. The next run measures both arms; "caching did not help, so 1.96x is the design" is a
+perfectly good outcome and would settle the question the other way.
+
+Patch is now 2 files, and the runner keeps its stock path untouched when the flag is off.

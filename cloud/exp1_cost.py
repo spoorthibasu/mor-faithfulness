@@ -39,7 +39,17 @@ PAYLOAD = 400
 
 SYNTH = {"commits": COMMITS, "rows_per_commit": RPC, "payload_bytes": PAYLOAD,
          "delete_frac": 0.2, "ordering": "contiguous", "files_per_commit": FPC}
-ARMS = [("off", False, ""), ("gateON", True, ""), ("gateOFF", True, "audit-gate=false")]
+# The 1.96x measured previously is close to what double materialisation alone predicts: without a
+# cache, the aggregation and the survivor write are two actions over the same scan, so Spark re-reads
+# the Parquet and re-applies the delete filter. Caching between them is the fix. Both arms are run so
+# the cost of the DESIGN can be separated from the cost of the missing cache -- and so that "caching
+# did not help" is reportable if that is what happens, since the cached representation of wide rows
+# can exceed the Parquet it came from and spill.
+ARMS = [
+    ("off", False, ""),
+    ("capture_cached", True, "audit-gate=false,audit-cache-scan=true"),
+    ("capture_uncached", True, "audit-gate=false,audit-cache-scan=false"),
+]
 
 p = preflight("exp1", COMMITS, RPC, FPC, PAYLOAD)
 print(f"exp1: {p['rows_total']:,} rows, ~{p['bytes_total']/2**30:.1f} GB, "
@@ -81,14 +91,11 @@ for i in range(REPEATS):
 def latest(label, key):
     return [r.get(key) for r in out[label] if not r.get("error")]
 
-gated = [int(x) for x in latest("gateON", "groups_gated") if x is not None]
-audited = [int(x) for x in latest("gateOFF", "groups_audited") if x is not None]
-if gated and not any(g > 0 for g in gated):
-    failures.append("exp1: gateON never gated a single group -- 'the gate is free' would be "
-                    "indistinguishable from 'the audit never ran'")
-if audited and not any(a > 0 for a in audited):
-    failures.append("exp1: gateOFF never audited a group -- forced capture did not actually run, so "
-                    "its cost is not being measured")
+for arm in ("capture_cached", "capture_uncached"):
+    aud = [int(x) for x in latest(arm, "groups_audited") if x is not None]
+    if aud and not any(a > 0 for a in aud):
+        failures.append(f"exp1: {arm} never audited a group -- capture did not actually run, so its "
+                        f"cost is not being measured")
 
 # ---- ingest control, with the warmup exclusion stated rather than assumed ----
 ing_all = [r["ingest_s"] for a, _, _ in ARMS for r in out[a] if r.get("ingest_s")]
@@ -113,7 +120,7 @@ if spread(base) > 2.0:
     failures.append(f"exp1: baseline spread {spread(base):.2f}x -- the machine is still the subject; "
                     f"treat the ratios below as unreportable until this is understood")
 
-for label in ("gateON", "gateOFF"):
+for label in ("capture_cached", "capture_uncached"):
     pairs = [(x["compact_s"], y["compact_s"]) for x, y in zip(out[label], out["off"])
              if x.get("compact_s") and y.get("compact_s")]
     if pairs:

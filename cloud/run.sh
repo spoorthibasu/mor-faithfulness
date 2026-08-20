@@ -189,8 +189,12 @@ echo "drop_caches OK"
 
 # Priority order, and each is allowed to fail without costing the ones before it: a priority-3 OOM
 # sweep must never take the priority-1 cost numbers down with it.
+# Which experiments to run. A follow-up session usually needs a subset, and re-running a settled
+# experiment just to reach an unsettled one wastes an instance-hour.
+EXPERIMENTS=${MOR_EXPERIMENTS:-"exp1_cost exp2_correctness exp3_ceiling"}
+echo "experiments: $EXPERIMENTS"
 declare -A RC
-for exp in exp1_cost exp2_correctness exp3_ceiling; do
+for exp in $EXPERIMENTS; do
   say "$exp"
   set +e
   "$VPY" "$MOR_REPO/cloud/$exp.py" 2>&1 | tee "$RESULTS/$exp.log"
@@ -200,7 +204,7 @@ for exp in exp1_cost exp2_correctness exp3_ceiling; do
 done
 
 say "summary"
-for exp in exp1_cost exp2_correctness exp3_ceiling; do
+for exp in $EXPERIMENTS; do
   printf '  %-18s exit=%s\n' "$exp" "${RC[$exp]}"
 done
 printf '  total wall: %s min\n' "$((SECONDS / 60))"

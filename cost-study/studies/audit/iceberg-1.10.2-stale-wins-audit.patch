@@ -152,10 +152,10 @@ index a42ce0e..3676b32 100644
        String errorMessage =
            String.format(
 diff --git a/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/SparkBinPackFileRewriteRunner.java b/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/SparkBinPackFileRewriteRunner.java
-index 6d2ef58..2452162 100644
+index 6d2ef58..8fabe76 100644
 --- a/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/SparkBinPackFileRewriteRunner.java
 +++ b/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/SparkBinPackFileRewriteRunner.java
-@@ -18,17 +18,123 @@
+@@ -18,17 +18,131 @@
   */
  package org.apache.iceberg.spark.actions;
  
@@ -198,6 +198,7 @@ index 6d2ef58..2452162 100644
  import org.apache.spark.sql.Row;
  import org.apache.spark.sql.SparkSession;
 +import org.apache.spark.sql.functions;
++import org.apache.spark.storage.StorageLevel;
 +import org.slf4j.Logger;
 +import org.slf4j.LoggerFactory;
  
@@ -223,6 +224,10 @@ index 6d2ef58..2452162 100644
 +  // turning this off must produce the false positive the guard exists to prevent. Never turn it off
 +  // in production -- the mechanism's one-sidedness depends on it.
 +  static final String AUDIT_REQUIRE_SINGLE_SURVIVOR = "audit-require-single-survivor";
++  // The marked scan is consumed twice, once by the aggregation and once by the write. Caching it
++  // between them is the obvious fix; leaving it off is kept measurable so the cost of the DESIGN can
++  // be separated from the cost of the missing cache.
++  static final String AUDIT_CACHE_SCAN = "audit-cache-scan";
 +  // Above this many bytes the inline key list is spilled to a Puffin blob registered as a table
 +  // statistics file. The summary lives in metadata.json, which is re-read on every table load, so a
 +  // large inline list would bloat every read; 64 KB is ~10K keys at the measured 6.1 B/key (Entry 25).
@@ -241,6 +246,8 @@ index 6d2ef58..2452162 100644
 +  static final String SUMMARY_CROSS_GROUP = "mor.audit.cross-group";
 +  static final String SUMMARY_CROSS_GROUP_KEYS = "mor.audit.cross-group-keys";
 +  static final String SUMMARY_STRADDLE_CANDIDATES = "mor.audit.straddle-candidates";
++  static final String SUMMARY_VERDICT = "mor.audit.verdict";
++  static final String SUMMARY_UNDECIDABLE_REASON = "mor.audit.undecidable-reason";
 +
 +  private static final String DELETED_FLAG = "_mor_audit_deleted";
 +  private static final String D_MAX = "_mor_audit_dmax";
@@ -251,6 +258,7 @@ index 6d2ef58..2452162 100644
 +  private boolean auditGate = true;
 +  private boolean auditCrossGroup = false;
 +  private boolean auditRequireSingleSurvivor = true;
++  private boolean auditCacheScan = true;
 +  // Cross-group merge state (only populated when auditCrossGroup): per key, the max ordering value among
 +  // versions DISCARDED in any group, and the ordering value of the key's single surviving version
 +  // (whichever group holds it). A key is a cross-group stale-win iff maxDiscarded > survivor.
@@ -279,7 +287,7 @@ index 6d2ef58..2452162 100644
    SparkBinPackFileRewriteRunner(SparkSession spark, Table table) {
      super(spark, table);
    }
-@@ -38,9 +144,59 @@ class SparkBinPackFileRewriteRunner extends SparkDataFileRewriteRunner {
+@@ -38,9 +152,61 @@ class SparkBinPackFileRewriteRunner extends SparkDataFileRewriteRunner {
      return "BIN-PACK";
    }
  
@@ -287,7 +295,8 @@ index 6d2ef58..2452162 100644
 +  public Set<String> validOptions() {
 +    return ImmutableSet.of(
 +        AUDIT_STALE_WINS, AUDIT_ORDERING_COLUMN, AUDIT_KEY_COLUMNS, AUDIT_OUTPUT_PATH, AUDIT_GATE,
-+        AUDIT_CROSS_GROUP, AUDIT_SPILL_THRESHOLD, AUDIT_REQUIRE_SINGLE_SURVIVOR);
++        AUDIT_CROSS_GROUP, AUDIT_SPILL_THRESHOLD, AUDIT_REQUIRE_SINGLE_SURVIVOR,
++        AUDIT_CACHE_SCAN);
 +  }
 +
 +  @Override
@@ -298,6 +307,7 @@ index 6d2ef58..2452162 100644
 +      this.auditCrossGroup = Boolean.parseBoolean(options.getOrDefault(AUDIT_CROSS_GROUP, "false"));
 +      this.auditRequireSingleSurvivor =
 +          Boolean.parseBoolean(options.getOrDefault(AUDIT_REQUIRE_SINGLE_SURVIVOR, "true"));
++      this.auditCacheScan = Boolean.parseBoolean(options.getOrDefault(AUDIT_CACHE_SCAN, "true"));
 +      this.spillThresholdBytes =
 +          Long.parseLong(options.getOrDefault(AUDIT_SPILL_THRESHOLD, "65536"));
 +      if (auditCrossGroup && auditGate) {
@@ -340,7 +350,7 @@ index 6d2ef58..2452162 100644
      Dataset<Row> scanDF =
          spark()
              .read()
-@@ -50,7 +206,6 @@ class SparkBinPackFileRewriteRunner extends SparkDataFileRewriteRunner {
+@@ -50,7 +216,6 @@ class SparkBinPackFileRewriteRunner extends SparkDataFileRewriteRunner {
              .option(SparkReadOptions.FILE_OPEN_COST, "0")
              .load(groupId);
  
@@ -348,7 +358,7 @@ index 6d2ef58..2452162 100644
      scanDF
          .write()
          .format("iceberg")
-@@ -62,6 +217,335 @@ class SparkBinPackFileRewriteRunner extends SparkDataFileRewriteRunner {
+@@ -62,6 +227,371 @@ class SparkBinPackFileRewriteRunner extends SparkDataFileRewriteRunner {
          .save(groupId);
    }
  
@@ -388,6 +398,15 @@ index 6d2ef58..2452162 100644
 +    markedCols[tableCols.size()] =
 +        functions.col(MetadataColumns.IS_DELETED.name()).alias(DELETED_FLAG);
 +    Dataset<Row> marked = loaded.select(markedCols);
++    // The aggregation below and the survivor write further down are two actions over the same scan.
++    // Without a cache Spark runs the whole thing twice -- re-reading Parquet and re-applying the
++    // delete filter -- which is roughly a doubling, and roughly what the measured overhead was. So
++    // cache between them. Note this is not free at scale: the cached representation of wide rows can
++    // exceed the Parquet it came from, and MEMORY_AND_DISK will spill. Whether it actually wins is an
++    // empirical question, which is why the uncached path stays reachable behind AUDIT_CACHE_SCAN.
++    if (auditCacheScan) {
++      marked = marked.persist(StorageLevel.MEMORY_AND_DISK());
++    }
 +
 +    Column deleted = functions.col(DELETED_FLAG);
 +    Column ordering = functions.col(orderingColumn);
@@ -439,6 +458,10 @@ index 6d2ef58..2452162 100644
 +        .option(SparkWriteOptions.OUTPUT_SPEC_ID, group.outputSpecId())
 +        .mode("append")
 +        .save(groupId);
++
++    if (auditCacheScan) {
++      marked.unpersist(false); // both actions are done; do not hold the group's blocks per rewrite
++    }
 +  }
 +
 +  /**
@@ -563,9 +586,36 @@ index 6d2ef58..2452162 100644
 +      keys = Lists.newArrayList(auditStaleWinsKeyJson);
 +    }
 +    Map<String, String> props = new HashMap<>();
-+    props.put(SUMMARY_COUNT, String.valueOf(keys.size()));
 +    props.put(SUMMARY_ORDERING, orderingColumn);
 +    props.put(SUMMARY_KEY_COLUMNS, String.join(",", keyColumns));
++    props.put(SUMMARY_GROUPS_TOTAL, String.valueOf(groupsTotal.get()));
++    props.put(SUMMARY_GROUPS_GATED, String.valueOf(groupsGated.get()));
++    props.put(SUMMARY_GROUPS_AUDITED, String.valueOf(groupsAudited.get()));
++    props.put(SUMMARY_CROSS_GROUP, String.valueOf(auditCrossGroup));
++
++    // FAIL CLOSED. The single-survivor guard is evaluated WITHIN a group, so it is sound only while
++    // every surviving version of a key is co-resident there. Once the rewrite forms more than one
++    // group that precondition is not established, and a per-group verdict can contain keys that are
++    // not violations -- measured, not hypothetical. Publishing it anyway would trade the mechanism's
++    // one-sidedness for recall it does not even have in that regime. So we abstain: no key list, no
++    // count, an explicit undecidable in its place. Cross-group mode makes the survivor count global
++    // and is the way to get a verdict here.
++    if (!auditCrossGroup && groupsTotal.get() > 1) {
++      props.put(SUMMARY_VERDICT, "undecidable");
++      props.put(
++          SUMMARY_UNDECIDABLE_REASON,
++          "key versions may straddle "
++              + groupsTotal.get()
++              + " file groups; per-group detection cannot establish a global survivor count. "
++              + "Re-run with "
++              + AUDIT_CROSS_GROUP
++              + "=true for a decidable verdict.");
++      this.pendingSpillJson = null;
++      return props;
++    }
++
++    props.put(SUMMARY_VERDICT, "decided");
++    props.put(SUMMARY_COUNT, String.valueOf(keys.size()));
 +    String keysJson = "[" + String.join(",", keys) + "]";
 +    if (keysJson.length() > spillThresholdBytes) {
 +      // Spill: the list goes to a Puffin blob registered as a statistics file (see the action). It is
@@ -578,10 +628,6 @@ index 6d2ef58..2452162 100644
 +      props.put(SUMMARY_KEYS, keysJson);
 +      props.put(SUMMARY_KEYS_SPILLED, "false");
 +    }
-+    props.put(SUMMARY_GROUPS_TOTAL, String.valueOf(groupsTotal.get()));
-+    props.put(SUMMARY_GROUPS_GATED, String.valueOf(groupsGated.get()));
-+    props.put(SUMMARY_GROUPS_AUDITED, String.valueOf(groupsAudited.get()));
-+    props.put(SUMMARY_CROSS_GROUP, String.valueOf(auditCrossGroup));
 +    if (auditCrossGroup) {
 +      // The complete (cross-group) verdict. The per-group list above stays as written, so both the
 +      // base result and the merged result are visible in the same snapshot.

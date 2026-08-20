@@ -1,6 +1,10 @@
 {
  "arms": {
   "inverted_dup_guardON": {
+   "scored_property": "stale-wins-keys",
+   "per_group_captured": 3000,
+   "per_group_true_positives": 3000,
+   "per_group_false_positives": 0,
    "derivation": "closed form over generator parameters; no table read, no engine readback",
    "expected_live_rows": 68998,
    "measured_live_rows": 68998,
@@ -28,9 +32,15 @@
     8002,
     8003,
     8004
-   ]
+   ],
+   "false_positive_keys": [],
+   "per_group_false_positive_keys": []
   },
   "inverted_dup_guardOFF": {
+   "scored_property": "stale-wins-keys",
+   "per_group_captured": 4000,
+   "per_group_true_positives": 3000,
+   "per_group_false_positives": 1000,
    "derivation": "closed form over generator parameters; no table read, no engine readback",
    "expected_live_rows": 68998,
    "measured_live_rows": 68998,
@@ -58,9 +68,57 @@
     8002,
     8003,
     8004
+   ],
+   "false_positive_keys": [
+    8000,
+    8001,
+    8002,
+    8003,
+    8004,
+    8005,
+    8006,
+    8007,
+    8008,
+    8009,
+    8010,
+    8011,
+    8012,
+    8013,
+    8014,
+    8015,
+    8016,
+    8017,
+    8018,
+    8019
+   ],
+   "per_group_false_positive_keys": [
+    8000,
+    8001,
+    8002,
+    8003,
+    8004,
+    8005,
+    8006,
+    8007,
+    8008,
+    8009,
+    8010,
+    8011,
+    8012,
+    8013,
+    8014,
+    8015,
+    8016,
+    8017,
+    8018,
+    8019
    ]
   },
   "inverted_nodup": {
+   "scored_property": "stale-wins-keys",
+   "per_group_captured": 4000,
+   "per_group_true_positives": 4000,
+   "per_group_false_positives": 0,
    "derivation": "closed form over generator parameters; no table read, no engine readback",
    "expected_live_rows": 67998,
    "measured_live_rows": 67998,
@@ -82,9 +140,15 @@
     8003,
     8004
    ],
-   "dup_sample": []
+   "dup_sample": [],
+   "false_positive_keys": [],
+   "per_group_false_positive_keys": []
   },
   "contiguous_dup": {
+   "scored_property": "stale-wins-keys",
+   "per_group_captured": 0,
+   "per_group_true_positives": 0,
+   "per_group_false_positives": 0,
    "derivation": "closed form over generator parameters; no table read, no engine readback",
    "expected_live_rows": 68998,
    "measured_live_rows": 68998,
@@ -104,9 +168,15 @@
     8002,
     8003,
     8004
-   ]
+   ],
+   "false_positive_keys": [],
+   "per_group_false_positive_keys": []
   },
   "inverted_dup_split4": {
+   "scored_property": "stale-wins-keys",
+   "per_group_captured": 3000,
+   "per_group_true_positives": 3000,
+   "per_group_false_positives": 0,
    "derivation": "closed form over generator parameters; no table read, no engine readback",
    "expected_live_rows": 68998,
    "measured_live_rows": 68998,
@@ -134,7 +204,9 @@
     8002,
     8003,
     8004
-   ]
+   ],
+   "false_positive_keys": [],
+   "per_group_false_positive_keys": []
   }
  },
  "failures": []
