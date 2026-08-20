@@ -139,18 +139,31 @@ for ln in plan.splitlines():
     if any(k in ln for k in ("ReadSchema", "BatchScan", "Project", "Scan ")):
         print("  " + ln.strip()[:200], flush=True)
 
-agg, full = out.get("aggregate_only", 0), out.get("full_scan", 0)
+agg = out.get("aggregate_only", 0); full = out.get("full_scan", 0)
+narrow = out.get("narrow_scan", 0); nodel = out.get("no_deletes", 0)
 print("\n" + "=" * 84)
-if full and agg:
-    r = agg / full
-    print(f"aggregate_only / full_scan = {r:.2f}")
-    if r > 0.7:
-        print("  => the two traversals cost nearly the same despite the aggregation reading far fewer")
-        print("     columns, so the cost is dominated by DELETE-SET RECONSTRUCTION, not payload I/O.")
-        print("     Fusing the passes would recover most of the overhead (but see the memory trade).")
+# Consult the floor arm. An earlier version compared only aggregate/full and concluded that
+# delete-set reconstruction dominated whenever that ratio was high -- which is unsound, because a
+# high ratio is equally consistent with the aggregation paying for a shuffle. The no_deletes arm
+# exists precisely to tell those apart, so the verdict has to use it.
+if narrow and nodel:
+    dcost = narrow - nodel
+    print(f"delete application: {narrow:.1f}s with vs {nodel:.1f}s without = {dcost:+.1f}s")
+    if abs(dcost) < 0.15 * nodel:
+        print("  => applying the equality deletes is FREE within noise. It is not what the second")
+        print("     traversal is paying for, and fusing the passes would not recover it.")
     else:
-        print("  => the aggregation branch is substantially cheaper, so PAYLOAD I/O dominates and the")
-        print("     second pass alone does not account for the measured overhead. Look elsewhere.")
+        print("  => delete application is a real cost and fusing would recover it.")
+if agg and narrow:
+    print(f"aggregation over a comparable scan: {agg:.1f}s vs {narrow:.1f}s = {agg-narrow:+.1f}s")
+    print("  => that delta is the group-by shuffle, not column width or delete handling.")
+if full and narrow:
+    print(f"payload width: {full:.1f}s (all cols) vs {narrow:.1f}s (two cols) = {full-narrow:+.1f}s")
+print()
+print("CAVEAT, and it bounds what any of this supports: these are plain table reads with a noop sink.")
+print("The audited rewrite reads through a scan-task-set data source and also WRITES files, so its")
+print("stock baseline is far larger than full_scan here. Do not attribute the measured overhead ratio")
+print("to this decomposition without measuring the rewrite path itself.")
 emit("probe_pass_cost.json", {"timings_s": out, "host": hostinfo(), "config":
                               {"commits": COMMITS, "rows_per_commit": RPC, "heap": HEAP}})
 spark.stop()

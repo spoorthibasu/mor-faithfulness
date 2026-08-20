@@ -2342,3 +2342,39 @@ Ingest dominates and is now measured rather than extrapolated: 230 s for Exp 1's
 Exp 2's, at roughly 500K rows/s. The one genuinely unknown is `capture_cached`'s compaction time — if
 caching wins it lands near 180 s and Exp 1 finishes sooner; if it loses to spill it could exceed the
 uncached 275 s and add ~15 min. Both outcomes are results.
+
+## Entry 51 — The pass-cost probe: inconclusive for its purpose, and its own verdict was wrong
+
+Run on the same instance and the same 41 GB table shape as the cost experiment (29,519,890 live rows,
+matching exp1 exactly).
+
+| arm | time | reads | deletes applied |
+|---|---|---|---|
+| `no_deletes` | 18.27 s | 2 cols | no |
+| `narrow_scan` | 17.30 s | 2 cols | yes |
+| `aggregate_only` | 27.86 s | 3 cols + shuffle | yes |
+| `full_scan` | 32.99 s | all cols | yes |
+
+**Applying the equality deletes is free within noise** — 17.30 s with, 18.27 s without. Pruning is
+confirmed as fact rather than inferred: the physical plan shows
+`BatchScan local.db.probe_pass[id, lsn, _deleted]`, with `val` dropped. So the second traversal's
+27.86 s is ~17.3 s of scan plus ~10.6 s of `Exchange hashpartitioning(id, 200)`. **The cost is the
+shuffle**, not delete reconstruction and not payload width.
+
+**It does not explain the 1.91x, and must not be used as though it does.** Read-only, audited/stock is
+60.85/32.99 = 1.85, which resembles the measured ratio by coincidence: it omits the write from both
+sides. The real stock rewrite is 137 s because it writes files, so a 27.9 s second traversal predicts
+**1.20x**, leaving ~100 s unaccounted for. The rewrite reads via a scan-task-set data source with its
+own split sizing; whether pruning survives that path is untested, because the probe used a plain read.
+
+**Script bug, mine, and the same shape as the exp3 summary bug in Entry 46.** The verdict printed
+"delete-set reconstruction dominates" from `aggregate_only / full_scan = 0.84 > 0.7` — a threshold that
+cannot distinguish "the aggregation pays for deletes" from "the aggregation pays for a shuffle". The
+`no_deletes` arm was added to tell those apart and the verdict then ignored it. Fixed to consult the
+floor arm, and to print the caveat about plain reads versus the rewrite path. Twice now a canned
+summary line has drawn a conclusion the per-arm data contradicts; the per-arm numbers were right both
+times.
+
+**Consequence for the paper:** no sentence in §6.4 about where the cost lives. The condition for adding
+one was that the second traversal be delete-dominated; it is not. ~1.9x stands as measured with its
+internal decomposition open, and the combined pass stays untested for the Entry-49 reasons.
