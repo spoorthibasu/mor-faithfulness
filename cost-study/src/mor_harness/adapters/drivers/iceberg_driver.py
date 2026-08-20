@@ -170,7 +170,12 @@ def main():
         .config("spark.sql.catalog.local.cache-enabled", "false")
         .config("spark.sql.catalogImplementation", "in-memory")
         .config("spark.driver.host", "localhost").config("spark.ui.enabled", "false")
-        .config("spark.sql.shuffle.partitions", "1")
+        # Default 1 is right for the KB-scale cells this harness was built for, and wrong at GB
+        # scale: it forces an entire aggregation shuffle through a single task. Left as the
+        # default so every earlier measurement remains reproducible, overridable for the ones
+        # that are large enough to care.
+        .config("spark.sql.shuffle.partitions",
+                os.environ.get("MOR_SHUFFLE_PARTITIONS", "1"))
         .config("spark.driver.extraJavaOptions", ADD_OPENS)
         .config("spark.executor.extraJavaOptions", ADD_OPENS)
         .getOrCreate())

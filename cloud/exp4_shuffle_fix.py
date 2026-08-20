@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
-"""Item 1 -- does fixing the coalesced shuffle recover the ~38 s it costs?
+"""Item 1 -- does giving the final aggregation more than one task recover the ~38 s it costs?
 
-Stage attribution of the audited rewrite found 130 s of overhead split into ~91 s of duplicated
-delete application and ~38 s in a FINAL AGGREGATION THAT RAN IN ONE TASK. That single task is adaptive
-query execution coalescing the shuffle's 200 partitions down to one because the shuffle output is
-small in bytes -- a decision about bytes that ignores how much CPU the partition costs. Its
-parallelism is a configuration default, not a property of the mechanism, so roughly 29% of the
-overhead may be recoverable for free: no memory trade, no accumulator, no correctness obligation.
+Stage attribution of the audited rewrite found 130 s of overhead, of which ~38 s sits in a FINAL
+AGGREGATION THAT RUNS IN ONE TASK. The cause is not the mechanism: the harness sets
+`spark.sql.shuffle.partitions=1`, which is right for the KB-scale cells it was written for and forces
+an entire GB-scale aggregation shuffle through a single core. That is a property of our measurement
+configuration, so roughly 29% of the reported overhead may be an artifact rather than a cost.
 
 Three arms, round-robin interleaved, paired within each round:
   off        stock rewrite, the baseline
-  audited    capture with the gate off and the scan uncached -- the arm that measured 1.91x
-  audited_fx the same, with AQE partition coalescing disabled
+  audited    capture with the gate off and the scan uncached, at the harness default of 1 partition
+  audited_fx the same with a partition count matched to the machine
 
 POSITIVE CONTROL, and it is the whole point of running this rather than assuming it. A config that
 silently fails to take effect is indistinguishable from one that takes effect and does not help: both
@@ -36,11 +35,14 @@ COMMITS, RPC, FPC, PAYLOAD = 32, 3_600_000, 4, 400
 SYNTH = {"commits": COMMITS, "rows_per_commit": RPC, "payload_bytes": PAYLOAD,
          "delete_frac": 0.2, "ordering": "contiguous", "files_per_commit": FPC}
 CAPTURE = "audit-gate=false,audit-cache-scan=false"
-# Disabling coalescing outright, rather than tuning spark.sql.shuffle.partitions, because it is the
-# coalescing decision that is wrong here and the fix should be legible in the stage table.
-NO_COALESCE = " --conf spark.sql.adaptive.coalescePartitions.enabled=false"
-ARMS = [("off", False, "", ""), ("audited", True, CAPTURE, ""),
-        ("audited_fx", True, CAPTURE, NO_COALESCE)]
+# FIRST ATTEMPT, AND WHY IT WAS WRONG: we disabled AQE partition coalescing, on the assumption that
+# the single-task final aggregation was AQE collapsing 200 partitions. The config took effect and
+# changed nothing, because the harness sets `spark.sql.shuffle.partitions=1` -- sized for the KB-scale
+# cells it was written for. There was never more than one partition to coalesce. The positive control
+# caught this: the fixed arm still reported one task. The knob that matters is the partition count.
+SHUFFLE_PARTS = os.environ.get("MOR_EXP4_PARTITIONS", "64")   # 16 vCPU; ~15 MB per partition here
+ARMS = [("off", False, "", None), ("audited", True, CAPTURE, None),
+        ("audited_fx", True, CAPTURE, SHUFFLE_PARTS)]
 
 p = preflight("exp4", COMMITS, RPC, FPC, PAYLOAD)
 print(f"exp4: {p['rows_total']:,} rows, ~{p['bytes_total']/2**30:.1f} GB, heap {HEAP}", flush=True)
@@ -59,8 +61,11 @@ for i in range(REPEATS):
     for label, audit, opts, extra in ARMS:
         os.makedirs(EVENT_DIR, exist_ok=True)
         before = set(os.listdir(EVENT_DIR))
-        os.environ["PYSPARK_SUBMIT_ARGS"] = event_log_args(HEAP).replace(
-            " pyspark-shell", extra + " pyspark-shell")
+        os.environ["PYSPARK_SUBMIT_ARGS"] = event_log_args(HEAP)
+        if extra:
+            os.environ["MOR_SHUFFLE_PARTITIONS"] = extra
+        else:
+            os.environ.pop("MOR_SHUFFLE_PARTITIONS", None)
         res, wall = run_one(f"e4_{label}_{i}", SYNTH, heap=HEAP, audit=audit, opts=opts)
         if res.get("error"):
             failures.append(f"exp4/{label}/r{i}: {res['error'][:300]}")
