@@ -1,0 +1,141 @@
+{
+ "arms": {
+  "inverted_dup_guardON": {
+   "derivation": "closed form over generator parameters; no table read, no engine readback",
+   "expected_live_rows": 68998,
+   "measured_live_rows": 68998,
+   "live_rows_match": true,
+   "expected_stale_wins": 3000,
+   "expected_dup_risky": 1000,
+   "captured": 3000,
+   "true_positives": 3000,
+   "false_positives_other": 0,
+   "false_positives_from_duplicates": 0,
+   "misses": 0,
+   "risky_D_values": [
+    8
+   ],
+   "stale_sample": [
+    9000,
+    9001,
+    9002,
+    9003,
+    9004
+   ],
+   "dup_sample": [
+    8000,
+    8001,
+    8002,
+    8003,
+    8004
+   ]
+  },
+  "inverted_dup_guardOFF": {
+   "derivation": "closed form over generator parameters; no table read, no engine readback",
+   "expected_live_rows": 68998,
+   "measured_live_rows": 68998,
+   "live_rows_match": true,
+   "expected_stale_wins": 3000,
+   "expected_dup_risky": 1000,
+   "captured": 4000,
+   "true_positives": 3000,
+   "false_positives_other": 0,
+   "false_positives_from_duplicates": 1000,
+   "misses": 0,
+   "risky_D_values": [
+    8
+   ],
+   "stale_sample": [
+    9000,
+    9001,
+    9002,
+    9003,
+    9004
+   ],
+   "dup_sample": [
+    8000,
+    8001,
+    8002,
+    8003,
+    8004
+   ]
+  },
+  "inverted_nodup": {
+   "derivation": "closed form over generator parameters; no table read, no engine readback",
+   "expected_live_rows": 67998,
+   "measured_live_rows": 67998,
+   "live_rows_match": true,
+   "expected_stale_wins": 4000,
+   "expected_dup_risky": 0,
+   "captured": 4000,
+   "true_positives": 4000,
+   "false_positives_other": 0,
+   "false_positives_from_duplicates": 0,
+   "misses": 0,
+   "risky_D_values": [
+    8
+   ],
+   "stale_sample": [
+    8000,
+    8001,
+    8002,
+    8003,
+    8004
+   ],
+   "dup_sample": []
+  },
+  "contiguous_dup": {
+   "derivation": "closed form over generator parameters; no table read, no engine readback",
+   "expected_live_rows": 68998,
+   "measured_live_rows": 68998,
+   "live_rows_match": true,
+   "expected_stale_wins": 0,
+   "expected_dup_risky": 1000,
+   "captured": 0,
+   "true_positives": 0,
+   "false_positives_other": 0,
+   "false_positives_from_duplicates": 0,
+   "misses": 0,
+   "risky_D_values": [],
+   "stale_sample": [],
+   "dup_sample": [
+    8000,
+    8001,
+    8002,
+    8003,
+    8004
+   ]
+  },
+  "inverted_dup_split4": {
+   "derivation": "closed form over generator parameters; no table read, no engine readback",
+   "expected_live_rows": 68998,
+   "measured_live_rows": 68998,
+   "live_rows_match": true,
+   "expected_stale_wins": 3000,
+   "expected_dup_risky": 1000,
+   "captured": 3000,
+   "true_positives": 3000,
+   "false_positives_other": 0,
+   "false_positives_from_duplicates": 0,
+   "misses": 0,
+   "risky_D_values": [
+    8
+   ],
+   "stale_sample": [
+    9000,
+    9001,
+    9002,
+    9003,
+    9004
+   ],
+   "dup_sample": [
+    8000,
+    8001,
+    8002,
+    8003,
+    8004
+   ]
+  }
+ },
+ "failures": []
+}

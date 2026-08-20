@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mor-harness"
+version = "0.1.0"
+description = "CDC-to-lakehouse workload harness: the measurement instrument for the MOR faithfulness sensitivity and enforcement-cost studies"
+requires-python = ">=3.9"
+# No hard deps declared on purpose: the harness runs inside the mor_checker .venv,
+# which already provides pyspark==3.5.3, pyiceberg[pyarrow]>=0.9, and mor_checker.
+# See README "Environment". Declaring them here would trigger network resolution.
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

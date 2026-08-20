@@ -1,0 +1,254 @@
+{
+ "repeats": 6,
+ "base_keys": 4000,
+ "cell": "ooo50_s101",
+ "arms": {
+  "off": {
+   "compact_s": {
+    "median": 1.882,
+    "mean": 2.31,
+    "stdev": 1.221,
+    "min": 1.586,
+    "max": 4.764
+   },
+   "apply_s": {
+    "median": 12.942,
+    "mean": 13.091,
+    "stdev": 0.346,
+    "min": 12.797,
+    "max": 13.639
+   },
+   "rows": 3776,
+   "compact_rows_per_s": 2005.8,
+   "verdict_keys": 0,
+   "verdict_bytes": 0,
+   "runs": [
+    {
+     "compact_s": 2.106,
+     "apply_s": 13.639,
+     "rows": 3776,
+     "bytes_total": 70062,
+     "verdict_bytes": 0,
+     "verdict_keys": 0,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    },
+    {
+     "compact_s": 2.045,
+     "apply_s": 13.006,
+     "rows": 3776,
+     "bytes_total": 70147,
+     "verdict_bytes": 0,
+     "verdict_keys": 0,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    },
+    {
+     "compact_s": 1.72,
+     "apply_s": 13.396,
+     "rows": 3776,
+     "bytes_total": 70192,
+     "verdict_bytes": 0,
+     "verdict_keys": 0,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    },
+    {
+     "compact_s": 1.641,
+     "apply_s": 12.797,
+     "rows": 3776,
+     "bytes_total": 70199,
+     "verdict_bytes": 0,
+     "verdict_keys": 0,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    },
+    {
+     "compact_s": 4.764,
+     "apply_s": 12.831,
+     "rows": 3776,
+     "bytes_total": 70203,
+     "verdict_bytes": 0,
+     "verdict_keys": 0,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    },
+    {
+     "compact_s": 1.586,
+     "apply_s": 12.879,
+     "rows": 3776,
+     "bytes_total": 70243,
+     "verdict_bytes": 0,
+     "verdict_keys": 0,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    }
+   ]
+  },
+  "base": {
+   "compact_s": {
+    "median": 2.546,
+    "mean": 2.542,
+    "stdev": 0.117,
+    "min": 2.39,
+    "max": 2.707
+   },
+   "apply_s": {
+    "median": 13.002,
+    "mean": 13.237,
+    "stdev": 1.056,
+    "min": 12.392,
+    "max": 15.243
+   },
+   "rows": 3776,
+   "compact_rows_per_s": 1483.1,
+   "verdict_keys": 1296,
+   "verdict_bytes": 8716,
+   "runs": [
+    {
+     "compact_s": 2.444,
+     "apply_s": 12.401,
+     "rows": 3776,
+     "bytes_total": 70216,
+     "verdict_bytes": 8716,
+     "verdict_keys": 1296,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    },
+    {
+     "compact_s": 2.39,
+     "apply_s": 12.392,
+     "rows": 3776,
+     "bytes_total": 70189,
+     "verdict_bytes": 8716,
+     "verdict_keys": 1296,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    },
+    {
+     "compact_s": 2.58,
+     "apply_s": 15.243,
+     "rows": 3776,
+     "bytes_total": 70229,
+     "verdict_bytes": 8716,
+     "verdict_keys": 1296,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    },
+    {
+     "compact_s": 2.621,
+     "apply_s": 13.384,
+     "rows": 3776,
+     "bytes_total": 70123,
+     "verdict_bytes": 8716,
+     "verdict_keys": 1296,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    },
+    {
+     "compact_s": 2.707,
+     "apply_s": 12.932,
+     "rows": 3776,
+     "bytes_total": 70260,
+     "verdict_bytes": 8716,
+     "verdict_keys": 1296,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    },
+    {
+     "compact_s": 2.512,
+     "apply_s": 13.071,
+     "rows": 3776,
+     "bytes_total": 70099,
+     "verdict_bytes": 8716,
+     "verdict_keys": 1296,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    }
+   ]
+  },
+  "cross": {
+   "compact_s": {
+    "median": 2.978,
+    "mean": 3.158,
+    "stdev": 0.318,
+    "min": 2.932,
+    "max": 3.648
+   },
+   "apply_s": {
+    "median": 13.092,
+    "mean": 13.123,
+    "stdev": 0.253,
+    "min": 12.862,
+    "max": 13.513
+   },
+   "rows": 3776,
+   "compact_rows_per_s": 1268.0,
+   "verdict_keys": 1296,
+   "verdict_bytes": 8716,
+   "runs": [
+    {
+     "compact_s": 3.648,
+     "apply_s": 13.286,
+     "rows": 3776,
+     "bytes_total": 70154,
+     "verdict_bytes": 8716,
+     "verdict_keys": 1296,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    },
+    {
+     "compact_s": 2.983,
+     "apply_s": 13.193,
+     "rows": 3776,
+     "bytes_total": 70148,
+     "verdict_bytes": 8716,
+     "verdict_keys": 1296,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    },
+    {
+     "compact_s": 3.474,
+     "apply_s": 12.895,
+     "rows": 3776,
+     "bytes_total": 70225,
+     "verdict_bytes": 8716,
+     "verdict_keys": 1296,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    },
+    {
+     "compact_s": 2.973,
+     "apply_s": 13.513,
+     "rows": 3776,
+     "bytes_total": 70209,
+     "verdict_bytes": 8716,
+     "verdict_keys": 1296,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    },
+    {
+     "compact_s": 2.932,
+     "apply_s": 12.862,
+     "rows": 3776,
+     "bytes_total": 70203,
+     "verdict_bytes": 8716,
+     "verdict_keys": 1296,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    },
+    {
+     "compact_s": 2.938,
+     "apply_s": 12.991,
+     "rows": 3776,
+     "bytes_total": 70085,
+     "verdict_bytes": 8716,
+     "verdict_keys": 1296,
+     "oracle_stale": 1296,
+     "n_keys": 4200
+    }
+   ]
+  }
+ },
+ "verdict_size": []
+}

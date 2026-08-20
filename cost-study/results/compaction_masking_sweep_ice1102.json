@@ -1,0 +1,2138 @@
+{
+ "what": "Iceberg rewrite_data_files: checker STALE_WINS masking, swept at scale",
+ "method": "Per cell, two arms on the identical workload (unsafe vs unsafe_compact). Verdicts come from mor_checker over the real Iceberg metadata; content preservation and oracle violation counts come from the ENGINE readback, never from the checker.",
+ "cells": {
+  "ooo50_sf1_s101": {
+   "config": {
+    "base_keys": 1200,
+    "seed": 101,
+    "commit_coarsening": 1,
+    "ooo_rate": 0.5,
+    "dup_rate": 0.0,
+    "schema_change_freq": 0.0
+   },
+   "n_keys_checker": 1260,
+   "n_keys_engine": 1123,
+   "verdicts_before": {
+    "FAITHFUL": 718,
+    "STALE_WINS": 405,
+    "NEEDS_CONTEXT": 137
+   },
+   "verdicts_after": {
+    "FAITHFUL": 1260
+   },
+   "stale_wins_before": 405,
+   "stale_wins_masked_to_faithful": 405,
+   "stale_wins_not_masked": {},
+   "duplicate_before": 0,
+   "duplicate_survived": 0,
+   "content_keys_changed": 0,
+   "content_sample_changed": [],
+   "oracle_violations_before": 533,
+   "oracle_violations_after": 533,
+   "oracle_violations_unchanged": true,
+   "files_before": {
+    "commit_count": 51,
+    "data_files": 50,
+    "delete_files": 50,
+    "bytes_total": 131200
+   },
+   "files_after": {
+    "commit_count": 52,
+    "data_files": 1,
+    "delete_files": 42,
+    "bytes_total": 38264
+   },
+   "flipped_sample": {
+    "(10,)": {
+     "before": {
+      "n_data_records": 10,
+      "data": [
+       {
+        "version": 10,
+        "seq": 1
+       },
+       {
+        "version": 1220,
+        "seq": 2
+       },
+       {
+        "version": 1864,
+        "seq": 4
+       },
+       {
+        "version": 2155,
+        "seq": 3
+       },
+       {
+        "version": 3165,
+        "seq": 5
+       },
+       {
+        "version": 3583,
+        "seq": 6
+       },
+       {
+        "version": 4775,
+        "seq": 8
+       },
+       {
+        "version": 4804,
+        "seq": 9
+       },
+       {
+        "version": 6338,
+        "seq": 10
+       },
+       {
+        "version": 6874,
+        "seq": 7
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "S_D": 10,
+      "mult_phys": 1,
+      "survivor_version": 6338,
+      "current_version_record_version": 6874,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 6338,
+        "seq": 51
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "S_D": 10,
+      "mult_phys": 1,
+      "survivor_version": 6338,
+      "current_version_record_version": 6338,
+      "verdict": "FAITHFUL"
+     }
+    },
+    "(1006,)": {
+     "before": {
+      "n_data_records": 3,
+      "data": [
+       {
+        "version": 1006,
+        "seq": 1
+       },
+       {
+        "version": 1230,
+        "seq": 3
+       },
+       {
+        "version": 1511,
+        "seq": 2
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3
+      ],
+      "S_D": 3,
+      "mult_phys": 1,
+      "survivor_version": 1230,
+      "current_version_record_version": 1511,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 1230,
+        "seq": 51
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3
+      ],
+      "S_D": 3,
+      "mult_phys": 1,
+      "survivor_version": 1230,
+      "current_version_record_version": 1230,
+      "verdict": "FAITHFUL"
+     }
+    },
+    "(1016,)": {
+     "before": {
+      "n_data_records": 7,
+      "data": [
+       {
+        "version": 1016,
+        "seq": 1
+       },
+       {
+        "version": 2303,
+        "seq": 2
+       },
+       {
+        "version": 3515,
+        "seq": 4
+       },
+       {
+        "version": 3517,
+        "seq": 5
+       },
+       {
+        "version": 5634,
+        "seq": 3
+       },
+       {
+        "version": 5724,
+        "seq": 7
+       },
+       {
+        "version": 6143,
+        "seq": 6
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7
+      ],
+      "S_D": 7,
+      "mult_phys": 1,
+      "survivor_version": 5724,
+      "current_version_record_version": 6143,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 5724,
+        "seq": 51
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7
+      ],
+      "S_D": 7,
+      "mult_phys": 1,
+      "survivor_version": 5724,
+      "current_version_record_version": 5724,
+      "verdict": "FAITHFUL"
+     }
+    }
+   }
+  },
+  "ooo50_sf1_s202": {
+   "config": {
+    "base_keys": 1200,
+    "seed": 202,
+    "commit_coarsening": 1,
+    "ooo_rate": 0.5,
+    "dup_rate": 0.0,
+    "schema_change_freq": 0.0
+   },
+   "n_keys_checker": 1260,
+   "n_keys_engine": 1145,
+   "verdicts_before": {
+    "FAITHFUL": 753,
+    "STALE_WINS": 392,
+    "NEEDS_CONTEXT": 115
+   },
+   "verdicts_after": {
+    "FAITHFUL": 1260
+   },
+   "stale_wins_before": 392,
+   "stale_wins_masked_to_faithful": 392,
+   "stale_wins_not_masked": {},
+   "duplicate_before": 0,
+   "duplicate_survived": 0,
+   "content_keys_changed": 0,
+   "content_sample_changed": [],
+   "oracle_violations_before": 529,
+   "oracle_violations_after": 529,
+   "oracle_violations_unchanged": true,
+   "files_before": {
+    "commit_count": 28,
+    "data_files": 28,
+    "delete_files": 27,
+    "bytes_total": 97956
+   },
+   "files_after": {
+    "commit_count": 29,
+    "data_files": 1,
+    "delete_files": 19,
+    "bytes_total": 27518
+   },
+   "flipped_sample": {
+    "(1000,)": {
+     "before": {
+      "n_data_records": 8,
+      "data": [
+       {
+        "version": 1000,
+        "seq": 1
+       },
+       {
+        "version": 1563,
+        "seq": 3
+       },
+       {
+        "version": 2949,
+        "seq": 4
+       },
+       {
+        "version": 3287,
+        "seq": 2
+       },
+       {
+        "version": 3520,
+        "seq": 5
+       },
+       {
+        "version": 3700,
+        "seq": 7
+       },
+       {
+        "version": 6445,
+        "seq": 8
+       },
+       {
+        "version": 6920,
+        "seq": 6
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8
+      ],
+      "S_D": 8,
+      "mult_phys": 1,
+      "survivor_version": 6445,
+      "current_version_record_version": 6920,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 6445,
+        "seq": 28
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8
+      ],
+      "S_D": 8,
+      "mult_phys": 1,
+      "survivor_version": 6445,
+      "current_version_record_version": 6445,
+      "verdict": "FAITHFUL"
+     }
+    },
+    "(1002,)": {
+     "before": {
+      "n_data_records": 6,
+      "data": [
+       {
+        "version": 1002,
+        "seq": 1
+       },
+       {
+        "version": 2144,
+        "seq": 2
+       },
+       {
+        "version": 3622,
+        "seq": 4
+       },
+       {
+        "version": 4393,
+        "seq": 3
+       },
+       {
+        "version": 4983,
+        "seq": 6
+       },
+       {
+        "version": 5720,
+        "seq": 5
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6
+      ],
+      "S_D": 6,
+      "mult_phys": 1,
+      "survivor_version": 4983,
+      "current_version_record_version": 5720,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 4983,
+        "seq": 28
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6
+      ],
+      "S_D": 6,
+      "mult_phys": 1,
+      "survivor_version": 4983,
+      "current_version_record_version": 4983,
+      "verdict": "FAITHFUL"
+     }
+    },
+    "(1004,)": {
+     "before": {
+      "n_data_records": 4,
+      "data": [
+       {
+        "version": 1004,
+        "seq": 1
+       },
+       {
+        "version": 3954,
+        "seq": 3
+       },
+       {
+        "version": 3962,
+        "seq": 4
+       },
+       {
+        "version": 4514,
+        "seq": 2
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4
+      ],
+      "S_D": 4,
+      "mult_phys": 1,
+      "survivor_version": 3962,
+      "current_version_record_version": 4514,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 3962,
+        "seq": 28
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4
+      ],
+      "S_D": 4,
+      "mult_phys": 1,
+      "survivor_version": 3962,
+      "current_version_record_version": 3962,
+      "verdict": "FAITHFUL"
+     }
+    }
+   }
+  },
+  "ooo50_sf1_s303": {
+   "config": {
+    "base_keys": 1200,
+    "seed": 303,
+    "commit_coarsening": 1,
+    "ooo_rate": 0.5,
+    "dup_rate": 0.0,
+    "schema_change_freq": 0.0
+   },
+   "n_keys_checker": 1260,
+   "n_keys_engine": 1139,
+   "verdicts_before": {
+    "NEEDS_CONTEXT": 121,
+    "STALE_WINS": 406,
+    "FAITHFUL": 733
+   },
+   "verdicts_after": {
+    "FAITHFUL": 1260
+   },
+   "stale_wins_before": 406,
+   "stale_wins_masked_to_faithful": 406,
+   "stale_wins_not_masked": {},
+   "duplicate_before": 0,
+   "duplicate_survived": 0,
+   "content_keys_changed": 0,
+   "content_sample_changed": [],
+   "oracle_violations_before": 536,
+   "oracle_violations_after": 536,
+   "oracle_violations_unchanged": true,
+   "files_before": {
+    "commit_count": 43,
+    "data_files": 43,
+    "delete_files": 42,
+    "bytes_total": 118823
+   },
+   "files_after": {
+    "commit_count": 44,
+    "data_files": 1,
+    "delete_files": 34,
+    "bytes_total": 34425
+   },
+   "flipped_sample": {
+    "(100,)": {
+     "before": {
+      "n_data_records": 7,
+      "data": [
+       {
+        "version": 100,
+        "seq": 1
+       },
+       {
+        "version": 1731,
+        "seq": 3
+       },
+       {
+        "version": 1740,
+        "seq": 4
+       },
+       {
+        "version": 4523,
+        "seq": 2
+       },
+       {
+        "version": 5130,
+        "seq": 5
+       },
+       {
+        "version": 5629,
+        "seq": 7
+       },
+       {
+        "version": 7063,
+        "seq": 6
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7
+      ],
+      "S_D": 7,
+      "mult_phys": 1,
+      "survivor_version": 5629,
+      "current_version_record_version": 7063,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 5629,
+        "seq": 43
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7
+      ],
+      "S_D": 7,
+      "mult_phys": 1,
+      "survivor_version": 5629,
+      "current_version_record_version": 5629,
+      "verdict": "FAITHFUL"
+     }
+    },
+    "(1001,)": {
+     "before": {
+      "n_data_records": 6,
+      "data": [
+       {
+        "version": 1001,
+        "seq": 1
+       },
+       {
+        "version": 1565,
+        "seq": 3
+       },
+       {
+        "version": 2538,
+        "seq": 4
+       },
+       {
+        "version": 3619,
+        "seq": 5
+       },
+       {
+        "version": 4487,
+        "seq": 6
+       },
+       {
+        "version": 6136,
+        "seq": 2
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6
+      ],
+      "S_D": 6,
+      "mult_phys": 1,
+      "survivor_version": 4487,
+      "current_version_record_version": 6136,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 4487,
+        "seq": 43
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6
+      ],
+      "S_D": 6,
+      "mult_phys": 1,
+      "survivor_version": 4487,
+      "current_version_record_version": 4487,
+      "verdict": "FAITHFUL"
+     }
+    },
+    "(1003,)": {
+     "before": {
+      "n_data_records": 5,
+      "data": [
+       {
+        "version": 1003,
+        "seq": 1
+       },
+       {
+        "version": 2112,
+        "seq": 2
+       },
+       {
+        "version": 5226,
+        "seq": 4
+       },
+       {
+        "version": 5845,
+        "seq": 5
+       },
+       {
+        "version": 6108,
+        "seq": 3
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5
+      ],
+      "S_D": 5,
+      "mult_phys": 1,
+      "survivor_version": 5845,
+      "current_version_record_version": 6108,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 5845,
+        "seq": 43
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5
+      ],
+      "S_D": 5,
+      "mult_phys": 1,
+      "survivor_version": 5845,
+      "current_version_record_version": 5845,
+      "verdict": "FAITHFUL"
+     }
+    }
+   }
+  },
+  "ooo25_sf1_s101": {
+   "config": {
+    "base_keys": 1200,
+    "seed": 101,
+    "commit_coarsening": 1,
+    "ooo_rate": 0.25,
+    "dup_rate": 0.0,
+    "schema_change_freq": 0.0
+   },
+   "n_keys_checker": 1260,
+   "n_keys_engine": 1109,
+   "verdicts_before": {
+    "FAITHFUL": 903,
+    "STALE_WINS": 206,
+    "NEEDS_CONTEXT": 151
+   },
+   "verdicts_after": {
+    "FAITHFUL": 1260
+   },
+   "stale_wins_before": 206,
+   "stale_wins_masked_to_faithful": 206,
+   "stale_wins_not_masked": {},
+   "duplicate_before": 0,
+   "duplicate_survived": 0,
+   "content_keys_changed": 0,
+   "content_sample_changed": [],
+   "oracle_violations_before": 272,
+   "oracle_violations_after": 272,
+   "oracle_violations_unchanged": true,
+   "files_before": {
+    "commit_count": 51,
+    "data_files": 50,
+    "delete_files": 50,
+    "bytes_total": 130293
+   },
+   "files_after": {
+    "commit_count": 52,
+    "data_files": 1,
+    "delete_files": 42,
+    "bytes_total": 38137
+   },
+   "flipped_sample": {
+    "(10,)": {
+     "before": {
+      "n_data_records": 10,
+      "data": [
+       {
+        "version": 10,
+        "seq": 1
+       },
+       {
+        "version": 1220,
+        "seq": 2
+       },
+       {
+        "version": 1864,
+        "seq": 3
+       },
+       {
+        "version": 2155,
+        "seq": 4
+       },
+       {
+        "version": 3165,
+        "seq": 5
+       },
+       {
+        "version": 3583,
+        "seq": 6
+       },
+       {
+        "version": 4775,
+        "seq": 8
+       },
+       {
+        "version": 4804,
+        "seq": 7
+       },
+       {
+        "version": 6338,
+        "seq": 10
+       },
+       {
+        "version": 6874,
+        "seq": 9
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "S_D": 10,
+      "mult_phys": 1,
+      "survivor_version": 6338,
+      "current_version_record_version": 6874,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 6338,
+        "seq": 51
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "S_D": 10,
+      "mult_phys": 1,
+      "survivor_version": 6338,
+      "current_version_record_version": 6338,
+      "verdict": "FAITHFUL"
+     }
+    },
+    "(1016,)": {
+     "before": {
+      "n_data_records": 7,
+      "data": [
+       {
+        "version": 1016,
+        "seq": 1
+       },
+       {
+        "version": 2303,
+        "seq": 2
+       },
+       {
+        "version": 3515,
+        "seq": 3
+       },
+       {
+        "version": 3517,
+        "seq": 5
+       },
+       {
+        "version": 5634,
+        "seq": 4
+       },
+       {
+        "version": 5724,
+        "seq": 7
+       },
+       {
+        "version": 6143,
+        "seq": 6
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7
+      ],
+      "S_D": 7,
+      "mult_phys": 1,
+      "survivor_version": 5724,
+      "current_version_record_version": 6143,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 5724,
+        "seq": 51
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7
+      ],
+      "S_D": 7,
+      "mult_phys": 1,
+      "survivor_version": 5724,
+      "current_version_record_version": 5724,
+      "verdict": "FAITHFUL"
+     }
+    },
+    "(1019,)": {
+     "before": {
+      "n_data_records": 4,
+      "data": [
+       {
+        "version": 1019,
+        "seq": 1
+       },
+       {
+        "version": 3636,
+        "seq": 2
+       },
+       {
+        "version": 3921,
+        "seq": 4
+       },
+       {
+        "version": 6179,
+        "seq": 3
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4
+      ],
+      "S_D": 4,
+      "mult_phys": 1,
+      "survivor_version": 3921,
+      "current_version_record_version": 6179,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 3921,
+        "seq": 51
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4
+      ],
+      "S_D": 4,
+      "mult_phys": 1,
+      "survivor_version": 3921,
+      "current_version_record_version": 3921,
+      "verdict": "FAITHFUL"
+     }
+    }
+   }
+  },
+  "ooo50_sf10_s101": {
+   "config": {
+    "base_keys": 4000,
+    "seed": 101,
+    "commit_coarsening": 1,
+    "ooo_rate": 0.5,
+    "dup_rate": 0.0,
+    "schema_change_freq": 0.0
+   },
+   "n_keys_checker": 4200,
+   "n_keys_engine": 3776,
+   "verdicts_before": {
+    "FAITHFUL": 2480,
+    "NEEDS_CONTEXT": 424,
+    "STALE_WINS": 1296
+   },
+   "verdicts_after": {
+    "FAITHFUL": 4200
+   },
+   "stale_wins_before": 1296,
+   "stale_wins_masked_to_faithful": 1296,
+   "stale_wins_not_masked": {},
+   "duplicate_before": 0,
+   "duplicate_survived": 0,
+   "content_keys_changed": 0,
+   "content_sample_changed": [],
+   "oracle_violations_before": 1729,
+   "oracle_violations_after": 1729,
+   "oracle_violations_unchanged": true,
+   "files_before": {
+    "commit_count": 29,
+    "data_files": 29,
+    "delete_files": 28,
+    "bytes_total": 248738
+   },
+   "files_after": {
+    "commit_count": 30,
+    "data_files": 1,
+    "delete_files": 20,
+    "bytes_total": 70221
+   },
+   "flipped_sample": {
+    "(1,)": {
+     "before": {
+      "n_data_records": 16,
+      "data": [
+       {
+        "version": 1,
+        "seq": 1
+       },
+       {
+        "version": 5381,
+        "seq": 2
+       },
+       {
+        "version": 6016,
+        "seq": 3
+       },
+       {
+        "version": 9124,
+        "seq": 5
+       },
+       {
+        "version": 11638,
+        "seq": 6
+       },
+       {
+        "version": 11790,
+        "seq": 7
+       },
+       {
+        "version": 14698,
+        "seq": 8
+       },
+       {
+        "version": 16005,
+        "seq": 4
+       },
+       {
+        "version": 18927,
+        "seq": 9
+       },
+       {
+        "version": 19112,
+        "seq": 11
+       },
+       {
+        "version": 19358,
+        "seq": 10
+       },
+       {
+        "version": 19451,
+        "seq": 13
+       },
+       {
+        "version": 19455,
+        "seq": 14
+       },
+       {
+        "version": 22377,
+        "seq": 12
+       },
+       {
+        "version": 23416,
+        "seq": 16
+       },
+       {
+        "version": 23732,
+        "seq": 15
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12,
+       13,
+       14,
+       15,
+       16
+      ],
+      "S_D": 16,
+      "mult_phys": 1,
+      "survivor_version": 23416,
+      "current_version_record_version": 23732,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 23416,
+        "seq": 29
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12,
+       13,
+       14,
+       15,
+       16
+      ],
+      "S_D": 16,
+      "mult_phys": 1,
+      "survivor_version": 23416,
+      "current_version_record_version": 23416,
+      "verdict": "FAITHFUL"
+     }
+    },
+    "(10,)": {
+     "before": {
+      "n_data_records": 4,
+      "data": [
+       {
+        "version": 10,
+        "seq": 1
+       },
+       {
+        "version": 9165,
+        "seq": 3
+       },
+       {
+        "version": 14030,
+        "seq": 4
+       },
+       {
+        "version": 18674,
+        "seq": 2
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4
+      ],
+      "S_D": 4,
+      "mult_phys": 1,
+      "survivor_version": 14030,
+      "current_version_record_version": 18674,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 14030,
+        "seq": 29
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4
+      ],
+      "S_D": 4,
+      "mult_phys": 1,
+      "survivor_version": 14030,
+      "current_version_record_version": 14030,
+      "verdict": "FAITHFUL"
+     }
+    },
+    "(1001,)": {
+     "before": {
+      "n_data_records": 11,
+      "data": [
+       {
+        "version": 1001,
+        "seq": 1
+       },
+       {
+        "version": 7136,
+        "seq": 2
+       },
+       {
+        "version": 8927,
+        "seq": 3
+       },
+       {
+        "version": 10843,
+        "seq": 4
+       },
+       {
+        "version": 13434,
+        "seq": 5
+       },
+       {
+        "version": 13740,
+        "seq": 7
+       },
+       {
+        "version": 15085,
+        "seq": 8
+       },
+       {
+        "version": 15681,
+        "seq": 6
+       },
+       {
+        "version": 20895,
+        "seq": 9
+       },
+       {
+        "version": 23234,
+        "seq": 11
+       },
+       {
+        "version": 23895,
+        "seq": 10
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11
+      ],
+      "S_D": 11,
+      "mult_phys": 1,
+      "survivor_version": 23234,
+      "current_version_record_version": 23895,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 23234,
+        "seq": 29
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11
+      ],
+      "S_D": 11,
+      "mult_phys": 1,
+      "survivor_version": 23234,
+      "current_version_record_version": 23234,
+      "verdict": "FAITHFUL"
+     }
+    }
+   }
+  },
+  "ooo50_sf10_s202": {
+   "config": {
+    "base_keys": 4000,
+    "seed": 202,
+    "commit_coarsening": 1,
+    "ooo_rate": 0.5,
+    "dup_rate": 0.0,
+    "schema_change_freq": 0.0
+   },
+   "n_keys_checker": 4200,
+   "n_keys_engine": 3807,
+   "verdicts_before": {
+    "FAITHFUL": 2490,
+    "STALE_WINS": 1317,
+    "NEEDS_CONTEXT": 393
+   },
+   "verdicts_after": {
+    "FAITHFUL": 4200
+   },
+   "stale_wins_before": 1317,
+   "stale_wins_masked_to_faithful": 1317,
+   "stale_wins_not_masked": {},
+   "duplicate_before": 0,
+   "duplicate_survived": 0,
+   "content_keys_changed": 0,
+   "content_sample_changed": [],
+   "oracle_violations_before": 1714,
+   "oracle_violations_after": 1714,
+   "oracle_violations_unchanged": true,
+   "files_before": {
+    "commit_count": 36,
+    "data_files": 36,
+    "delete_files": 35,
+    "bytes_total": 252800
+   },
+   "files_after": {
+    "commit_count": 37,
+    "data_files": 1,
+    "delete_files": 27,
+    "bytes_total": 72978
+   },
+   "flipped_sample": {
+    "(1000,)": {
+     "before": {
+      "n_data_records": 4,
+      "data": [
+       {
+        "version": 1000,
+        "seq": 1
+       },
+       {
+        "version": 10202,
+        "seq": 3
+       },
+       {
+        "version": 13575,
+        "seq": 4
+       },
+       {
+        "version": 14463,
+        "seq": 2
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4
+      ],
+      "S_D": 4,
+      "mult_phys": 1,
+      "survivor_version": 13575,
+      "current_version_record_version": 14463,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 13575,
+        "seq": 36
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4
+      ],
+      "S_D": 4,
+      "mult_phys": 1,
+      "survivor_version": 13575,
+      "current_version_record_version": 13575,
+      "verdict": "FAITHFUL"
+     }
+    },
+    "(101,)": {
+     "before": {
+      "n_data_records": 6,
+      "data": [
+       {
+        "version": 101,
+        "seq": 1
+       },
+       {
+        "version": 5678,
+        "seq": 3
+       },
+       {
+        "version": 6928,
+        "seq": 4
+       },
+       {
+        "version": 9349,
+        "seq": 5
+       },
+       {
+        "version": 16808,
+        "seq": 6
+       },
+       {
+        "version": 21919,
+        "seq": 2
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6
+      ],
+      "S_D": 6,
+      "mult_phys": 1,
+      "survivor_version": 16808,
+      "current_version_record_version": 21919,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 16808,
+        "seq": 36
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6
+      ],
+      "S_D": 6,
+      "mult_phys": 1,
+      "survivor_version": 16808,
+      "current_version_record_version": 16808,
+      "verdict": "FAITHFUL"
+     }
+    },
+    "(1014,)": {
+     "before": {
+      "n_data_records": 7,
+      "data": [
+       {
+        "version": 1014,
+        "seq": 1
+       },
+       {
+        "version": 5139,
+        "seq": 3
+       },
+       {
+        "version": 8614,
+        "seq": 4
+       },
+       {
+        "version": 10707,
+        "seq": 5
+       },
+       {
+        "version": 13735,
+        "seq": 6
+       },
+       {
+        "version": 14368,
+        "seq": 7
+       },
+       {
+        "version": 23211,
+        "seq": 2
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7
+      ],
+      "S_D": 7,
+      "mult_phys": 1,
+      "survivor_version": 14368,
+      "current_version_record_version": 23211,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 14368,
+        "seq": 36
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7
+      ],
+      "S_D": 7,
+      "mult_phys": 1,
+      "survivor_version": 14368,
+      "current_version_record_version": 14368,
+      "verdict": "FAITHFUL"
+     }
+    }
+   }
+  },
+  "mixed_sf1_s101": {
+   "config": {
+    "base_keys": 1200,
+    "seed": 101,
+    "commit_coarsening": 1,
+    "ooo_rate": 0.5,
+    "dup_rate": 0.15,
+    "schema_change_freq": 0.0
+   },
+   "n_keys_checker": 1260,
+   "n_keys_engine": 1123,
+   "verdicts_before": {
+    "FAITHFUL": 605,
+    "STALE_WINS": 346,
+    "NEEDS_CONTEXT": 137,
+    "DUPLICATE": 172
+   },
+   "verdicts_after": {
+    "FAITHFUL": 1088,
+    "DUPLICATE": 172
+   },
+   "stale_wins_before": 346,
+   "stale_wins_masked_to_faithful": 346,
+   "stale_wins_not_masked": {},
+   "duplicate_before": 172,
+   "duplicate_survived": 172,
+   "content_keys_changed": 0,
+   "content_sample_changed": [],
+   "oracle_violations_before": 632,
+   "oracle_violations_after": 632,
+   "oracle_violations_unchanged": true,
+   "files_before": {
+    "commit_count": 51,
+    "data_files": 50,
+    "delete_files": 50,
+    "bytes_total": 142843
+   },
+   "files_after": {
+    "commit_count": 52,
+    "data_files": 1,
+    "delete_files": 42,
+    "bytes_total": 40242
+   },
+   "flipped_sample": {
+    "(10,)": {
+     "before": {
+      "n_data_records": 11,
+      "data": [
+       {
+        "version": 10,
+        "seq": 1
+       },
+       {
+        "version": 1220,
+        "seq": 2
+       },
+       {
+        "version": 1864,
+        "seq": 4
+       },
+       {
+        "version": 2155,
+        "seq": 3
+       },
+       {
+        "version": 3165,
+        "seq": 5
+       },
+       {
+        "version": 3583,
+        "seq": 6
+       },
+       {
+        "version": 4775,
+        "seq": 8
+       },
+       {
+        "version": 4775,
+        "seq": 8
+       },
+       {
+        "version": 4804,
+        "seq": 9
+       },
+       {
+        "version": 6338,
+        "seq": 10
+       },
+       {
+        "version": 6874,
+        "seq": 7
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "S_D": 10,
+      "mult_phys": 1,
+      "survivor_version": 6338,
+      "current_version_record_version": 6874,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 6338,
+        "seq": 51
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "S_D": 10,
+      "mult_phys": 1,
+      "survivor_version": 6338,
+      "current_version_record_version": 6338,
+      "verdict": "FAITHFUL"
+     }
+    },
+    "(1016,)": {
+     "before": {
+      "n_data_records": 7,
+      "data": [
+       {
+        "version": 1016,
+        "seq": 1
+       },
+       {
+        "version": 2303,
+        "seq": 2
+       },
+       {
+        "version": 3515,
+        "seq": 4
+       },
+       {
+        "version": 3517,
+        "seq": 5
+       },
+       {
+        "version": 5634,
+        "seq": 3
+       },
+       {
+        "version": 5724,
+        "seq": 7
+       },
+       {
+        "version": 6143,
+        "seq": 6
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7
+      ],
+      "S_D": 7,
+      "mult_phys": 1,
+      "survivor_version": 5724,
+      "current_version_record_version": 6143,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 5724,
+        "seq": 51
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7
+      ],
+      "S_D": 7,
+      "mult_phys": 1,
+      "survivor_version": 5724,
+      "current_version_record_version": 5724,
+      "verdict": "FAITHFUL"
+     }
+    },
+    "(1019,)": {
+     "before": {
+      "n_data_records": 5,
+      "data": [
+       {
+        "version": 1019,
+        "seq": 1
+       },
+       {
+        "version": 3636,
+        "seq": 3
+       },
+       {
+        "version": 3921,
+        "seq": 4
+       },
+       {
+        "version": 6179,
+        "seq": 2
+       },
+       {
+        "version": 6179,
+        "seq": 2
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4
+      ],
+      "S_D": 4,
+      "mult_phys": 1,
+      "survivor_version": 3921,
+      "current_version_record_version": 6179,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 3921,
+        "seq": 51
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4
+      ],
+      "S_D": 4,
+      "mult_phys": 1,
+      "survivor_version": 3921,
+      "current_version_record_version": 3921,
+      "verdict": "FAITHFUL"
+     }
+    }
+   }
+  },
+  "mixed_sf10_s101": {
+   "config": {
+    "base_keys": 4000,
+    "seed": 101,
+    "commit_coarsening": 1,
+    "ooo_rate": 0.5,
+    "dup_rate": 0.15,
+    "schema_change_freq": 0.0
+   },
+   "n_keys_checker": 4200,
+   "n_keys_engine": 3776,
+   "verdicts_before": {
+    "FAITHFUL": 2103,
+    "NEEDS_CONTEXT": 424,
+    "DUPLICATE": 601,
+    "STALE_WINS": 1072
+   },
+   "verdicts_after": {
+    "FAITHFUL": 3599,
+    "DUPLICATE": 601
+   },
+   "stale_wins_before": 1072,
+   "stale_wins_masked_to_faithful": 1072,
+   "stale_wins_not_masked": {},
+   "duplicate_before": 601,
+   "duplicate_survived": 601,
+   "content_keys_changed": 0,
+   "content_sample_changed": [],
+   "oracle_violations_before": 2051,
+   "oracle_violations_after": 2051,
+   "oracle_violations_unchanged": true,
+   "files_before": {
+    "commit_count": 29,
+    "data_files": 29,
+    "delete_files": 28,
+    "bytes_total": 287674
+   },
+   "files_after": {
+    "commit_count": 30,
+    "data_files": 1,
+    "delete_files": 20,
+    "bytes_total": 77309
+   },
+   "flipped_sample": {
+    "(1,)": {
+     "before": {
+      "n_data_records": 17,
+      "data": [
+       {
+        "version": 1,
+        "seq": 1
+       },
+       {
+        "version": 5381,
+        "seq": 2
+       },
+       {
+        "version": 6016,
+        "seq": 3
+       },
+       {
+        "version": 9124,
+        "seq": 5
+       },
+       {
+        "version": 11638,
+        "seq": 6
+       },
+       {
+        "version": 11790,
+        "seq": 7
+       },
+       {
+        "version": 14698,
+        "seq": 8
+       },
+       {
+        "version": 16005,
+        "seq": 4
+       },
+       {
+        "version": 18927,
+        "seq": 9
+       },
+       {
+        "version": 19112,
+        "seq": 11
+       },
+       {
+        "version": 19358,
+        "seq": 10
+       },
+       {
+        "version": 19451,
+        "seq": 13
+       },
+       {
+        "version": 19455,
+        "seq": 14
+       },
+       {
+        "version": 22377,
+        "seq": 12
+       },
+       {
+        "version": 23416,
+        "seq": 16
+       },
+       {
+        "version": 23732,
+        "seq": 15
+       },
+       {
+        "version": 23732,
+        "seq": 15
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12,
+       13,
+       14,
+       15,
+       16
+      ],
+      "S_D": 16,
+      "mult_phys": 1,
+      "survivor_version": 23416,
+      "current_version_record_version": 23732,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 23416,
+        "seq": 29
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12,
+       13,
+       14,
+       15,
+       16
+      ],
+      "S_D": 16,
+      "mult_phys": 1,
+      "survivor_version": 23416,
+      "current_version_record_version": 23416,
+      "verdict": "FAITHFUL"
+     }
+    },
+    "(10,)": {
+     "before": {
+      "n_data_records": 5,
+      "data": [
+       {
+        "version": 10,
+        "seq": 1
+       },
+       {
+        "version": 9165,
+        "seq": 3
+       },
+       {
+        "version": 9165,
+        "seq": 3
+       },
+       {
+        "version": 14030,
+        "seq": 4
+       },
+       {
+        "version": 18674,
+        "seq": 2
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4
+      ],
+      "S_D": 4,
+      "mult_phys": 1,
+      "survivor_version": 14030,
+      "current_version_record_version": 18674,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 14030,
+        "seq": 29
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4
+      ],
+      "S_D": 4,
+      "mult_phys": 1,
+      "survivor_version": 14030,
+      "current_version_record_version": 14030,
+      "verdict": "FAITHFUL"
+     }
+    },
+    "(1001,)": {
+     "before": {
+      "n_data_records": 15,
+      "data": [
+       {
+        "version": 1001,
+        "seq": 1
+       },
+       {
+        "version": 7136,
+        "seq": 2
+       },
+       {
+        "version": 8927,
+        "seq": 3
+       },
+       {
+        "version": 8927,
+        "seq": 3
+       },
+       {
+        "version": 10843,
+        "seq": 4
+       },
+       {
+        "version": 10843,
+        "seq": 4
+       },
+       {
+        "version": 13434,
+        "seq": 5
+       },
+       {
+        "version": 13434,
+        "seq": 5
+       },
+       {
+        "version": 13740,
+        "seq": 7
+       },
+       {
+        "version": 15085,
+        "seq": 8
+       },
+       {
+        "version": 15681,
+        "seq": 6
+       },
+       {
+        "version": 20895,
+        "seq": 9
+       },
+       {
+        "version": 20895,
+        "seq": 9
+       },
+       {
+        "version": 23234,
+        "seq": 11
+       },
+       {
+        "version": 23895,
+        "seq": 10
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11
+      ],
+      "S_D": 11,
+      "mult_phys": 1,
+      "survivor_version": 23234,
+      "current_version_record_version": 23895,
+      "verdict": "STALE_WINS"
+     },
+     "after": {
+      "n_data_records": 1,
+      "data": [
+       {
+        "version": 23234,
+        "seq": 29
+       }
+      ],
+      "delete_seqs": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11
+      ],
+      "S_D": 11,
+      "mult_phys": 1,
+      "survivor_version": 23234,
+      "current_version_record_version": 23234,
+      "verdict": "FAITHFUL"
+     }
+    }
+   }
+  }
+ },
+ "totals": {
+  "cells": 8,
+  "stale_wins_before": 5440,
+  "stale_wins_masked_to_faithful": 5440,
+  "stale_wins_masked_fraction": 1.0,
+  "duplicate_before": 773,
+  "duplicate_survived": 773,
+  "content_keys_changed": 0,
+  "all_oracle_counts_unchanged": true
+ }
+}

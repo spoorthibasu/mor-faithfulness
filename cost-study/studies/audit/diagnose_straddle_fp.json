@@ -1,0 +1,131 @@
+{
+ "2GB": {
+  "oracle": {
+   "scored_property": "stale-wins-keys",
+   "per_group_captured": 0,
+   "per_group_true_positives": 0,
+   "per_group_false_positives": 0,
+   "derivation": "closed form over generator parameters; no table read, no engine readback",
+   "expected_live_rows": 4508978,
+   "measured_live_rows": 4508978,
+   "live_rows_match": true,
+   "expected_stale_wins": 171000,
+   "expected_dup_risky": 9000,
+   "captured": 0,
+   "true_positives": 0,
+   "false_positives_other": 0,
+   "false_positives_from_duplicates": 0,
+   "misses": 171000,
+   "risky_D_values": [
+    16
+   ],
+   "stale_sample": [
+    368998,
+    368999,
+    369000,
+    369001,
+    369002
+   ],
+   "dup_sample": [
+    359998,
+    359999,
+    360000,
+    360001,
+    360002
+   ],
+   "false_positive_keys": [],
+   "per_group_false_positive_keys": []
+  },
+  "groups_audited": "3",
+  "groups_gated": "0",
+  "groups_total": "3",
+  "fp_keys": [],
+  "fp_analysis": []
+ },
+ "1GB": {
+  "oracle": {
+   "scored_property": "stale-wins-keys",
+   "per_group_captured": 0,
+   "per_group_true_positives": 0,
+   "per_group_false_positives": 0,
+   "derivation": "closed form over generator parameters; no table read, no engine readback",
+   "expected_live_rows": 4508978,
+   "measured_live_rows": 4508978,
+   "live_rows_match": true,
+   "expected_stale_wins": 171000,
+   "expected_dup_risky": 9000,
+   "captured": 0,
+   "true_positives": 0,
+   "false_positives_other": 0,
+   "false_positives_from_duplicates": 0,
+   "misses": 171000,
+   "risky_D_values": [
+    16
+   ],
+   "stale_sample": [
+    368998,
+    368999,
+    369000,
+    369001,
+    369002
+   ],
+   "dup_sample": [
+    359998,
+    359999,
+    360000,
+    360001,
+    360002
+   ],
+   "false_positive_keys": [],
+   "per_group_false_positive_keys": []
+  },
+  "groups_audited": "1",
+  "groups_gated": "5",
+  "groups_total": "6",
+  "fp_keys": [],
+  "fp_analysis": []
+ },
+ "512MB": {
+  "oracle": {
+   "scored_property": "stale-wins-keys",
+   "per_group_captured": 0,
+   "per_group_true_positives": 0,
+   "per_group_false_positives": 0,
+   "derivation": "closed form over generator parameters; no table read, no engine readback",
+   "expected_live_rows": 4508978,
+   "measured_live_rows": 4508978,
+   "live_rows_match": true,
+   "expected_stale_wins": 171000,
+   "expected_dup_risky": 9000,
+   "captured": 0,
+   "true_positives": 0,
+   "false_positives_other": 0,
+   "false_positives_from_duplicates": 0,
+   "misses": 171000,
+   "risky_D_values": [
+    16
+   ],
+   "stale_sample": [
+    368998,
+    368999,
+    369000,
+    369001,
+    369002
+   ],
+   "dup_sample": [
+    359998,
+    359999,
+    360000,
+    360001,
+    360002
+   ],
+   "false_positive_keys": [],
+   "per_group_false_positive_keys": []
+  },
+  "groups_audited": "2",
+  "groups_gated": "11",
+  "groups_total": "13",
+  "fp_keys": [],
+  "fp_analysis": []
+ }
+}

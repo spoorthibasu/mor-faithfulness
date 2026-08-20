@@ -1,0 +1,212 @@
+{
+ "ladder": {
+  "S1_1GB": {
+   "oracle": {
+    "derivation": "closed form over generator parameters; no table read, no engine readback",
+    "expected_live_rows": 2529000,
+    "measured_live_rows": 2529000,
+    "live_rows_match": true,
+    "expected_stale_wins": 171000,
+    "expected_dup_risky": 9000,
+    "captured": 171000,
+    "true_positives": 171000,
+    "false_positives_other": 0,
+    "false_positives_from_duplicates": 0,
+    "misses": 0,
+    "risky_D_values": [
+     4
+    ],
+    "stale_sample": [
+     369001,
+     369002,
+     369003,
+     369004,
+     369005
+    ],
+    "dup_sample": [
+     360001,
+     360002,
+     360003,
+     360004,
+     360005
+    ]
+   },
+   "stats": {
+    "apply_time_s": 5.36,
+    "compact_time_s": 9.733,
+    "readback_time_s": 0.375,
+    "commit_count": 5,
+    "data_files": 4,
+    "delete_files": 1,
+    "bytes_data": 785312280,
+    "bytes_delete": 1125978,
+    "bytes_total": 786438258,
+    "live_rows": 2529000,
+    "evict_s": 0.0,
+    "peak_rss_mb": 788.7
+   },
+   "pre_gb": 2.13,
+   "wall_s": 20.0,
+   "spill": "puffin-statistics-file",
+   "spilled": "true"
+  },
+  "S2_3GB": {
+   "oracle": {
+    "derivation": "closed form over generator parameters; no table read, no engine readback",
+    "expected_live_rows": 3068998,
+    "measured_live_rows": 3068998,
+    "live_rows_match": true,
+    "expected_stale_wins": 171000,
+    "expected_dup_risky": 9000,
+    "captured": 171000,
+    "true_positives": 171000,
+    "false_positives_other": 0,
+    "false_positives_from_duplicates": 0,
+    "misses": 0,
+    "risky_D_values": [
+     8
+    ],
+    "stale_sample": [
+     369000,
+     369001,
+     369002,
+     369003,
+     369004
+    ],
+    "dup_sample": [
+     360000,
+     360001,
+     360002,
+     360003,
+     360004
+    ]
+   },
+   "stats": {
+    "apply_time_s": 9.985,
+    "compact_time_s": 12.064,
+    "readback_time_s": 0.262,
+    "commit_count": 9,
+    "data_files": 7,
+    "delete_files": 1,
+    "bytes_data": 952939210,
+    "bytes_delete": 1125978,
+    "bytes_total": 954065188,
+    "live_rows": 3068998,
+    "evict_s": 0.0,
+    "peak_rss_mb": 446.3
+   },
+   "pre_gb": 3.69,
+   "wall_s": 27.0,
+   "spill": "puffin-statistics-file",
+   "spilled": "true"
+  },
+  "S3_6GB": {
+   "oracle": {
+    "derivation": "closed form over generator parameters; no table read, no engine readback",
+    "expected_live_rows": 4508978,
+    "measured_live_rows": 4508978,
+    "live_rows_match": true,
+    "expected_stale_wins": 171000,
+    "expected_dup_risky": 9000,
+    "captured": 171000,
+    "true_positives": 171000,
+    "false_positives_other": 0,
+    "false_positives_from_duplicates": 0,
+    "misses": 0,
+    "risky_D_values": [
+     16
+    ],
+    "stale_sample": [
+     368998,
+     368999,
+     369000,
+     369001,
+     369002
+    ],
+    "dup_sample": [
+     359998,
+     359999,
+     360000,
+     360001,
+     360002
+    ]
+   },
+   "stats": {
+    "apply_time_s": 19.552,
+    "compact_time_s": 24.357,
+    "readback_time_s": 0.273,
+    "commit_count": 17,
+    "data_files": 13,
+    "delete_files": 7,
+    "bytes_data": 1400031281,
+    "bytes_delete": 7881844,
+    "bytes_total": 1407913125,
+    "live_rows": 4508978,
+    "evict_s": 0.0,
+    "peak_rss_mb": 273.8
+   },
+   "pre_gb": 6.93,
+   "wall_s": 49.0,
+   "spill": "puffin-statistics-file",
+   "spilled": "true"
+  },
+  "S4_11GB": {
+   "oracle": {
+    "derivation": "closed form over generator parameters; no table read, no engine readback",
+    "expected_live_rows": 7388890,
+    "measured_live_rows": 7388890,
+    "live_rows_match": true,
+    "expected_stale_wins": 171000,
+    "expected_dup_risky": 9000,
+    "captured": 171000,
+    "true_positives": 171000,
+    "false_positives_other": 0,
+    "false_positives_from_duplicates": 0,
+    "misses": 0,
+    "risky_D_values": [
+     32
+    ],
+    "stale_sample": [
+     368994,
+     368995,
+     368996,
+     368997,
+     368998
+    ],
+    "dup_sample": [
+     359994,
+     359995,
+     359996,
+     359997,
+     359998
+    ]
+   },
+   "stats": {
+    "apply_time_s": 38.556,
+    "compact_time_s": 69.706,
+    "readback_time_s": 0.46,
+    "commit_count": 33,
+    "data_files": 25,
+    "delete_files": 23,
+    "bytes_data": 2294080798,
+    "bytes_delete": 25897492,
+    "bytes_total": 2319978290,
+    "live_rows": 7388890,
+    "evict_s": 0.0,
+    "peak_rss_mb": 274.1
+   },
+   "pre_gb": 13.37,
+   "wall_s": 113.6,
+   "spill": "puffin-statistics-file",
+   "spilled": "true"
+  }
+ },
+ "failures": [],
+ "totals": {
+  "tp": 684000,
+  "fp": 0,
+  "misses": 0,
+  "dup_traps": 36000,
+  "rows_written": 54000000
+ }
+}

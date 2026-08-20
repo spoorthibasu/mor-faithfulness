@@ -1,0 +1,76 @@
+{
+  "verdict": "VIOLATIONS_FOUND",
+  "exit_code": 2,
+  "table": {
+    "format": "iceberg",
+    "metadata_location": "realworld/tables/t2_prefix_wh/realworld/t2_prefix/metadata/v3.metadata.json",
+    "snapshot_id": 5965501910885380709,
+    "key_columns": [
+      "id"
+    ],
+    "version_column": null,
+    "upsert_only": false,
+    "position_delete_files_not_analyzed": 0
+  },
+  "metadata_screen": {
+    "duplicate_candidates": [
+      {
+        "confidence": "MEDIUM",
+        "sequence_number": 1,
+        "snapshot_id": 5965501910885380709,
+        "data_files": [
+          "00001-1-33d997f1-d203-43d7-9bb3-ffae27d725aa-00001.parquet",
+          "00001-1-3be6544e-9c40-4532-bfeb-380bcaa1aa7d-00001.parquet"
+        ],
+        "reason": "two data files at one sequence number with overlapping key ranges"
+      }
+    ],
+    "note": "Tier A: duplicate-key candidates from metadata only, no data scan. Tier B (findings) is the exact prover."
+  },
+  "counts": {
+    "FAITHFUL": 0,
+    "DUPLICATE": 1,
+    "WRONGLY_SUPPRESSED_CURRENT": 0,
+    "STALE_WINS": 0,
+    "UNDECIDABLE": 0,
+    "NEEDS_CONTEXT": 0
+  },
+  "keys_checked": 1,
+  "findings": [
+    {
+      "key": {
+        "id": 1
+      },
+      "type": "DUPLICATE",
+      "mult_phys": 2,
+      "sequence_arithmetic": {
+        "max_delete_seq": 1,
+        "surviving_records": [
+          {
+            "seq": 1,
+            "version": null,
+            "file": "00001-1-33d997f1-d203-43d7-9bb3-ffae27d725aa-00001.parquet",
+            "snapshot_id": 5965501910885380709,
+            "committed_at": "2026-07-07T06:25:25.045000",
+            "operation": "overwrite"
+          },
+          {
+            "seq": 1,
+            "version": null,
+            "file": "00001-1-3be6544e-9c40-4532-bfeb-380bcaa1aa7d-00001.parquet",
+            "snapshot_id": 5965501910885380709,
+            "committed_at": "2026-07-07T06:25:25.045000",
+            "operation": "overwrite"
+          }
+        ],
+        "suppressed_records": [],
+        "delete_seqs": [
+          1,
+          1
+        ]
+      },
+      "localization": "Snapshot 5965501910885380709 (committed 2026-07-07T06:25:25.045000, operation overwrite) contains data file 00001-1-33d997f1-d203-43d7-9bb3-ffae27d725aa-00001.parquet and equality-delete file 00001-1-33d997f1-d203-43d7-9bb3-ffae27d725aa-00002.parquet, both at sequence number 1; key (1,) is present in the data file and targeted by the delete, but the delete does not suppress it because 1 is not strictly greater than 1. 2 rows for key (1,) are visible.",
+      "recommended_action": "Matches FLINK-38450 (apache/flink-cdc PR #4360). The affected keys return duplicate rows under merge-on-read today. Upgrade the sink past the fix so each commit gets a strictly increasing sequence number, and run compaction to collapse the surviving duplicates."
+    }
+  ]
+}

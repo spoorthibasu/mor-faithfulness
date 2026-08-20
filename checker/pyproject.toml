@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mor-checker"
+version = "0.1.0"
+description = "Checker for merge-on-read (MOR) faithfulness of Iceberg equality-delete tables"
+requires-python = ">=3.9"
+dependencies = [
+    "pyiceberg[pyarrow]>=0.9",
+]
+
+[project.optional-dependencies]
+# Only the fixture BUILDER needs Spark. The checker itself reads with PyIceberg only.
+fixtures = ["pyspark==3.5.3"]
+test = ["pytest>=7"]
+
+[project.scripts]
+mor-check = "mor_checker.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

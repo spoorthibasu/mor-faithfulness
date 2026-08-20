@@ -1,0 +1,302 @@
+###QUERY### hoodie.datasource.write.precombine.field
+ClickHouse/ClickHouse:utils/data-lakes-importer.py: "hoodie.datasource.write.precombine.field", "ts"
+yugabyte/yugabyte-db:docs/content/stable/integrations/apache-hudi.md: # hoodie.datasource.write.precombine.field - Precombine field is updated_at
+yugabyte/yugabyte-db:docs/content/stable/integrations/apache-hudi.md: hoodie.datasource.write.precombine.field=update_at
+apache/hudi:hudi-notebooks/notebooks/common/03-scd-type2_and_type4.ipynb: "    \"hoodie.datasource.write.precombine.field\": \"effective_date\",\n",
+apache/hudi:hudi-notebooks/notebooks/common/03-scd-type2_and_type4.ipynb: "    \"hoodie.datasource.write.precombine.field\": \"ts\"\n",
+feast-dev/feast:sdk/python/feast/table_format.py: self.properties["hoodie.datasource.write.precombine.field"] = (
+ZTO-Express/fire:docs/datasource.md: "hoodie.datasource.write.precombine.field" -> "id"
+ZTO-Express/fire:docs/datasource.md: spark.datasource.options.hoodie.datasource.write.precombine.field=id
+zhisheng17/flink-learning:flink-learning-datalake/flink-learning-datalake-hudi/src/main/java/com/zhisheng/datalake/hudi/HudiCDCSyncExample.java: "    'hoodie.datasource.write.precombine.field' = 'order_date',\n" +
+GoogleCloudDataproc/cloud-dataproc:codelabs/spark-hudi/pyspark_hudi_example.py: 'hoodie.datasource.write.precombine.field': 'ts',
+aws-samples/dbt-glue:README.md: 'hoodie.datasource.write.precombine.field': 'eventtime',
+YotpoLtd/metorikku:src/main/scala/com/yotpo/metorikku/output/writers/file/HudiOutputWriter.scala: writer.option("hoodie.datasource.write.precombine.field", hudiOutputProperties.timeColumn.get)
+soumilshah1995/code-snippets:oneTable: 'hoodie.datasource.write.precombine.field': 'ts',
+qiniu/QStreaming:docs/datasources/hudi.md: hoodie.datasource.write.precombine.field=<preCombineField>,
+qiniu/QStreaming:docs/datasources/hudi.md: hoodie.datasource.write.precombine.field=<preCombineField>,
+Joshua-omolewa/Stock_streaming_pipeline_project:spark-final.py: 'hoodie.datasource.write.precombine.field': 'event_time',
+easysql/easy_sql:examples/rtdw/workflow/sales/ods/ingest_hudi_funcs.py: .option("hoodie.datasource.write.precombine.field", "ts")
+aws/aws-emr-containers-best-practices:content/metastore-integrations/docs/aws-glue.md: 'hoodie.datasource.write.precombine.field': 'last_update_time',
+chuangehh/hudi_demo:bin/kafka_to_hudi.sh: --hoodie-conf hoodie.datasource.write.precombine.field="${precombineField}" \
+GoogleCloudPlatform/data-analytics-golden-demo:data-analytics-demos/data-analytics-golden-demo/dataproc/pyspark_apache_hudi.py: 'hoodie.datasource.write.precombine.field': 'ts',
+echo-cool-coding/cool-coding:docs/data/spark/11-spark-ecosystem/3-spark-and-apache-hudi.mdx: .option("hoodie.datasource.write.precombine.field", "id")
+echo-cool-coding/cool-coding:docs/data/spark/11-spark-ecosystem/3-spark-and-apache-hudi.mdx: .option("hoodie.datasource.write.precombine.field", "id")
+dbt-labs/docs.getdbt.com:website/docs/docs/local/connect-data-platform/glue-setup.md: 'hoodie.datasource.write.precombine.field': 'eventtime',
+wearearima/hudi-exercise:shared/spark-job/2-job.py: 'hoodie.datasource.write.precombine.field': 'title',
+gameofdatas/datalake:commands.txt: --hoodie-conf hoodie.datasource.write.precombine.field=tran_date \
+apache/seatunnel-website:versioned_docs/version-2.1.3/connector/source/Hudi.md: | [hoodie.datasource.write.precombine.field](#hoodiedatasourcewriteprecombinefield)            | string | no      | -             |
+apache/seatunnel-website:versioned_docs/version-2.1.3/connector/source/Hudi.md: ### hoodie.datasource.write.precombine.field
+apache/seatunnel-website:versioned_docs/version-2.1.1/connector/source/Hudi.md: | [hoodie.datasource.write.precombine.field](#hoodiedatasourcewriteprecombinefield)            | string | no      | -             |
+apache/seatunnel-website:versioned_docs/version-2.1.1/connector/source/Hudi.md: ### hoodie.datasource.write.precombine.field
+apache/seatunnel-website:versioned_docs/version-2.1.2/connector/source/Hudi.md: | [hoodie.datasource.write.precombine.field](#hoodiedatasourcewriteprecombinefield)            | string | no      | -             |
+apache/seatunnel-website:versioned_docs/version-2.1.2/connector/source/Hudi.md: ### hoodie.datasource.write.precombine.field
+ak-arun/aws_glue:hudi_upsert_delete.txt: 'hoodie.datasource.write.precombine.field': 'Total_Sales'
+ak-arun/aws_glue:hudi_upsert_delete.txt: 'hoodie.datasource.write.precombine.field': 'Total_Sales'
+yhyyz/emr-hudi-example:src/main/scala/com/aws/analytics/util/HudiConfig.scala: props.put("hoodie.datasource.write.precombine.field", params.hudiKeyField.split(",")(1))
+mkukreja1/blogs:hudi/hudi.ipynb: "            .option(\"hoodie.datasource.write.precombine.field\", \"key\") \\\n",
+mkukreja1/blogs:hudi/hudi.ipynb: "            .option(\"hoodie.datasource.write.precombine.field\", \"key\") \\\n",
+apache/seatunnel-website:versioned_docs/version-2.3.0-beta/connector/source/Hudi.md: | [hoodie.datasource.write.precombine.field](#hoodiedatasourcewriteprecombinefield)            | string | no      | -             |
+apache/seatunnel-website:versioned_docs/version-2.3.0-beta/connector/source/Hudi.md: ### hoodie.datasource.write.precombine.field
+apache/seatunnel-website:versioned_docs/version-2.2.0-beta/connector/source/Hudi.md: | [hoodie.datasource.write.precombine.field](#hoodiedatasourcewriteprecombinefield)            | string | no      | -             |
+apache/seatunnel-website:versioned_docs/version-2.2.0-beta/connector/source/Hudi.md: ### hoodie.datasource.write.precombine.field
+dacort/modern-data-lake-storage-layers:notebooks/Hudi.ipynb: "    \"hoodie.datasource.write.precombine.field\": \"last_update_time\",\n",
+shuigedeng/taotao-cloud-project:taotao-cloud-bigdata/taotao-cloud-hudi/src/main/scala/com/taotao/cloud/hudi/util/HudiUtil.scala: props.put("hoodie.datasource.write.precombine.field", "uuid")
+shuigedeng/taotao-cloud-project:taotao-cloud-bigdata/taotao-cloud-hudi/src/main/scala/com/taotao/cloud/hudi/util/HudiUtil.scala: props.put("hoodie.datasource.write.precombine.field", "uuid")
+karlsie/data-engineering:docs/projects/spark-hudi.md: 'hoodie.datasource.write.precombine.field': 'ts',
+VarshiniSathishkannan/pyspark:InterviewQ/hudi: .option("hoodie.datasource.write.precombine.field", "ts") \
+vasilyu1983/AI-Agents-public:frameworks/shared-skills/skills/data-lake-platform/assets/storage/hudi/template-hudi-table.md: 'hoodie.datasource.write.precombine.field': 'created_at',
+vasilyu1983/AI-Agents-public:frameworks/shared-skills/skills/data-lake-platform/assets/storage/hudi/template-hudi-table.md: 'hoodie.datasource.write.precombine.field': 'created_at'
+Ren294/SmartTraffic_Lakehouse_for_HCMC:spark/apps/gold/common/operator/hudi_operator.py: "hoodie.datasource.write.precombine.field": precombine,
+baptvit/mineracao-dados-massivos:apps/conf/hudi-defaults.conf: #hoodie.datasource.write.precombine.field                tpep_pickup_datetime
+nyaparl/newrepo:hudi/Glue_code_should_try.txt: "hoodie.datasource.write.precombine.field": "timestamp",
+Ren294/SmartTraffic_Lakehouse_for_HCMC:spark/apps/validate/traffic/SilverTrafficMainMerge.py: 'hoodie.datasource.write.precombine.field': 'timestamp',
+Ren294/SmartTraffic_Lakehouse_for_HCMC:spark/apps/validate/weather/SilverWeatherMainMerge.py: 'hoodie.datasource.write.precombine.field': 'datetimeEpoch',
+PacktPublishing/Simplify-Big-Data-Analytics-with-Amazon-EMR-:chapter_11/spark-hudi-etl.ipynb: "'hoodie.datasource.write.precombine.field': 'last_update_time',\n",
+liangruibupt/aws-is-how:analytics/hudi-workshop/emr-hudi/LAB-MOR.ipynb: "PRECOMBINE_FIELD_OPT_KEY = \"hoodie.datasource.write.precombine.field\"\n",
+liangruibupt/aws-is-how:analytics/hudi-workshop/emr-hudi/LAB-COW.ipynb: "PRECOMBINE_FIELD_OPT_KEY = \"hoodie.datasource.write.precombine.field\"\n",
+Ren294/SmartTraffic_Lakehouse_for_HCMC:spark/apps/validate/weather/SilverWeatherStagingMerge.py: 'hoodie.datasource.write.precombine.field': 'datetimeEpoch',
+Ren294/SmartTraffic_Lakehouse_for_HCMC:spark/apps/validate/traffic/SilverTrafficStagingMerge.py: 'hoodie.datasource.write.precombine.field': 'timestamp',
+theneoai/awesome-skills:skills/tool/data-platform/lakehouse-expert/references/standards.md: 'hoodie.datasource.write.precombine.field': 'timestamp',
+theneoai/awesome-skills:skills/tool/data-platform/lakehouse-expert/references/standards.md: --hoodie-conf hoodie.datasource.write.precombine.field=timestamp \
+liangruibupt/aws-is-how:analytics/hudi-workshop/emr-hudi/LAB-PARTITION.ipynb: "PRECOMBINE_FIELD_OPT_KEY = \"hoodie.datasource.write.precombine.field\"\n",
+logicalclocks/hopsworks-api:python/hsfs/core/hudi_engine.py: HUDI_WRITE_PRECOMBINE_FIELD = "hoodie.datasource.write.precombine.field"
+Ren294/SmartTraffic_Lakehouse_for_HCMC:spark/apps/validate/accidents/SilverAccidentsMainMerge.py: 'hoodie.datasource.write.precombine.field': 'accident_time',
+apache/seatunnel-website:versioned_docs/version-2.1.0/spark/configuration/source-plugins/Hudi.md: | [hoodie.datasource.write.precombine.field](#hoodiedatasourcewriteprecombinefield)            | string | no      | -             |
+apache/seatunnel-website:versioned_docs/version-2.1.0/spark/configuration/source-plugins/Hudi.md: ### hoodie.datasource.write.precombine.field
+ARUROY111/Data-Engineering-:Hudi/Hudi Table Formation: 'hoodie.datasource.write.precombine.field': 'age',
+logicalclocks/feature-store-api:java/spark/src/main/java/com/logicalclocks/hsfs/spark/engine/hudi/HudiEngine.java: protected static final String HUDI_PRECOMBINE_FIELD = "hoodie.datasource.write.precombine.field";
+ameymeher/Hudi-Lakehouse-ETL:CDC load from logs/job.ksh: --hoodie-conf hoodie.datasource.write.precombine.field=updated_at
+Ren294/SmartTraffic_Lakehouse_for_HCMC:spark/apps/gold/common/table/table_config.py: 'hoodie.datasource.write.precombine.field': 'last_update',
+PacktPublishing/Serverless-ETL-and-Analytics-with-AWS-Glue:Chapter13/scripts/Kafka Consumer for Data Analysis Chapter.py: commonConfig = {'className' : 'org.apache.hudi', 'hoodie.datasource.hive_sync.use_jdbc':'false', 'hoodie.datasource.write.precombine.field': 'record_creation_time', 'hoodie.datasource.write.recordkey.field': 'emp_no', 'hoodie.table.name': 'employees_cow_streaming', 'hoodie.consistency.check.enabled': 'true', 'hoodie.datasource.hive_sync.database': 'chapter-data-analysis-glue-database', 'hoodie.datasource.hive_sync.table': 'employees_cow_streaming', 'hoodie.datasource.hive_sync.enable': 'true', 'path': 's3://'+args['TARGET_BUCKET']+'/hudi/employees_cow_streaming'}
+Ren294/SmartTraffic_Lakehouse_for_HCMC:spark/apps/validate/accidents/SilverAccidentsStagingMerge.py: 'hoodie.datasource.write.precombine.field': 'accident_time',
+aws-samples/emr-studio-notebook-examples:examples/hudi-emr-serverless.ipynb: "  'hoodie.datasource.write.precombine.field': 'creation_date'\n",
+melin/spark-jobserver:jobserver-admin/src/main/resources/static/js/hoodie.js: "caption" : "hoodie.datasource.write.precombine.field",
+melin/spark-jobserver:jobserver-admin/src/main/resources/static/js/hoodie.js: "value" : "hoodie.datasource.write.precombine.field = ts",
+Ren294/SmartTraffic_Lakehouse_for_HCMC:spark/apps/batch/parking/common/table/table_config.py: 'hoodie.datasource.write.precombine.field': 'last_update',
+georgepap9808/gcp_scripts:csv_to_hudi.py: "hoodie.datasource.write.precombine.field": "ts",
+yhyyz/emr-hudi-example:src/main/scala/com/aws/analytics/util/HudiWriteTask.scala: props.put("hoodie.datasource.write.precombine.field", tableInfo.precombineKey)
+varunvilva/hadoop-hive-spark-hudi-airflow-jupyter-docker:jupyter/demo_usage_hudi.ipynb: "    'hoodie.datasource.write.precombine.field': 'timestamp',                   # used to deduplicate newer rows\n",
+oamazonasgabriel/hudi-on-glue-quick-start:job/job.py: 'hoodie.datasource.write.precombine.field': 'ts',
+FireFramework/fire:fire-connectors/spark-connectors/spark-hudi/src/main/scala/com/zto/fire/hudi/util/HudiUtils.scala: "hoodie.datasource.write.precombine.field" -> precombineKey,
+nmukerje/EMR-Hudi-Workshop:notebooks/3_GDPR_Deletes.html: <pre>hudiOptions: scala.collection.immutable.Map[String,String] = Map(hoodie.parquet.small.file.limit -&gt; 67108864, hoodie.parquet.compression.ratio -&gt; 0.5, hoodie.datasource.write.precombine.field -&gt; order_date, hoodie.datasource.hive_sync.partition_fields -&gt; year,month, hoodie.datasource.hive_sync.partition_extractor_class -&gt; org.apache.hudi.hive.MultiPartKeysValueExtractor, hoodie.parquet.max.file.size -&gt; 1073741824, hoodie.datasource.hive_sync.enable -&gt; true, hoodie.datasource.write.recordkey.field -&gt; record_key, hoodie.datasource.hive_sync.assume_date_partitioning -&gt; false, hoodie.datasource.write.partitionpath.field -&gt; partition_key)
+Ren294/SmartTraffic_Lakehouse_for_HCMC:spark/apps/batch/gasstation/common/table/table_config.py: 'hoodie.datasource.write.precombine.field': 'last_update',
+soumilshah1995/apache-hudi-delta-streamer-labs:E7/Submit Spark Job: --hoodie-conf hoodie.datasource.write.precombine.field=updated_at
+Fedomn/spark-knowledge:pyspark/hudi_streaming.py: 'hoodie.datasource.write.precombine.field': 'Creation_Time',
+MacHu-GWU/rds_to_datalake-project:README.rst: "hoodie.datasource.write.precombine.field": "update_at",
+nmukerje/EMR-Hudi-Workshop:notebooks/3_GDPR_Deletes.ipynb: "hudiOptions: scala.collection.immutable.Map[String,String] = Map(hoodie.parquet.small.file.limit -> 67108864, hoodie.parquet.compression.ratio -> 0.5, hoodie.datasource.write.precombine.field -> order_date, hoodie.datasource.hive_sync.partition_fields -> year,month, hoodie.datasource.hive_sync.partition_extractor_class -> org.apache.hudi.hive.MultiPartKeysValueExtractor, hoodie.parquet.max.file.size -> 1073741824, hoodie.datasource.hive_sync.enable -> true, hoodie.datasource.write.recordkey.field -> record_key, hoodie.datasource.hive_sync.assume_date_partitioning -> false, hoodie.datasource.write.partitionpath.field -> partition_key)\n"
+AntiO2/lakehouse-experiment-agent:docs/Hudi.md: --conf "hoodie.datasource.write.precombine.field=freshness_ts" \
+karlsie/spark-docker:scripts/hudi-demo.py: 'hoodie.datasource.write.precombine.field': 'ts',
+Didone/spark-glue:notebooks/pydeequ.ipynb: "  'hoodie.datasource.write.precombine.field': 'ts',\n",
+MacHu-GWU/dynamodb_to_datalake-project:README.rst: "hoodie.datasource.write.precombine.field": "update_at",
+vasilyu1983/AI-Agents-public:frameworks/shared-skills/skills/data-lake-platform/references/storage-formats.md: 'hoodie.datasource.write.precombine.field': 'updated_at'
+apache/hudi:hudi-notebooks/notebooks/common/02-query-types.ipynb: "    \"hoodie.datasource.write.precombine.field\": \"ts\", # The field used to deduplicate records when a conflict occurs.\n",
+apache/hudi:hudi-notebooks/notebooks/common/02-query-types.ipynb: "    \"hoodie.datasource.write.precombine.field\": \"ts\",\n",
+K-G-PRAJWAL/Big-Data-Engineering:Projects/KafkaHudiStreaming/hudi-kafka.py: 'hoodie.datasource.write.precombine.field': constants.PRECOMBINE,
+theneoai/awesome-skills:skills/tool/data-platform/lakehouse-expert/references/scenarios.md: 'hoodie.datasource.write.precombine.field': 'updated_at',
+ARUROY111/Data-Engineering-:Hudi/hudi.py: 'hoodie.datasource.write.precombine.field': 'age',
+arkady-emelyanov/qlik-replicate-cdc:transform/hudi_load.py: 'hoodie.datasource.write.precombine.field': 'crdate',
+apachecn/apachecn-db-bigdata-docs-zh:doc/hudi-050-doc-zh/configurations.md: 属性：`hoodie.datasource.write.precombine.field`, 默认值：`ts` <br/>
+apache/hudi:hudi-notebooks/notebooks/spark4/08_hudi_rs_example.ipynb: "    \"hoodie.datasource.write.precombine.field\": \"ts\",\n",
+Fedomn/spark-knowledge:pyspark/hudi_df_write.py: 'hoodie.datasource.write.precombine.field': 'ts',
+soumilshah1995/DebeziumFlinkHudiSync:Submit Spark Job: --hoodie-conf hoodie.datasource.write.precombine.field=order_number \
+AWS-Big-Data-Projects/big-data-solutions:glue/hudi_pyspark_example.py: 'hoodie.datasource.write.precombine.field': 'last_update_time',
+apache/hudi:hudi-notebooks/notebooks/common/06_hudi_trino_example.ipynb: "source": "hudi_write_options = {\n    \"hoodie.table.name\" : table_name,\n    \"hoodie.datasource.write.recordkey.field\": \"uuid\",\n    \"hoodie.datasource.write.precombine.field\": \"ts\",\n    \"hoodie.datasource.write.partitionpath.field\": \"city\",\n    \"hoodie.metadata.enable\": \"true\",\n    \"hoodie.datasource.write.hive_style_partitioning\": \"true\",\n    \"hoodie.datasource.meta.sync.enable\": \"true\",\n    \"hoodie.datasource.hive_sync.partition_fields\": \"city\",\n    \"hoodie.datasource.hive_sync.mode\": \"hms\",\n    \"hoodie.datasource.hive_sync.metastore.uris\": \"thrift://hive-metastore:9083\",\n    \"hoodie.datasource.hive_sync.database\": db_name,\n    \"hoodie.datasource.hive_sync.table\": table_name\n    #\"hoodie.write.table.version\": \"6\"\n}"
+aws-samples/spark-on-aws-lambda:spark-scripts/sample-accommodations-to-hudi.py: 'hoodie.datasource.write.precombine.field': 'last_upd_timestamp',
+apache/hudi:hudi-common/src/main/java/org/apache/hudi/common/util/ConfigUtils.java: } else if (properties.containsKey("hoodie.datasource.write.precombine.field")) {
+apache/hudi:hudi-common/src/main/java/org/apache/hudi/common/util/ConfigUtils.java: orderField = properties.getProperty("hoodie.datasource.write.precombine.field");
+arkady-emelyanov/qlik-replicate-cdc:transform/hudi_changes.py: 'hoodie.datasource.write.precombine.field': CHANGES_METADATA_TIMESTAMP,
+arkady-emelyanov/qlik-replicate-cdc:transform/hudi_changes.py: 'hoodie.datasource.write.precombine.field': CHANGES_METADATA_TIMESTAMP,
+danielford831/python-playground:pyspark/stream_to_hudi.py: .option("hoodie.datasource.write.precombine.field", "timestamp") \
+apache/hudi:hudi-notebooks/notebooks/common/07_hudi_presto_example.ipynb: "source": "hudi_write_options = {\n    \"hoodie.table.name\" : table_name,\n    \"hoodie.datasource.write.recordkey.field\": \"uuid\",\n    \"hoodie.datasource.write.precombine.field\": \"ts\",\n    \"hoodie.datasource.write.partitionpath.field\": \"city\",\n    \"hoodie.metadata.enable\": \"true\",\n    \"hoodie.datasource.write.hive_style_partitioning\": \"true\",\n    \"hoodie.datasource.meta.sync.enable\": \"true\",\n    \"hoodie.datasource.hive_sync.partition_fields\": \"city\",\n    \"hoodie.datasource.hive_sync.mode\": \"hms\",\n    \"hoodie.datasource.hive_sync.metastore.uris\": \"thrift://hive-metastore:9083\",\n    \"hoodie.datasource.hive_sync.database\": db_name,\n    \"hoodie.datasource.hive_sync.table\": table_name,\n    \"hoodie.write.table.version\": \"6\"\n}"
+logicalclocks/hopsworks-api:java/spark/src/main/java/com/logicalclocks/hsfs/spark/engine/hudi/HudiEngine.java: protected static final String HUDI_WRITE_PRECOMBINE_FIELD = "hoodie.datasource.write.precombine.field";
+soumilshah1995/universal-datalakehouse-postgres-ingestion-deltastreamer:Submit Spark Job: --hoodie-conf hoodie.datasource.write.precombine.field=_event_origin_ts_ms \
+nmukerje/EMR-Hudi-Workshop:notebooks/Hudi_Pyspark_Example.ipynb: "PRECOMBINE_FIELD_OPT_KEY = \"hoodie.datasource.write.precombine.field\"\n",
+shubhwip/flink-samples:src/main/java/me/shubhamjain/hudi/HudiReader.java: "  'hoodie.datasource.write.precombine.field' = 'book_date'," +
+isouravsengupta/ai-data-engineer-handbook:book/05_data_storage_lakehouse/apache_hudi.md: .option("hoodie.datasource.write.precombine.field", "updated_at") \
+sunny30/databricks-copy-into:src/main/scala/org/apache/spark/sql/hudi/UnityHudiCatalog.scala: val preCombine = props.get("hoodie.datasource.write.precombine.field")
+sunny30/databricks-copy-into:src/main/scala/org/apache/spark/sql/hudi/UnityHudiCatalog.scala: mcBuilder.set(Map("hoodie.datasource.write.precombine.field" -> v)
+sagarlakshmipathy/finnhub-data-pipeline:src/common/params.py: "hoodie.datasource.write.precombine.field": "transaction_time",
+dude1141/AWS:aws2024/aws_glue_v1: 'hoodie.datasource.write.precombine.field': 'load_date',
+nmukerje/EMR-Hudi-Workshop:notebooks/2_Consume_Streaming_Updates.html: <pre>hudiOptions: scala.collection.immutable.Map[String,String] = Map(hoodie.parquet.small.file.limit -&gt; 67108864, hoodie.insert.shuffle.parallelism -&gt; 2, hoodie.parquet.compression.ratio -&gt; 0.5, hoodie.datasource.write.precombine.field -&gt; order_date, hoodie.datasource.hive_sync.partition_fields -&gt; year,month, hoodie.datasource.hive_sync.partition_extractor_class -&gt; org.apache.hudi.hive.MultiPartKeysValueExtractor, hoodie.parquet.max.file.size -&gt; 1073741824, hoodie.datasource.hive_sync.enable -&gt; true, hoodie.datasource.write.recordkey.field -&gt; record_key, hoodie.datasource.hive_sync.assume_date_partitioning -&gt; false, hoodie.datasource.write.partitionpath.field -&gt; partition_key)
+ducnguyent/crypto-data-pipeline:app/crypto_pipeline/utils/spark_utils.py: 'hoodie.datasource.write.precombine.field': 'event_time',
+FireFramework/fire:fire-engines/fire-spark/src/main/scala/com/zto/fire/spark/ext/core/DataFrameExt.scala: confOptions("hoodie.datasource.write.precombine.field"),
+
+###QUERY### PRECOMBINE_FIELD_OPT_KEY
+apache/hudi:packaging/bundle-validation/service/write.scala: option(PRECOMBINE_FIELD_OPT_KEY, "ts").
+StarRocks/starrocks:docs/en/quick_start/hudi.md: option(PRECOMBINE_FIELD_OPT_KEY, "users").
+bitsondatadev/trino-getting-started:community-tutorials/hudi/trino-hudi-minio/hudiTestSync.scala: option(PRECOMBINE_FIELD_OPT_KEY, "users").
+adobe/lake-pulse:examples/data/README.md: .option(PRECOMBINE_FIELD_OPT_KEY, "id")
+adobe/lake-pulse:examples/data/README.md: .option(PRECOMBINE_FIELD_OPT_KEY, "id")
+shuigedeng/taotao-cloud-project:taotao-cloud-bigdata/taotao-cloud-hudi/src/main/java/com/taotao/cloud/hudi/multiversion/MultiVersionDemo.java: .option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY(), "ts")
+AWS-Big-Data-Projects/big-data-solutions:general-python/hudi_dataset_write.py: DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY -> "occupancy1"
+zhaoyachao/zdh_server:src/main/scala/com/zyc/zdh/datasources/HdfsDataSources.scala: if(options.getOrElse("precombine_field_opt_key","").toString.equalsIgnoreCase("") && !cols.contains("ts")){
+zhaoyachao/zdh_server:src/main/scala/com/zyc/zdh/datasources/HdfsDataSources.scala: throw new Exception("[数据采集]:[HDFS]:[WRITE]:[ERROR]:写入hudi数据文件时必须指定主键,请设置etl任务中的主键字段precombine_field_opt_key参数")
+zhaoyachao/zdh_server:src/main/scala/com/zyc/zdh/datasources/HdfsDataSources.scala: val precombine_field_opt_key=options.getOrElse("precombine_field_opt_key","")
+aws-samples/build-dynamodb-integration-with-kinesis:emr/data_insertion_cow_delta_script: DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY -> "time_stamp",
+daongochieu2810/taxi-fare-prediction:datalake/datalake.py: PRECOMBINE_FIELD_OPT_KEY = "hoodie.datasource.write.precombine.field"
+daongochieu2810/taxi-fare-prediction:datalake/datalake.py: .option(PRECOMBINE_FIELD_OPT_KEY, config["sort_key"])
+alberttwong/sunnyvalelabs:ajax-emr-hudi.md: DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY -> "last_update_time",
+alberttwong/sunnyvalelabs:ajax-emr-hudi.md: DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY -> "last_update_time",
+hj2016/hudi-test:src/main/scala/org/hj/hudi/HudiTest.scala: .option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY, "lastupdatedttm")
+hj2016/hudi-test:src/main/scala/org/hj/hudi/HudiTest.scala: .option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY, "lastupdatedttm")
+victorcuevasv/tpcbench:emr/keys_example/NOTES.txt: DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY -> "sm_ship_mode_sk",
+victorcuevasv/tpcbench:emr/keys_example/NOTES.txt: DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY -> "cs_item_sk",
+leesf/hudi-demos:hudi-partition-demo/src/main/java/com/leesf/partitions/PartitionDemo.java: option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY(), "ts").
+Kyofin/awsome-programming-note:doc/Spark写入数据到Hudi并同步到Hive.md: DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY -> "last_update_time",
+superzhc/SuperzHadoop:docs/hadoop/hudi/spark/示例代码.md: option(PRECOMBINE_FIELD_OPT_KEY.key, "preComb").
+akshayar/apache-hudi-samples:spark-streaming-kinesis/files.txt: option(PRECOMBINE_FIELD_OPT_KEY, "ts").
+akshayar/apache-hudi-samples:spark-streaming-kinesis/files.txt: .option(PRECOMBINE_FIELD_OPT_KEY, hudiTablePrecombineKey)
+apachecn/apachecn-db-bigdata-docs-zh:doc/hudi-050-doc-zh/configurations.md: .option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY(), "timestamp")
+apachecn/apachecn-db-bigdata-docs-zh:doc/hudi-050-doc-zh/configurations.md: ##### PRECOMBINE_FIELD_OPT_KEY {#PRECOMBINE_FIELD_OPT_KEY}
+alod83/Learning-and-Operating-Presto:08/spark-commands/convert-to-orc.scala: option(PRECOMBINE_FIELD_OPT_KEY, "dob").
+nmukerje/EMR-Hudi-Workshop:notebooks/Hudi_Pyspark_Example.ipynb: "PRECOMBINE_FIELD_OPT_KEY = \"hoodie.datasource.write.precombine.field\"\n",
+nmukerje/EMR-Hudi-Workshop:notebooks/Hudi_Pyspark_Example.ipynb: "      .option(PRECOMBINE_FIELD_OPT_KEY, config[\"sort_key\"])\n",
+FudanSELab/CodeCloneChangesDataset:dataset/FC-PDG/hudi-10132-5#6-0.dot: 8 [style = filled, label = "DataStreamWriter<Row> writer = streamingInput.writeStream().format(\"org.apache.hudi\").option(\"hoodie.insert.shuffle.parallelism\",\"2\").option(\"hoodie.upsert.shuffle.parallelism\",\"2\").option(\"hoodie.delete.shuffle.parallelism\",\"2\").option(DataSourceWriteOptions.OPERATION_OPT_KEY().key(),operationType).option(DataSourceWriteOptions.TABLE_TYPE_OPT_KEY().key(),tableType).option(DataSourceWriteOptions.RECORDKEY_FIELD_OPT_KEY().key(),\"_row_key\").option(DataSourceWriteOptions.PARTITIONPATH_FIELD_OPT_KEY().key(),\"partition\").option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY().key(),\"timestamp\").option(HoodieCompactionConfig.INLINE_COMPACT_NUM_DELTA_COMMITS_PROP.key(),\"1\").option(DataSourceWriteOptions.ASYNC_COMPACT_ENABLE_OPT_KEY().key(),\"true\").option(DataSourceWriteOptions.ASYNC_CLUSTERING_ENABLE_OPT_KEY().key(),\"true\").option(HoodieWriteConfig.TABLE_NAME.key(),tableName).option(\"checkpointLocation\",checkpointLocation).outputMode(OutputMode.Append())@@@3@@@['0', '1', '0']", fillcolor = red, shape = ellipse image = "AAA1AAABBB2BBB"];
+FudanSELab/CodeCloneChangesDataset:dataset/FC-PDG/hudi-10132-5#6-0.dot: 22 [style = filled, label = "DataFrameWriter<Row> writer = inputDF1.write().format(\"org.apache.hudi\").option(\"hoodie.insert.shuffle.parallelism\",\"2\").option(\"hoodie.upsert.shuffle.parallelism\",\"2\").option(DataSourceWriteOptions.TABLE_TYPE_OPT_KEY().key(),tableType).option(DataSourceWriteOptions.OPERATION_OPT_KEY().key(),DataSourceWriteOptions.INSERT_OPERATION_OPT_VAL()).option(DataSourceWriteOptions.RECORDKEY_FIELD_OPT_KEY().key(),\"_row_key\").option(DataSourceWriteOptions.PARTITIONPATH_FIELD_OPT_KEY().key(),\"partition\").option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY().key(),\"timestamp\").option(HoodieWriteConfig.TABLE_NAME.key(),tableName).option(DataSourceWriteOptions.KEYGENERATOR_CLASS_OPT_KEY().key(),nonPartitionedTable? .getCanonicalName(): .getCanonicalName()).mode(commitType)@@@9@@@['0', '0', '1']", fillcolor = white, shape = ellipse image = "AAA0AAABBB3BBB"];
+oliversavio/hudi-data-lake-example:src/main/scala/com/oliver/CowTable.scala: .option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY, combineKey)
+Tandoy/Bigdata-learn:Hudi/Hudi实战/Hudi使用/使用一/Hudi使用一.md: option(PRECOMBINE_FIELD_OPT_KEY, "ts").
+Tandoy/Bigdata-learn:Hudi/Hudi实战/Hudi使用/使用一/Hudi使用一.md: option(PRECOMBINE_FIELD_OPT_KEY, "ts").
+Tandoy/Bigdata-learn:Hudi/Hudi核心概念/Hudi核心概念五.md: option(PRECOMBINE_FIELD_OPT_KEY, "ts").
+melkimohamed/hudi-hive2:docker/demo/sparksql-incremental.commands: option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY, "ts").
+opentelekomcloud-docs/mapreduce-service:doc/component-operation-guide/source/using_hudi/getting_started.rst: option(PRECOMBINE_FIELD_OPT_KEY, "ts").
+opentelekomcloud-docs/mapreduce-service:doc/component-operation-guide/source/using_hudi/getting_started.rst: option(PRECOMBINE_FIELD_OPT_KEY, "ts").
+Tandoy/Bigdata-learn:Hudi/Hudi实战/Hudi-On-Hive/Hudi集成Hive.md: .option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY, "update_time")
+danielford831/python-playground:pyspark/resources/DeepuSSS.scala: .option(PRECOMBINE_FIELD_OPT_KEY, "timestamp")
+nickdala/hudi-incremental-data-processing:src/main/scala/com/nickdala/Ingest.scala: DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY -> "update_time"
+hocanint-amzn/ProductReviewsProcessing:HudiCreateDatasetExample.ipynb: "  DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY -> \"timestamp\",\n",
+bluishglc/serverless-datalake-example:src/main/scala/com/github/sdl/util/HudiSupport.scala: DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY -> hudiPrecombineField,
+a0x8o/hudi:hudi-spark/src/main/scala/org/apache/hudi/HoodieWriterUtils.scala: PRECOMBINE_FIELD_OPT_KEY -> DEFAULT_PRECOMBINE_FIELD_OPT_VAL,
+haplone/docs:hadoop/data_lake/hudi_spark_structed_streaming.md: .option(PRECOMBINE_FIELD_OPT_KEY, "kafka_timestamp")
+haplone/docs:hadoop/data_lake/hudi_spark_structed_streaming.md: .option(PRECOMBINE_FIELD_OPT_KEY, "kafka_timestamp")
+my0113/hudi-quickstart:src/main/scala/com/kingsoft/hudi/Demo1.scala: PRECOMBINE_FIELD_OPT_KEY->changeDateField,
+my0113/hudi-quickstart:src/main/scala/com/kingsoft/hudi/Demo1.scala: PRECOMBINE_FIELD_OPT_KEY->changeDateField,
+danielford831/python-playground:KirbyStructuredStreamer/src/main/scala/main.scala: .option(PRECOMBINE_FIELD_OPT_KEY, "timestamp")
+siagholami/aws-documentation:documents/amazon-emr-release-guide/doc_source/emr-hudi-work-with-dataset.md: DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY -> "dataframe_column_name3"
+jugalpanchal/bd-chef:hudi/LAB-MOR.ipynb: "PRECOMBINE_FIELD_OPT_KEY = \"hoodie.datasource.write.precombine.field\"\n",
+jugalpanchal/bd-chef:hudi/LAB-MOR.ipynb: "      .option(PRECOMBINE_FIELD_OPT_KEY, config[\"sort_key\"])     # hoodie.datasource.write.precombine.field: tstamp\n",
+RajasekarSribalan/Apache-Spark:stream/src/main/java/stream/realtime/HudiExample.scala: option(PRECOMBINE_FIELD_OPT_KEY, "timestamp").
+lj-michale/bigdata-learning:常见大数据项目/Spark3-Learning/src/main/scala/com/bigdata/hudi/SparkHudi.scala: //        .option(PRECOMBINE_FIELD_OPT_KEY, "kafka_timestamp")
+lj-michale/bigdata-learning:常见大数据项目/Spark3-Learning/src/main/scala/com/bigdata/hudi/SparkHudi.scala: //        .option(PRECOMBINE_FIELD_OPT_KEY, "kafka_timestamp")
+jugalpanchal/bd-chef:hudi/LAB-PARTITION.ipynb: "PRECOMBINE_FIELD_OPT_KEY = \"hoodie.datasource.write.precombine.field\"\n",
+jugalpanchal/bd-chef:hudi/LAB-PARTITION.ipynb: "      .option(PRECOMBINE_FIELD_OPT_KEY, config[\"sort_key\"])\n",
+MuziMin0222/muzimin-bigdata-study:muzimin-hudi-study/hudi-01/src/main/scala/com/lhm/copyOnWrite/InsertDemo.scala: .option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY, "lastupdatedttm")
+MuziMin0222/muzimin-bigdata-study:muzimin-hudi-study/hudi-01/src/main/scala/com/lhm/copyOnWrite/InsertDemo.scala: .option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY, "lastupdatedttm")
+MuziMin0222/muzimin-bigdata-study:muzimin-hudi-study/hudi-01/src/main/scala/com/lhm/MergeOnRead/InsertDemo.scala: .option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY, "lastupdatedttm")
+MuziMin0222/muzimin-bigdata-study:muzimin-hudi-study/hudi-01/src/main/scala/com/lhm/process/SparkHudiWriteFirst.scala: .option(PRECOMBINE_FIELD_OPT_KEY, "date")
+bournewang/bournewang.github.com:_posts/2022-07-23-apache-hudi-tutorial.md: | option(PRECOMBINE_FIELD_OPT_KEY, "ts").
+bournewang/bournewang.github.com:_posts/2022-07-23-apache-hudi-tutorial.md: | option(PRECOMBINE_FIELD_OPT_KEY, "ts").
+chriswangzheyi/Instructions:Hudi/电商Demo/13Hudi整合Hive.md: .option("PRECOMBINE_FIELD_OPT_KEY", "ts") //指定提交时间列
+chriswangzheyi/Instructions:Hudi/电商Demo/13Hudi整合Hive.md: .option("PRECOMBINE_FIELD_OPT_KEY", "ts") //指定提交时间列
+bakea/dataengine-example:spark-example/src/main/scala/com/h3c/spark/hudi/example/SparkHoodieExample.scala: option(PRECOMBINE_FIELD_OPT_KEY, "ts").
+bakea/dataengine-example:spark-example/src/main/scala/com/h3c/spark/hudi/example/SparkHoodieExample.scala: option(PRECOMBINE_FIELD_OPT_KEY, "ts").
+Rajesh2015/hoodi-demo:src/main/scala/com/demo/hudidemo/UpsertDemo.scala: DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY -> "Date"
+lj-michale/bigdata-learning:常见大数据项目/spark-learning/src/main/scala/com/bidata/example/hudi/example002/SparkHudi.scala: //        .option(PRECOMBINE_FIELD_OPT_KEY, "kafka_timestamp")
+lj-michale/bigdata-learning:常见大数据项目/spark-learning/src/main/scala/com/bidata/example/hudi/example002/SparkHudi.scala: //        .option(PRECOMBINE_FIELD_OPT_KEY, "kafka_timestamp")
+smdahmed/hudi:macquarie-mar/src/main/scala/com/macquarie/mar/MARApp.scala: .option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY, "timestamp") // use to combine duplicate
+smdahmed/hudi:macquarie-mar/src/main/scala/com/macquarie/mar/MARApp.scala: .option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY,
+MuziMin0222/muzimin-bigdata-study:muzimin-hudi-study/hudi-01/src/main/scala/com/lhm/MergeOnRead/SyncHiveDemo.scala: .option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY, "lastupdatedttm")
+MuziMin0222/muzimin-bigdata-study:muzimin-hudi-study/hudi-01/src/main/scala/com/lhm/copyOnWrite/Demo_01.scala: PRECOMBINE_FIELD_OPT_KEY -> changeDateField,
+MuziMin0222/muzimin-bigdata-study:muzimin-hudi-study/hudi-01/src/main/scala/com/lhm/copyOnWrite/Demo_01.scala: PRECOMBINE_FIELD_OPT_KEY -> changeDateField,
+K-G-PRAJWAL/AWS:AWS EMR/Workshop/notebooks/notebook2.ipynb: "PRECOMBINE_FIELD_OPT_KEY = \"hoodie.datasource.write.precombine.field\"\n",
+K-G-PRAJWAL/AWS:AWS EMR/Workshop/notebooks/notebook2.ipynb: "      .option(PRECOMBINE_FIELD_OPT_KEY, config[\"sort_key\"])\n",
+Rajesh2015/hoodi-demo:src/main/scala/com/demo/hudidemo/WriteDemo.scala: DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY -> "Date"//Precombining key before actual write.Having same value will pick largest one
+Whitilied/kafka-spark-hudi-hive-demo:src/main/scala/HudiDemo.scala: .option(PRECOMBINE_FIELD_OPT_KEY, "kafka_timestamp")
+K-G-PRAJWAL/AWS:AWS EMR/Workshop/notebooks/notebook3.ipynb: "PRECOMBINE_FIELD_OPT_KEY = \"hoodie.datasource.write.precombine.field\"\n",
+K-G-PRAJWAL/AWS:AWS EMR/Workshop/notebooks/notebook3.ipynb: "      .option(PRECOMBINE_FIELD_OPT_KEY, config[\"sort_key\"])\n",
+apache/hudi:hudi-spark-datasource/hudi-spark-common/src/main/scala/org/apache/hudi/DataSourceOptions.scala: val PRECOMBINE_FIELD_OPT_KEY = HoodieWriteConfig.PRECOMBINE_FIELD_NAME.key()
+my0113/hudi-quickstart:src/main/scala/com/kingsoft/hudi/Demo3.scala: PRECOMBINE_FIELD_OPT_KEY->changeDateField,
+my0113/hudi-quickstart:src/main/scala/com/kingsoft/hudi/Demo3.scala: PRECOMBINE_FIELD_OPT_KEY->changeDateField,
+dobachi/memo-blog:2020/03/25/Hudi/index.html: <figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; df.write.format(<span class="string">"hudi"</span>).</span><br><span class="line">         options(getQuickstartWriteConfigs).</span><br><span class="line">         option(<span class="type">PRECOMBINE_FIELD_OPT_KEY</span>, <span class="string">"ts"</span>).</span><br><span class="line">         option(<span class="type">RECORDKEY_FIELD_OPT_KEY</span>, <span class="string">"uuid"</span>).</span><br><span class="line">         option(<span class="type">PARTITIONPATH_FIELD_OPT_KEY</span>, <span class="string">"partitionpath"</span>).</span><br><span class="line">         option(<span class="type">TABLE_NAME</span>, tableName).</span><br><span class="line">         mode(<span class="type">Overwrite</span>).</span><br><span class="line">         save(basePath)</span><br></pre></td></tr></table></figure>
+dobachi/memo-blog:2020/03/25/Hudi/index.html: <figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">val</span> updates = convertToStringList(dataGen.generateUpdates(<span class="number">10</span>))</span><br><span class="line">scala&gt; <span class="keyword">val</span> df = spark.read.json(spark.sparkContext.parallelize(updates, <span class="number">2</span>))</span><br><span class="line">scala&gt; df.write.format(<span class="string">"hudi"</span>).</span><br><span class="line">         options(getQuickstartWriteConfigs).</span><br><span class="line">         option(<span class="type">PRECOMBINE_FIELD_OPT_KEY</span>, <span class="string">"ts"</span>).</span><br><span class="line">         option(<span class="type">RECORDKEY_FIELD_OPT_KEY</span>, <span class="string">"uuid"</span>).</span><br><span class="line">         option(<span class="type">PARTITIONPATH_FIELD_OPT_KEY</span>, <span class="string">"partitionpath"</span>).</span><br><span class="line">         option(<span class="type">TABLE_NAME</span>, tableName).</span><br><span class="line">         mode(<span class="type">Append</span>).</span><br><span class="line">         save(basePath)</span><br></pre></td></tr></table></figure>
+gfn9cho/SparkIngestion:src/main/scala/edf/dataingestion/writeToS3.scala: DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY -> "UpdateTime",
+Rajesh2015/hoodi-demo:src/main/scala/com/demo/hudidemo/WriteDemoWithMergeOnRead.scala: DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY -> "Date"
+vasveena/Hudi_Demo_Notebook:Hudi_Pyspark_Example-Copy1.ipynb: "PRECOMBINE_FIELD_OPT_KEY = \"hoodie.datasource.write.precombine.field\"\n",
+vasveena/Hudi_Demo_Notebook:Hudi_Pyspark_Example-Copy1.ipynb: "      .option(PRECOMBINE_FIELD_OPT_KEY, config[\"sort_key\"])\n",
+
+###QUERY### hoodie.table.precombine.field
+apache/hudi:hudi-common/src/main/java/org/apache/hudi/common/table/HoodieTableConfig.java: .key("hoodie.table.precombine.field")
+apache/hudi-rs:crates/core/src/config/mod.rs: "hoodie.table.precombine.field".to_string(),
+logicalclocks/hopsworks-api:python/hsfs/core/hudi_engine.py: HUDI_TABLE_PRECOMBINE_FIELD = "hoodie.table.precombine.field"
+datafusion-contrib/datafusion-dft:data/hudi/v6_simplekeygen_nonhivestyle/.hoodie/hoodie.properties: hoodie.table.precombine.field=longField
+adobe/lake-pulse:src/reader/hudi/reader.rs: .get("hoodie.table.precombine.field")
+adobe/lake-pulse:src/reader/hudi/reader.rs: "hoodie.table.precombine.field".to_string(),
+xliuqq/blog_md:docs/data_system/data_lake/apache_hudi/usage.md: - `hoodie.table.precombine.field`：在数据合并的时候使用到，当 `hoodie.table.recordkey.fields`相同时，默认取`hoodie.table.precombine.field`属性配置的字段最大值所对应的行；
+melin/spark-jobserver:jobserver-admin/src/main/resources/static/js/hoodie.js: "caption" : "hoodie.table.precombine.field",
+melin/spark-jobserver:jobserver-admin/src/main/resources/static/js/hoodie.js: "value" : "hoodie.table.precombine.field = ",
+rangareddy/Ranga_Hudi_Experiments:Spark_Hudi_011/src/main/scala/com/ranga/SparkHudiApp2.scala: hoodieConf.put("hoodie.table.precombine.field", "ts")
+devlive-community/devlive-community-docs:Apache Hudi/en/0.15.0/8 Operations/3 SQL Procedures.md: | hoodie.table.precombine.field | ts    |
+dacort/dacort.dev:site/content/posts/modern-data-lake-storage-layers/index.md: hoodie.table.precombine.field=last_update_time
+klcodanr/apache-release-info:docs/api/HUDI/12354810/index.json: "title": "Don't write hoodie.table.precombine.field=ts to hoodie.properties when create a insert table using flink.",
+apache/incubator-xtable:demo/data/db/hudi_dimCustomer/.hoodie/hoodie.properties: hoodie.table.precombine.field=_c0
+iand675/wireform-:wireform-hudi/scripts/hudi_interop.py: hoodie.table.precombine.field=id
+dongkelun/dongkelun.github.io:2021/07/10/hudiPreCombinedField/index.html: <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#Properties saved on Sat Jul <span class="number">10</span> <span class="number">15</span>:08:<span class="number">16</span> CST <span class="number">2021</span></span><br><span class="line">#Sat Jul <span class="number">10</span> <span class="number">15</span>:08:<span class="number">16</span> CST <span class="number">2021</span></span><br><span class="line">hoodie.table.precombine.field=ts</span><br><span class="line">hoodie.table.name=test_hudi_table</span><br><span class="line">hoodie.archivelog.folder=archived</span><br><span class="line">hoodie.table.type=COPY_ON_WRITE</span><br><span class="line">hoodie.table.version=<span class="number">1</span></span><br><span class="line">hoodie.timeline.layout.version=<span class="number">1</span></span><br><span class="line">hoodie.table.partition.columns=dt</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+dongkelun/dongkelun.github.io:2021/07/10/hudiPreCombinedField/index.html: <p>可见，hudi表元数据里有hoodie.table.precombine.field=ts，代表preCombinedField生效</p>
+xushiyan/apachehudi-from0to1:post-01/example-CoW-table/.hoodie/hoodie.properties: hoodie.table.precombine.field=ts
+adobe/lake-pulse:src/analyze/hudi/analyze.rs: .get("hoodie.table.precombine.field")
+adobe/lake-pulse:src/analyze/hudi/analyze.rs: hoodie.table.precombine.field=ts
+gaosh96/hudi-0.12.0-my:hudi-common/src/main/java/org/apache/hudi/common/table/HoodieTableConfig.java: .key("hoodie.table.precombine.field")
+baptvit/open-table-formats-labs:notebooks/warehouse/hudi/hudi.db/accounts/.hoodie/hoodie.properties: hoodie.table.precombine.field=created_at
+rangareddy/Ranga_Hudi_Experiments:Spark_Hudi_015/src/main/scala/com/ranga/SparkHudiApp.scala: hoodieConf.put("hoodie.table.precombine.field", "name")
+apache/hudi-rs:crates/core/src/config/table.rs: /// Alias: `hoodie.table.precombine.field` (deprecated).
+apache/hudi-rs:crates/core/src/config/table.rs: &[ConfigAlias::deprecated("hoodie.table.precombine.field")];
+datacouch-io/hudi-on-minio:apache-hudi-obj-4/path/to/hudi/table/.hoodie/hoodie.properties: hoodie.table.precombine.field=last_update_date
+qixian-jiajia/dataLake:hudi-common/src/main/java/org/apache/hudi/common/table/HoodieTableConfig.java: .key("hoodie.table.precombine.field")
+houhang1005/hudi_test:hudi-common/src/main/java/org/apache/hudi/common/table/HoodieTableConfig.java: .key("hoodie.table.precombine.field")
+ep-infosec/33_apache_hudi:hudi-common/src/main/java/org/apache/hudi/common/table/HoodieTableConfig.java: .key("hoodie.table.precombine.field")
+opentelekomcloud-docs/data-warehouse-service:doc/dev-guide/source/sql_syntax_reference/functions_and_operators/hudi_system_functions.rst: hoodie.table.precombine.field                   | col_int
+PixelQuasar/hse-pipelines-course:dz7/warehouse/hudi_write/.hoodie/hoodie.properties: hoodie.table.precombine.field=timestamp
+alio-programmer/Clickstream-Kafka-Pipeline:Docker/data_lake/bronze/clickstream/.hoodie/hoodie.properties: hoodie.table.precombine.field=timestamp_ms
+PixelQuasar/hse-pipelines-course:dz7/warehouse/hudi_read/.hoodie/hoodie.properties: hoodie.table.precombine.field=timestamp
+dongkelun/dongkelun.github.io:2022/05/12/hudiIntroduction/index.html: <h2 id="hoodie-properties"><a href="#hoodie-properties" class="headerlink" title="hoodie.properties"></a>hoodie.properties</h2><p><code>.hoodie</code>目录下有表属性文件<code>.hoodie.properties</code>,内容为：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">hoodie.table.precombine.field=ts</span><br><span class="line">hoodie.table.partition.fields=dt</span><br><span class="line">hoodie.table.type=COPY_ON_WRITE</span><br><span class="line">hoodie.archivelog.folder=archived</span><br><span class="line">hoodie.populate.meta.fields=true</span><br><span class="line">hoodie.timeline.layout.version=1</span><br><span class="line">hoodie.table.version=2</span><br><span class="line">hoodie.table.recordkey.fields=id</span><br><span class="line">hoodie.table.base.file.format=PARQUET</span><br><span class="line">hoodie.table.keygenerator.class=org.apache.hudi.keygen.ComplexKeyGenerator</span><br><span class="line">hoodie.table.name=test_hudi_table_1</span><br></pre></td></tr></table></figure><br>新版本在该属性文件里增加了很多属性,如<code>HIVE_STYLE_PARTITIONING</code>即<code>hoodie.datasource.write.hive_style_partitioning</code>，增加属性便于使表的属性前后保持统一</p>
+apachehudi-ci/hudi-branch-ci-test:hudi-common/src/main/java/org/apache/hudi/common/table/HoodieTableConfig.java: .key("hoodie.table.precombine.field")
+liuzhiwei365/hudi-0.12.1:hudi-common/src/main/java/org/apache/hudi/common/table/HoodieTableConfig.java: .key("hoodie.table.precombine.field")
+PixelQuasar/hse-pipelines-course:dz7/warehouse/hudi_table/.hoodie/hoodie.properties: hoodie.table.precombine.field=timestamp
+xushiyan/apachehudi-from0to1:post-01/example-MoR-table/.hoodie/hoodie.properties: hoodie.table.precombine.field=ts
+a0x8o/hudi:hudi-common/src/main/java/org/apache/hudi/common/table/HoodieTableConfig.java: .key("hoodie.table.precombine.field")
+alberttwong/onehouse-demos:hudi-spark-minio-trino/data/db/hudi_dimCustomer/.hoodie/hoodie.properties: hoodie.table.precombine.field=_c0
+devlive-community/devlive-community-docs:Apache Hudi/en/0.15.0/9 Configurations/1 Basic Configurations.md: | [hoodie.table.precombine.field](#hoodietableprecombinefield)                                     | (N/A)                                                             | Field used in preCombining before actual write. By default, when two records have the same key value, the largest value for the precombine field determined by Object.compareTo(..), is picked.<br />`Config Param: PRECOMBINE_FIELD`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+wujiapei/alldata:oneLake/hudi-versions/hudi-0.12.0-SNAPSHOT/hudi-common/src/main/java/org/apache/hudi/common/table/HoodieTableConfig.java: .key("hoodie.table.precombine.field")
+mem15381/hudi:hudi-common/src/main/java/org/apache/hudi/common/table/HoodieTableConfig.java: .key("hoodie.table.precombine.field")
+logicalclocks/hopsworks-api:java/spark/src/main/java/com/logicalclocks/hsfs/spark/engine/hudi/HudiEngine.java: protected static final String HUDI_TABLE_PRECOMBINE_FIELD = "hoodie.table.precombine.field";
+apachehudi-ci/hudi-branch-ci:hudi-common/src/main/java/org/apache/hudi/common/table/HoodieTableConfig.java: .key("hoodie.table.precombine.field")
+chenpenghan/hudi-0.11.0:hudi-common/src/main/java/org/apache/hudi/common/table/HoodieTableConfig.java: .key("hoodie.table.precombine.field")
+sandeepkdeva/hudi:hudi-common/src/main/java/org/apache/hudi/common/table/HoodieTableConfig.java: .key("hoodie.table.precombine.field")
+adobe/lake-pulse:examples/data/hudi_dataset/.hoodie/hoodie.properties: hoodie.table.precombine.field=id
+baptvit/open-table-formats-labs:ranger/path/to/hudi/table/.hoodie/hoodie.properties: hoodie.table.precombine.field=preComb
+baptvit/open-table-formats-labs:datahub/path/to/hudi/table/.hoodie/hoodie.properties: hoodie.table.precombine.field=ts
+baptvit/open-table-formats-labs:xtable/warehouse/hudi.db/accounts/.hoodie/hoodie.properties: hoodie.table.precombine.field=created_at
+baptvit/open-table-formats-labs:notebooks/warehouse/hudi/hudi.db/accounts_1/.hoodie/hoodie.properties: hoodie.table.precombine.field=created_at
+rangareddy/Ranga_Hudi_Experiments:Spark_Hudi_010/src/main/scala/com/ranga/SparkHudiApp2.scala: hoodieConf.put("hoodie.table.precombine.field", "ts")
+rangareddy/Ranga_Hudi_Experiments:Spark_Hudi_013/src/main/scala/com/ranga/SparkHudiApp2.scala: hoodieConf.put("hoodie.table.precombine.field", "ts")
+rangareddy/Ranga_Hudi_Experiments:Spark_Hudi_012/src/main/scala/com/ranga/SparkHudiApp2.scala: hoodieConf.put("hoodie.table.precombine.field", "ts")
+
+###QUERY### 'precombine.field'
+FireFramework/fire:fire-examples/flink-examples/src/main/scala/com/zto/fire/examples/flink/connector/hudi/HudiTest.scala: |  'precombine.field'='createTime',
+PacktPublishing/Engineering-Lakehouses-with-Open-Table-Formats:ch04/ApacheFlink/flink_hudi_examples.sql: 'precombine.field' = 'ts',
+devlive-community/devlive-community-docs:Apache Hudi/en/0.15.0/4 Writing Tables/1 SQL DDL.md: 'precombine.field' = 'ts'
+devlive-community/devlive-community-docs:Apache Hudi/en/0.15.0/4 Writing Tables/1 SQL DDL.md: 'precombine.field' = 'ts',
+NobodyzHome/helloworld:hello-flink/src/main/resources/hudi-write-site.xml: 'precombine.field' = 'ts',
+PacktPublishing/Engineering-Lakehouses-with-Open-Table-Formats:ch04/ApacheSpark/notebooks/.ipynb_checkpoints/Hudi_Deep_Dive-checkpoint.ipynb: "  'precombine.field' = 'ts',\n",
+NobodyzHome/helloworld:hello-flink/flinksql-hudi.sql: 'precombine.field'='ts',
+NobodyzHome/helloworld:hello-flink/flinksql-hudi.sql: 'precombine.field'='ts',
+FireFramework/fire:fire-examples/flink-examples/src/main/scala/com/zto/fire/examples/flink/lineage/FlinkSqlLineageTest.scala: |  'precombine.field'='createTime',
+PacktPublishing/Engineering-Lakehouses-with-Open-Table-Formats:ch04/ApacheSpark/notebooks/Hudi_Deep_Dive.ipynb: "  'precombine.field' = 'ts',\n",
+apache/hudi:hudi-flink-datasource/hudi-flink/src/test/java/org/apache/hudi/table/ITTestSchemaEvolutionBySQL.java: + "  'precombine.field' = 'f_date'"
+apache/hudi:hudi-flink-datasource/hudi-flink/src/test/java/org/apache/hudi/table/catalog/TestHoodieCatalog.java: "Option 'precombine.field' is required for payload class: "
+apache/hudi:hudi-flink-datasource/hudi-flink/src/test/java/org/apache/hudi/table/catalog/TestHoodieCatalog.java: "Field not_exists does not exist in the table schema. Please check 'precombine.field' option.");
+apachehudi-ci/hudi-branch-ci:hudi-flink-datasource/hudi-flink/src/test/java/org/apache/hudi/table/catalog/TestHoodieCatalog.java: "Option 'precombine.field' is required for payload class: "
+apachehudi-ci/hudi-branch-ci:hudi-flink-datasource/hudi-flink/src/test/java/org/apache/hudi/table/catalog/TestHoodieCatalog.java: "Field not_exists does not exist in the table schema. Please check 'precombine.field' option.");
+mem15381/hudi:hudi-flink-datasource/hudi-flink/src/test/java/org/apache/hudi/table/catalog/TestHoodieCatalog.java: "Option 'precombine.field' is required for payload class: "
+mem15381/hudi:hudi-flink-datasource/hudi-flink/src/test/java/org/apache/hudi/table/catalog/TestHoodieCatalog.java: "Field not_exists does not exist in the table schema. Please check 'precombine.field' option.");
+AntiO2/pixels-spark:scripts/test-hudi110-flink120-record-level-index.sh: 'precombine.field' = 'ts',
+sandeepkdeva/hudi:hudi-flink-datasource/hudi-flink/src/test/java/org/apache/hudi/table/catalog/TestHoodieCatalog.java: "Option 'precombine.field' is required for payload class: "
+sandeepkdeva/hudi:hudi-flink-datasource/hudi-flink/src/test/java/org/apache/hudi/table/catalog/TestHoodieCatalog.java: "Field not_exists does not exist in the table schema. Please check 'precombine.field' option.");
+apachehudi-ci/hudi-branch-ci:hudi-flink-datasource/hudi-flink/src/test/java/org/apache/hudi/table/ITTestSchemaEvolutionBySQL.java: + "  'precombine.field' = 'f_date'"
+qixian-jiajia/dataLake:hudi-flink-datasource/hudi-flink/src/test/java/org/apache/hudi/table/catalog/TestHoodieCatalog.java: "Option 'precombine.field' is required for payload class: "
+qixian-jiajia/dataLake:hudi-flink-datasource/hudi-flink/src/test/java/org/apache/hudi/table/catalog/TestHoodieCatalog.java: "Field not_exists does not exist in the table schema. Please check 'precombine.field' option.");
+houhang1005/hudi_test:hudi-flink-datasource/hudi-flink/src/test/java/org/apache/hudi/table/catalog/TestHoodieCatalog.java: "Option 'precombine.field' is required for payload class: "
+houhang1005/hudi_test:hudi-flink-datasource/hudi-flink/src/test/java/org/apache/hudi/table/catalog/TestHoodieCatalog.java: "Field not_exists does not exist in the table schema. Please check 'precombine.field' option.");
+apachehudi-ci/hudi-mirror:hudi-flink-datasource/hudi-flink/src/test/java/org/apache/hudi/table/ITTestSchemaEvolutionBySQL.java: + "  'precombine.field' = 'f_date'"
+apachehudi-ci/hudi-mirror:hudi-flink-datasource/hudi-flink/src/test/java/org/apache/hudi/table/catalog/TestHoodieCatalog.java: "Option 'precombine.field' is required for payload class: "
+apachehudi-ci/hudi-mirror:hudi-flink-datasource/hudi-flink/src/test/java/org/apache/hudi/table/catalog/TestHoodieCatalog.java: "Field not_exists does not exist in the table schema. Please check 'precombine.field' option.");
+

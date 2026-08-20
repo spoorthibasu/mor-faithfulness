@@ -1,0 +1,70 @@
+{
+ "cell": "ooo50_sf1_s101",
+ "rows": [
+  {
+   "group_size_bytes": 20000,
+   "groups": 6,
+   "oracle_stale": 405,
+   "captured": 8,
+   "missed": 397,
+   "false_positives": 0,
+   "miss_rate": 0.9802,
+   "planned_groups": 6,
+   "keys_multi_file": 1260,
+   "keys_straddling": 1252,
+   "straddle_rate": 0.9937
+  },
+  {
+   "group_size_bytes": 50000,
+   "groups": 3,
+   "oracle_stale": 405,
+   "captured": 195,
+   "missed": 210,
+   "false_positives": 0,
+   "miss_rate": 0.5185,
+   "planned_groups": 2,
+   "keys_multi_file": 1260,
+   "keys_straddling": 266,
+   "straddle_rate": 0.2111
+  },
+  {
+   "group_size_bytes": 100000,
+   "groups": 1,
+   "oracle_stale": 405,
+   "captured": 405,
+   "missed": 0,
+   "false_positives": 0,
+   "miss_rate": 0.0,
+   "planned_groups": 1,
+   "keys_multi_file": 1260,
+   "keys_straddling": 0,
+   "straddle_rate": 0.0
+  },
+  {
+   "group_size_bytes": 200000,
+   "groups": 1,
+   "oracle_stale": 405,
+   "captured": 405,
+   "missed": 0,
+   "false_positives": 0,
+   "miss_rate": 0.0,
+   "planned_groups": 1,
+   "keys_multi_file": 1260,
+   "keys_straddling": 0,
+   "straddle_rate": 0.0
+  },
+  {
+   "group_size_bytes": null,
+   "groups": 1,
+   "oracle_stale": 405,
+   "captured": 405,
+   "missed": 0,
+   "false_positives": 0,
+   "miss_rate": 0.0,
+   "planned_groups": 1,
+   "keys_multi_file": 1260,
+   "keys_straddling": 0,
+   "straddle_rate": 0.0
+  }
+ ]
+}

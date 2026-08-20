@@ -1,0 +1,195 @@
+{
+ "what": "Iceberg compaction: is the evidence erased, or only hidden from the current snapshot until expire_snapshots?",
+ "observation_states": {
+  "S1": "pre-compaction current snapshot",
+  "S2": "after rewrite_data_files, snapshot history retained",
+  "S3": "after expire_snapshots (retain_last=1)"
+ },
+ "method": "The checker is unchanged; time travel is performed by pointing its read-only StaticTable at the pre-compaction vN.metadata.json. Oracle violation counts come from the engine readback.",
+ "cells": {
+  "ooo50_sf1_s101": {
+   "config": {
+    "base_keys": 1200,
+    "seed": 101,
+    "ooo_rate": 0.5,
+    "dup_rate": 0.0,
+    "schema_change_freq": 0.0
+   },
+   "oracle_violations": 533,
+   "s1_pre_compaction": {
+    "metadata": "v52.metadata.json",
+    "verdicts": {
+     "FAITHFUL": 718,
+     "STALE_WINS": 405,
+     "NEEDS_CONTEXT": 137
+    }
+   },
+   "s2_after_rewrite": {
+    "snapshots_in_table": 52,
+    "current_verdicts": {
+     "FAITHFUL": 1124
+    },
+    "timetravel_verdicts": {
+     "FAITHFUL": 718,
+     "STALE_WINS": 405,
+     "NEEDS_CONTEXT": 137
+    },
+    "timetravel_error": null,
+    "stale_wins_recoverable_by_timetravel": 405
+   },
+   "s3_after_expire": {
+    "snapshots_in_table": 1,
+    "current_verdicts": {
+     "FAITHFUL": 1124
+    },
+    "timetravel_verdicts": null,
+    "timetravel_error": "FileNotFoundError: [Errno 2] Failed to open local file '/var/folders/6x/6knq7vvs2_n3s_9qd6w2hbv80000gn/T/mor_harness/timetravel_wh/db/tt_ooo50_sf1_s101/metadata/858c2f02-2d9e-4e7d-b67b-ee51139678f4-m0.avro'. Detail: [er",
+    "s1_metadata_file_still_on_disk": true,
+    "stale_wins_recoverable_by_timetravel": 0
+   },
+   "stale_wins_s1": 405,
+   "stale_wins_masked_from_current_s2": 405
+  },
+  "ooo50_sf1_s202": {
+   "config": {
+    "base_keys": 1200,
+    "seed": 202,
+    "ooo_rate": 0.5,
+    "dup_rate": 0.0,
+    "schema_change_freq": 0.0
+   },
+   "oracle_violations": 529,
+   "s1_pre_compaction": {
+    "metadata": "v29.metadata.json",
+    "verdicts": {
+     "FAITHFUL": 753,
+     "STALE_WINS": 392,
+     "NEEDS_CONTEXT": 115
+    }
+   },
+   "s2_after_rewrite": {
+    "snapshots_in_table": 29,
+    "current_verdicts": {
+     "FAITHFUL": 1145
+    },
+    "timetravel_verdicts": {
+     "FAITHFUL": 753,
+     "STALE_WINS": 392,
+     "NEEDS_CONTEXT": 115
+    },
+    "timetravel_error": null,
+    "stale_wins_recoverable_by_timetravel": 392
+   },
+   "s3_after_expire": {
+    "snapshots_in_table": 1,
+    "current_verdicts": {
+     "FAITHFUL": 1145
+    },
+    "timetravel_verdicts": null,
+    "timetravel_error": "FileNotFoundError: [Errno 2] Failed to open local file '/var/folders/6x/6knq7vvs2_n3s_9qd6w2hbv80000gn/T/mor_harness/timetravel_wh/db/tt_ooo50_sf1_s202/metadata/2382d8bb-6431-4ad4-aa54-21a946a94c19-m0.avro'. Detail: [er",
+    "s1_metadata_file_still_on_disk": true,
+    "stale_wins_recoverable_by_timetravel": 0
+   },
+   "stale_wins_s1": 392,
+   "stale_wins_masked_from_current_s2": 392
+  },
+  "ooo50_sf10_s101": {
+   "config": {
+    "base_keys": 4000,
+    "seed": 101,
+    "ooo_rate": 0.5,
+    "dup_rate": 0.0,
+    "schema_change_freq": 0.0
+   },
+   "oracle_violations": 1729,
+   "s1_pre_compaction": {
+    "metadata": "v30.metadata.json",
+    "verdicts": {
+     "FAITHFUL": 2480,
+     "NEEDS_CONTEXT": 424,
+     "STALE_WINS": 1296
+    }
+   },
+   "s2_after_rewrite": {
+    "snapshots_in_table": 30,
+    "current_verdicts": {
+     "FAITHFUL": 3777
+    },
+    "timetravel_verdicts": {
+     "FAITHFUL": 2480,
+     "NEEDS_CONTEXT": 424,
+     "STALE_WINS": 1296
+    },
+    "timetravel_error": null,
+    "stale_wins_recoverable_by_timetravel": 1296
+   },
+   "s3_after_expire": {
+    "snapshots_in_table": 1,
+    "current_verdicts": {
+     "FAITHFUL": 3777
+    },
+    "timetravel_verdicts": null,
+    "timetravel_error": "FileNotFoundError: [Errno 2] Failed to open local file '/var/folders/6x/6knq7vvs2_n3s_9qd6w2hbv80000gn/T/mor_harness/timetravel_wh/db/tt_ooo50_sf10_s101/metadata/3a6ef3ff-9325-43aa-a724-646a36794adc-m0.avro'. Detail: [e",
+    "s1_metadata_file_still_on_disk": true,
+    "stale_wins_recoverable_by_timetravel": 0
+   },
+   "stale_wins_s1": 1296,
+   "stale_wins_masked_from_current_s2": 1296
+  },
+  "mixed_sf1_s101": {
+   "config": {
+    "base_keys": 1200,
+    "seed": 101,
+    "ooo_rate": 0.5,
+    "dup_rate": 0.15,
+    "schema_change_freq": 0.0
+   },
+   "oracle_violations": 632,
+   "s1_pre_compaction": {
+    "metadata": "v52.metadata.json",
+    "verdicts": {
+     "FAITHFUL": 605,
+     "STALE_WINS": 346,
+     "NEEDS_CONTEXT": 137,
+     "DUPLICATE": 172
+    }
+   },
+   "s2_after_rewrite": {
+    "snapshots_in_table": 52,
+    "current_verdicts": {
+     "FAITHFUL": 952,
+     "DUPLICATE": 172
+    },
+    "timetravel_verdicts": {
+     "FAITHFUL": 605,
+     "STALE_WINS": 346,
+     "NEEDS_CONTEXT": 137,
+     "DUPLICATE": 172
+    },
+    "timetravel_error": null,
+    "stale_wins_recoverable_by_timetravel": 346
+   },
+   "s3_after_expire": {
+    "snapshots_in_table": 1,
+    "current_verdicts": {
+     "FAITHFUL": 952,
+     "DUPLICATE": 172
+    },
+    "timetravel_verdicts": null,
+    "timetravel_error": "FileNotFoundError: [Errno 2] Failed to open local file '/var/folders/6x/6knq7vvs2_n3s_9qd6w2hbv80000gn/T/mor_harness/timetravel_wh/db/tt_mixed_sf1_s101/metadata/e6c665a3-9024-4bea-8493-a74904f4ee48-m0.avro'. Detail: [er",
+    "s1_metadata_file_still_on_disk": true,
+    "stale_wins_recoverable_by_timetravel": 0
+   },
+   "stale_wins_s1": 346,
+   "stale_wins_masked_from_current_s2": 346
+  }
+ },
+ "totals": {
+  "cells": 4,
+  "stale_wins_s1": 2439,
+  "stale_wins_masked_from_current_after_rewrite": 2439,
+  "stale_wins_recoverable_by_timetravel_at_s2": 2439,
+  "stale_wins_recoverable_by_timetravel_at_s3": 0,
+  "timetravel_unreadable_at_s3": true
+ }
+}
