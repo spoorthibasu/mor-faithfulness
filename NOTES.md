@@ -2378,3 +2378,54 @@ times.
 **Consequence for the paper:** no sentence in §6.4 about where the cost lives. The condition for adding
 one was that the second traversal be delete-dominated; it is not. ~1.9x stands as measured with its
 internal decomposition open, and the combined pass stays untested for the Entry-49 reasons.
+
+## Entry 52 — Attributing the 1.91x: there is no second scan, and my future-work reasoning was wrong
+
+Paired stock and audited rewrites at 53 GB with Spark's event log on. Every number below is read out
+of the log, not inferred.
+
+| arm | stage | tasks | wall | read | shuffle |
+|---|---|---|---|---|---|
+| stock | write | 128 | 135.6 s | 44.4 GB | 0 |
+| audited | aggregate (partial) | 128 | 90.9 s | **1.0 GB** | 0.97 GB written |
+| audited | aggregate (final) | **1** | 37.8 s | 0 | 0.97 GB read |
+| audited | write | 128 | 136.2 s | 44.4 GB | 0 |
+
+**There is no second table scan.** Audited reads 45.4 GB against stock's 44.4 GB — 1.02x. The
+aggregation reads **1.0 GB of a 44.4 GB table**, so column pruning *does* survive the rewrite's
+scan-task-set path. The probe had shown pruning on a plain read and left the rewrite path open; it is
+now closed. The write stage is untouched (136.2 s vs 135.6 s).
+
+**All 130 s of overhead is the two aggregation stages**, and it splits into two costs of different
+kinds:
+
+* **~91 s re-applying the equality deletes** over a 1 GB pruned scan. Reading 1 GB takes seconds; the
+  rest is delete application. This is the one thing genuinely done twice — both consumers need the
+  deletion flag and neither can inherit it from the other.
+* **~38 s in a single-task final aggregation**, AQE coalescing the shuffle into one partition. That is
+  a configuration default, not a property of the design.
+
+**Three corrections to the paper, all mine.**
+
+1. §5.2 said the audited path "materialises the group's rows twice". **False.** It materialises three
+   columns once and all columns once.
+2. §6.7 declined fusion because it "removes a second traversal not worth the memory". **Wrong on its
+   premise** — there is no traversal to remove. Fusion would eliminate the duplicated delete
+   application *and* the shuffle entirely, i.e. close to the whole 130 s. The case for fusing is
+   **stronger** than I wrote. The memory objection (O(distinct keys)) and the count non-idempotence
+   objection survive untouched, and are sufficient on their own — but the reason has to be stated as a
+   memory trade, not a saved scan.
+3. A cheap partial remedy exists that I would not have found without measuring: **~29% of the overhead
+   is in a stage whose parallelism is a default**. No memory cost, no correctness obligation. Recorded
+   as measured-and-untaken; the cost experiment has not been re-run with it changed, so 1.91x stands
+   for the implementation as described.
+
+**Pattern worth naming, third occurrence.** Entry 46 (exp3 summary conflating an OOM with a config
+cap), Entry 51 (probe verdict ignoring its own floor arm), and now this. Each time the per-arm data
+was right and a higher-level interpretation was wrong. The interpretation was in each case a *plausible
+story fitted to a ratio* rather than a decomposition. The fix that has actually worked, twice now, is
+to measure a floor or a component directly rather than reason from a total.
+
+**Page count:** 14 pages, body 13, over the 12-page limit. Cuts already made: §4 Hudi/Delta merged,
+`tab:scale` and the stage table folded to prose, straddle replication rows folded to prose, the
+group-size sweep condensed twice. Remaining candidates need an author decision.

@@ -1,0 +1,252 @@
+{
+ "arms": {
+  "stock": {
+   "compact_s": 137.011,
+   "ingest_s": 229.033,
+   "event_log": "/mnt/nvme/spark-events/local-1787248844627",
+   "stages": [
+    {
+     "stage": 0,
+     "name": "save at SparkBinPackFileRewriteRunner.java:234",
+     "tasks": 128,
+     "wall_s": 135.58,
+     "cpu_s": 268.6,
+     "input_gb": 44.38,
+     "output_gb": 8.54,
+     "shuffle_write_gb": 0.0,
+     "shuffle_read_gb": 0.0,
+     "spill_disk_gb": 0.0
+    },
+    {
+     "stage": 1,
+     "name": "collect at /opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapte",
+     "tasks": 1,
+     "wall_s": 0.07,
+     "cpu_s": 0.0,
+     "input_gb": 0.0,
+     "output_gb": 0.0,
+     "shuffle_write_gb": 0.0,
+     "shuffle_read_gb": 0.0,
+     "spill_disk_gb": 0.0
+    },
+    {
+     "stage": 3,
+     "name": "collect at /opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapte",
+     "tasks": 1,
+     "wall_s": 0.05,
+     "cpu_s": 0.0,
+     "input_gb": 0.0,
+     "output_gb": 0.0,
+     "shuffle_write_gb": 0.0,
+     "shuffle_read_gb": 0.0,
+     "spill_disk_gb": 0.0
+    },
+    {
+     "stage": 4,
+     "name": "collect at /opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapte",
+     "tasks": 1,
+     "wall_s": 0.04,
+     "cpu_s": 0.0,
+     "input_gb": 0.0,
+     "output_gb": 0.0,
+     "shuffle_write_gb": 0.0,
+     "shuffle_read_gb": 0.0,
+     "spill_disk_gb": 0.0
+    },
+    {
+     "stage": 6,
+     "name": "collect at /opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapte",
+     "tasks": 1,
+     "wall_s": 0.01,
+     "cpu_s": 0.0,
+     "input_gb": 0.0,
+     "output_gb": 0.0,
+     "shuffle_write_gb": 0.0,
+     "shuffle_read_gb": 0.0,
+     "spill_disk_gb": 0.0
+    },
+    {
+     "stage": 7,
+     "name": "collect at /opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapte",
+     "tasks": 16,
+     "wall_s": 0.2,
+     "cpu_s": 0.3,
+     "input_gb": 0.0,
+     "output_gb": 0.0,
+     "shuffle_write_gb": 0.0,
+     "shuffle_read_gb": 0.0,
+     "spill_disk_gb": 0.0
+    },
+    {
+     "stage": 9,
+     "name": "collect at /opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapte",
+     "tasks": 1,
+     "wall_s": 0.02,
+     "cpu_s": 0.0,
+     "input_gb": 0.0,
+     "output_gb": 0.0,
+     "shuffle_write_gb": 0.0,
+     "shuffle_read_gb": 0.0,
+     "spill_disk_gb": 0.0
+    },
+    {
+     "stage": 10,
+     "name": "collect at /opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapte",
+     "tasks": 1,
+     "wall_s": 0.04,
+     "cpu_s": 0.0,
+     "input_gb": 0.0,
+     "output_gb": 0.0,
+     "shuffle_write_gb": 0.0,
+     "shuffle_read_gb": 0.0,
+     "spill_disk_gb": 0.0
+    }
+   ]
+  },
+  "audited": {
+   "compact_s": 267.033,
+   "ingest_s": 228.38,
+   "event_log": "/mnt/nvme/spark-events/local-1787249225862",
+   "stages": [
+    {
+     "stage": 0,
+     "name": "collectAsList at SparkBinPackFileRewriteRunner.java:318",
+     "tasks": 128,
+     "wall_s": 90.91,
+     "cpu_s": 180.4,
+     "input_gb": 1.0,
+     "output_gb": 0.0,
+     "shuffle_write_gb": 0.973,
+     "shuffle_read_gb": 0.0,
+     "spill_disk_gb": 0.0
+    },
+    {
+     "stage": 1,
+     "name": "collectAsList at SparkBinPackFileRewriteRunner.java:318",
+     "tasks": 1,
+     "wall_s": 37.76,
+     "cpu_s": 37.7,
+     "input_gb": 0.0,
+     "output_gb": 0.0,
+     "shuffle_write_gb": 0.0,
+     "shuffle_read_gb": 0.973,
+     "spill_disk_gb": 0.0
+    },
+    {
+     "stage": 2,
+     "name": "save at SparkBinPackFileRewriteRunner.java:332",
+     "tasks": 128,
+     "wall_s": 136.2,
+     "cpu_s": 271.4,
+     "input_gb": 44.38,
+     "output_gb": 8.54,
+     "shuffle_write_gb": 0.0,
+     "shuffle_read_gb": 0.0,
+     "spill_disk_gb": 0.0
+    },
+    {
+     "stage": 3,
+     "name": "collect at /opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapte",
+     "tasks": 1,
+     "wall_s": 0.02,
+     "cpu_s": 0.0,
+     "input_gb": 0.0,
+     "output_gb": 0.0,
+     "shuffle_write_gb": 0.0,
+     "shuffle_read_gb": 0.0,
+     "spill_disk_gb": 0.0
+    },
+    {
+     "stage": 5,
+     "name": "collect at /opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapte",
+     "tasks": 1,
+     "wall_s": 0.01,
+     "cpu_s": 0.0,
+     "input_gb": 0.0,
+     "output_gb": 0.0,
+     "shuffle_write_gb": 0.0,
+     "shuffle_read_gb": 0.0,
+     "spill_disk_gb": 0.0
+    },
+    {
+     "stage": 6,
+     "name": "collect at /opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapte",
+     "tasks": 1,
+     "wall_s": 0.03,
+     "cpu_s": 0.0,
+     "input_gb": 0.0,
+     "output_gb": 0.0,
+     "shuffle_write_gb": 0.0,
+     "shuffle_read_gb": 0.0,
+     "spill_disk_gb": 0.0
+    },
+    {
+     "stage": 8,
+     "name": "collect at /opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapte",
+     "tasks": 1,
+     "wall_s": 0.01,
+     "cpu_s": 0.0,
+     "input_gb": 0.0,
+     "output_gb": 0.0,
+     "shuffle_write_gb": 0.0,
+     "shuffle_read_gb": 0.0,
+     "spill_disk_gb": 0.0
+    },
+    {
+     "stage": 9,
+     "name": "collect at /opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapte",
+     "tasks": 16,
+     "wall_s": 0.13,
+     "cpu_s": 0.2,
+     "input_gb": 0.0,
+     "output_gb": 0.0,
+     "shuffle_write_gb": 0.0,
+     "shuffle_read_gb": 0.0,
+     "spill_disk_gb": 0.0
+    },
+    {
+     "stage": 11,
+     "name": "collect at /opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapte",
+     "tasks": 1,
+     "wall_s": 0.02,
+     "cpu_s": 0.0,
+     "input_gb": 0.0,
+     "output_gb": 0.0,
+     "shuffle_write_gb": 0.0,
+     "shuffle_read_gb": 0.0,
+     "spill_disk_gb": 0.0
+    },
+    {
+     "stage": 12,
+     "name": "collect at /opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapte",
+     "tasks": 1,
+     "wall_s": 0.05,
+     "cpu_s": 0.0,
+     "input_gb": 0.0,
+     "output_gb": 0.0,
+     "shuffle_write_gb": 0.0,
+     "shuffle_read_gb": 0.0,
+     "spill_disk_gb": 0.0
+    }
+   ]
+  }
+ },
+ "host": {
+  "nproc": "16",
+  "mem_total": "123 GiB",
+  "warehouse_dev": "/dev/nvme1n1",
+  "root_dev": "/dev/nvme0n1p1",
+  "kernel": "6.17.0-1017-aws",
+  "instance": "i4i.4xlarge"
+ },
+ "failures": [],
+ "config": {
+  "commits": 32,
+  "rows_per_commit": 3600000,
+  "payload_bytes": 400,
+  "delete_frac": 0.2,
+  "ordering": "contiguous",
+  "files_per_commit": 4,
+  "heap": "32g"
+ }
+}
