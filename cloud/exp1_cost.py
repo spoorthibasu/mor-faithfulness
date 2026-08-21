@@ -27,7 +27,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import (ControlFailure, check_entropy, check_rewrote, cv, emit, hostinfo,  # noqa: E402
+from common import (err_excerpt, ControlFailure, check_entropy, check_rewrote, cv, emit, hostinfo,  # noqa: E402
                     median, preflight, run_one, spread)
 
 HEAP = os.environ.get("MOR_EXP1_HEAP", "32g")
@@ -62,9 +62,9 @@ for i in range(REPEATS):
     for label, audit, opts in ARMS:
         res, wall = run_one(f"e1_{label}_{i}", SYNTH, heap=HEAP, audit=audit, opts=opts)
         if res.get("error"):
-            failures.append(f"exp1/{label}/r{i}: {res['error'][:300]}")
+            failures.append(f"exp1/{label}/r{i}: {err_excerpt(res['error'], 200, 800)}")
             print(f"  r{i} {label:8} FAILED: {res['error'][:200]}", flush=True)
-            out[label].append({"error": res["error"][:2000]})
+            out[label].append({"error": err_excerpt(res["error"])})
             continue
         st, summ = res["stats"], (res.get("audit_summary") or {})
         try:

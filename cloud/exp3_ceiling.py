@@ -24,7 +24,7 @@ import sys
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import ControlFailure, check_rewrote, emit, hostinfo, preflight, run_one  # noqa: E402
+from common import err_excerpt, ControlFailure, check_rewrote, emit, hostinfo, preflight, run_one  # noqa: E402
 
 BUDGET_S = float(os.environ.get("MOR_EXP3_BUDGET_S", "4500"))     # 75 min
 TIMEOUT_S = float(os.environ.get("MOR_EXP3_TIMEOUT_S", "1500"))   # 25 min per point
@@ -71,7 +71,7 @@ for heap, keys, fpc in POINTS:
     rec = {"heap": heap, "keys": keys, "wall_s": round(wall, 1), "rows": p["rows_total"],
            "gb": round(p["bytes_total"] / 2**30, 1)}
     if err:
-        rec.update({"outcome": "OOM" if oom else "error", "detail": err[:600]})
+        rec.update({"outcome": "OOM" if oom else "error", "detail": err_excerpt(err)})
         dead_heaps.add(heap)
         print(f"  {'OOM' if oom else 'ERROR'} after {wall:.0f}s -- this is the measurement: "
               f"{err[:200]}", flush=True)

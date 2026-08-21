@@ -24,7 +24,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import (ControlFailure, check_entropy, check_rewrote, emit, event_log_args,  # noqa: E402
+from common import (err_excerpt, ControlFailure, check_entropy, check_rewrote, emit, event_log_args,  # noqa: E402
                     hostinfo, median, newest_event_log, parse_event_log, preflight,
                     print_stages, run_one, spread, EVENT_DIR)
 
@@ -68,9 +68,9 @@ for i in range(REPEATS):
             os.environ.pop("MOR_SHUFFLE_PARTITIONS", None)
         res, wall = run_one(f"e4_{label}_{i}", SYNTH, heap=HEAP, audit=audit, opts=opts)
         if res.get("error"):
-            failures.append(f"exp4/{label}/r{i}: {res['error'][:300]}")
+            failures.append(f"exp4/{label}/r{i}: {err_excerpt(res['error'], 200, 800)}")
             print(f"  r{i} {label:11} FAILED: {res['error'][:160]}", flush=True)
-            out[label].append({"error": res["error"][:1500]}); save(); continue
+            out[label].append({"error": err_excerpt(res["error"])}); save(); continue
         st = res["stats"]
         stages = parse_event_log(newest_event_log(before))
         try:

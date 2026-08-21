@@ -23,7 +23,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import (ControlFailure, check_entropy, check_rewrote, cv, emit, hostinfo,  # noqa: E402
+from common import (err_excerpt, ControlFailure, check_entropy, check_rewrote, cv, emit, hostinfo,  # noqa: E402
                     median, preflight, run_one, spread)
 
 HEAP = os.environ.get("MOR_EXP6_HEAP", "32g")
@@ -70,9 +70,9 @@ for label, rpc, fpc in SCALES:
             os.environ.pop("PYSPARK_SUBMIT_ARGS", None)   # plain run; event log not needed here
             res, wall = run_one(f"e6_{label}_{arm}_{i}", synth, heap=HEAP, audit=audit, opts=opts)
             if res.get("error"):
-                failures.append(f"exp6/{label}/{arm}/r{i}: {res['error'][:250]}")
+                failures.append(f"exp6/{label}/{arm}/r{i}: {err_excerpt(res['error'], 200, 800)}")
                 print(f"  r{i} {arm:8} FAILED: {res['error'][:150]}", flush=True)
-                cell[arm].append({"error": res["error"][:1200]}); save(); continue
+                cell[arm].append({"error": err_excerpt(res["error"])}); save(); continue
             st = res["stats"]
             try:
                 check_entropy(f"exp6/{label}/{arm}/r{i}", res, synth)

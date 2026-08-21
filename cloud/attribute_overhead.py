@@ -34,7 +34,7 @@ import time
 from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import ControlFailure, check_rewrote, emit, hostinfo, preflight, run_one  # noqa: E402
+from common import err_excerpt, ControlFailure, check_rewrote, emit, hostinfo, preflight, run_one  # noqa: E402
 
 HEAP = os.environ.get("MOR_ATTR_HEAP", "32g")
 COMMITS = int(os.environ.get("MOR_ATTR_COMMITS", "32"))
@@ -122,7 +122,7 @@ for label, audit, opts in ARMS:
     print(f"\n=== {label} ===", flush=True)
     res, wall = run_one(f"attr_{label}", SYNTH, heap=HEAP, audit=audit, opts=opts)
     if res.get("error"):
-        failures.append(f"{label}: {res['error'][:300]}")
+        failures.append(f"{label}: {err_excerpt(res['error'], 200, 800)}")
         print(f"  FAILED: {res['error'][:200]}", flush=True)
         continue
     st = res["stats"]

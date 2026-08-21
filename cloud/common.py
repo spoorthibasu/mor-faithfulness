@@ -35,6 +35,25 @@ SELECTION_FLOOR = 384 * 1024 ** 2                # 0.75 x 512 MB target
 MIN_INPUT_FILES = 5
 
 
+def err_excerpt(s, head=600, tail=4000):
+    """Excerpt an error string keeping BOTH ends, never the front alone.
+
+    A Spark failure reaching Python is a long chain: the Python frames come first and the Java
+    exception -- the part that says WHICH limit was hit -- is at the tail. Slicing `s[:N]` therefore
+    throws away the only diagnostic that matters. That is not hypothetical: exp3's 100M-key point
+    stored `err[:600]`, the `OutOfMemoryError` / cap string sat past that boundary, and a paper claim
+    about which limit was reached had to be withdrawn because nothing in the artifact could settle it.
+
+    Keeping the tail alone would lose the call site, so keep both ends and mark the elision.
+    """
+    if s is None:
+        return ""
+    s = str(s)
+    if len(s) <= head + tail:
+        return s
+    return f"{s[:head]}\n... [{len(s) - head - tail} chars elided] ...\n{s[-tail:]}"
+
+
 class ControlFailure(RuntimeError):
     """A guard tripped. The measurement is void, not merely disappointing."""
 
@@ -88,7 +107,7 @@ def run_one(name, synth, *, heap, cross=False, audit=True, opts="", drop_cache=T
     try:
         res = run_driver("iceberg_driver.py", pj, os.path.join(WAREHOUSE, "_io", name))
     except Exception as e:
-        res = {"error": f"{type(e).__name__}: {str(e)[:2000]}"}
+        res = {"error": f"{type(e).__name__}: {err_excerpt(str(e))}"}
     wall = time.time() - t0
     on_disk = 0
     ddir = os.path.join(tdir, "data")

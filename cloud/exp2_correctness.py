@@ -29,7 +29,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import (ControlFailure, check_entropy, check_rewrote, emit, hostinfo,  # noqa: E402
+from common import (err_excerpt, ControlFailure, check_entropy, check_rewrote, emit, hostinfo,  # noqa: E402
                     preflight, run_one)
 
 HEAP = os.environ.get("MOR_EXP2_HEAP", "32g")
@@ -65,7 +65,7 @@ def one(tag, i, cross):
     res, wall = run_one(f"e2_{tag}_{i}", SYNTH, heap=HEAP, cross=cross,
                         opts=(OPTS if cross else BASE_OPTS))
     if res.get("error"):
-        failures.append(f"exp2/{tag}/r{i}: {res['error'][:300]}")
+        failures.append(f"exp2/{tag}/r{i}: {err_excerpt(res['error'], 200, 800)}")
         print(f"  r{i} {tag}: FAILED {res['error'][:200]}", flush=True)
         return None
     o, s, st = res.get("oracle") or {}, res.get("audit_summary") or {}, res["stats"]
