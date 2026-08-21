@@ -1,0 +1,69 @@
+{
+ "result": {
+  "pre_verdict": "VIOLATIONS_FOUND",
+  "pre_counts": {
+   "FAITHFUL": 173,
+   "DUPLICATE": 0,
+   "WRONGLY_SUPPRESSED_CURRENT": 0,
+   "STALE_WINS": 27,
+   "UNDECIDABLE": 0,
+   "NEEDS_CONTEXT": 0
+  },
+  "flagged_keys": [
+   7,
+   14,
+   21,
+   28,
+   35,
+   49,
+   56,
+   63,
+   70,
+   77,
+   84,
+   91,
+   98,
+   105,
+   112,
+   119,
+   126,
+   133,
+   140,
+   147,
+   154,
+   161,
+   168,
+   175,
+   182,
+   189,
+   196
+  ],
+  "n_flagged": 27,
+  "position_delete_note": {
+   "duplicate_candidates": [],
+   "note": "Tier A: duplicate-key candidates from metadata only, no data scan. Tier B (findings) is the exact prover."
+  },
+  "total_rows": 200,
+  "oracle_agrees_on": 27,
+  "oracle_disagrees_on": [],
+  "oracle_stale_but_unflagged": [],
+  "compaction": {
+   "rewritten_data_files": 5,
+   "added_data_files": 1
+  },
+  "post_verdict": "FAITHFUL",
+  "post_counts": {
+   "FAITHFUL": 200,
+   "DUPLICATE": 0,
+   "WRONGLY_SUPPRESSED_CURRENT": 0,
+   "STALE_WINS": 0,
+   "UNDECIDABLE": 0,
+   "NEEDS_CONTEXT": 0
+  },
+  "still_flagged": [],
+  "total_rows_after": 200,
+  "served_rows_changed": []
+ },
+ "failures": [],
+ "scope": "one run of a nondeterministic race; not a rate"
+}

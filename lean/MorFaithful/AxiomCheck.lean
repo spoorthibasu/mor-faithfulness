@@ -1,6 +1,7 @@
 import MorFaithful.Global
 import MorFaithful.UpdatesModel
 import MorFaithful.LocalImpossible
+import MorFaithful.GateSoundness
 
 /-!
 Axiom audit.  Each `#print axioms` must show only the standard mathlib axioms
@@ -33,5 +34,12 @@ namespace Mor
 #print axioms MOR.prefixFaithful_iff_prefixFaithful'
 #print axioms MOR.faithful'_of_linear
 #print axioms del_reduction_needs_inj
+-- Sequence separation (licenses the metadata gate to ignore same-sequence file pairs)
+#print axioms MOR.discarded_seq_lt_visible_seq
+#print axioms MOR.staleWin_distinct_seq
+#print axioms MOR.same_seq_both_visible
+#print axioms MOR.discarded_seq_lt_visible_seq'
+#print axioms MOR.staleWin_distinct_seq'
+#print axioms MOR.same_seq_both_visible'
 
 end Mor

@@ -2492,3 +2492,514 @@ specific run stands; the generalisation does not, and is narrowed.
 
 Exp 5 (24 GB heap ceiling) and Exp 6 (scale curve) did not run. Both are worth doing *after* the
 harness parallelism is fixed, not before -- on `local[2]` they would measure the wrong machine.
+
+## Entry 55 -- Page pressure is float height, not prose; and two of the three planned cuts were already made or wrong
+
+Three rounds of prose trimming failed to shorten the manuscript, twice making the page position worse.
+Measuring the float landscape explained why. Six floats occupy **96.4 layout rows** against 113.8 rows
+per page, and `acmart` sets `\textfraction = .03` (LaTeX default: .2), so a column may be 97% float with
+three rows of text in it. With that much freedom over column admission, a small text edit can flip a
+float across a column boundary and move 13--27 rows in either direction. Prose length is not the
+controlling variable; float height is.
+
+### Two of the three planned reductions were not available, and measurement is what showed it
+
+The plan was to set the four tabulars, the algorithm body and the figure box text one size smaller.
+
+**The four tabulars were already `\small`.** Verified against the rendered PDF rather than the markup:
+they measure 7.97 pt against 9.06 pt body text, exactly 0.88x. The one cell that looked full-size,
+`\texttt{expire\_snapshots}`, is typewriter at a different nominal size inside the same `\small` group;
+that table's header row measures 7.97 pt like the others. No change to make.
+
+**The figure was already smaller than the target.** Its `tikzpicture` sets `font=\footnotesize` (6.97 pt),
+one size *below* `\small` (7.97 pt). Applying the planned change was tested rather than reasoned about,
+and it made the figure **taller**: 18.3 -> 21.5 rows, taking the document back to 14 pages and undoing
+the entire gain from the algorithm. Reverted. A "reduce the font" instruction is only a reduction if
+you have measured what the font currently is.
+
+### The one real change removed a whole page, which is more than it should have
+
+`\small` on the algorithm body took `alg:capture` from 27.4 to 23.2 rows -- 4.2 rows -- and the document
+went from 14 pages to 13, with body text on p13 falling from 75 layout rows to 65. A 4.2-row float
+reduction does not contain a page. The extra came from the float algorithm re-admitting floats to
+different columns once the algorithm fitted, which is the same non-monotonicity that made the earlier
+prose cuts backfire, this time working in our favour. It also cut overfull boxes from 12 to 4 and
+underfull from 12 to 3.
+
+Legibility was the constraint that outranked the line target, since Algorithm 1 is "precise pseudocode"
+in the submission category's own wording. At `\small` it reads better than it did at full size: the
+aggregation line now fits on one line instead of wrapping with stretched inter-word spacing.
+
+### Where this leaves the page limit
+
+Still short. **46.6 column-rows of body text remain in column 1 of page 13**, and PVLDB Vol 20 allows no
+body text there at all. No float is large enough to close that alone; the largest is the algorithm at
+23.2 rows. The remaining decision is which float to lose or which cycle to submit to, and it is not a
+decision that further font or prose adjustment can make.
+
+## Entry 56 -- Gate CLEARANCE, measured at last; and a hash-partitioned sink defeats the gate on perfectly ordered data
+
+The study measured the gate's cost exhaustively and its clearance rate never, on a paper whose value
+proposition is "free unless you need it". Section 5.3 asserts clearance needs each commit to write "a
+contiguous, advancing window of ordering values" and that real CDC produces this. Both halves are now
+tested. The first is true. **The second does not survive contact with how CDC sinks actually write.**
+
+### The sweep
+
+New generator knob `interleave_frac`: the fraction of each commit's rows whose ordering value is drawn
+from another commit's window rather than its own. 40 commits x 1,500 rows, one file per commit, ~12 MB,
+group cap forced to 1.5 MB so each run forms 10 groups; 5 independent seeds pooled = 50 groups/point.
+Metadata-only and deterministic, so no timing rigour, no cloud host, no cold-cache control.
+
+| interleave_frac | clearance | binomial prediction |
+|---|---|---|
+| 0 | 100% | 100% |
+| 1e-5 | 100% | 94.2% |
+| 2e-5 | 92% | 88.7% |
+| 5e-5 | 76% | 74.1% |
+| 1e-4 | 68% | 54.9% |
+| 1.5e-4 | 54% | 40.6% |
+| 2e-4 | 40% | 30.1% |
+| 3e-4 | 22% | 16.5% |
+| 5e-4 | 16% | 5.0% |
+| 1e-3 | 4% | 0.2% |
+| 1.0 | 0% | 0% |
+
+Clearance crosses 50% at roughly **one out-of-window row in every 5,000--6,700 rows**, i.e. about one
+per file group. That is the predicted shape: the gate tests per-file interval ENDPOINTS, so one stray
+row poisons a whole group. Measured clearance sits consistently ABOVE the binomial in the tail (16% vs
+5%, 4% vs 0.2%). The likely cause -- untested, so recorded as a conjecture -- is that an out-of-window
+row in a group's highest-sequence file pointing at a window ABOVE every file in the group raises that
+file's maximum with no later file to invert against, so it does not trigger.
+
+### Two measurement bugs caught before they became results
+
+**Rounding would have manufactured the cliff.** The first implementation took `round(frac * n_rows)`
+interleaved rows per file. At 1,500 rows/file every rate below 3.3e-4 floors to ZERO rows, so the curve
+would have been flat then vertical at 5e-4 -- a cliff located by the rounding boundary rather than by
+the gate. Replaced with exact Bernoulli sampling by geometric gaps. The graded curve above only exists
+because of this fix.
+
+**Ten groups cannot locate a cliff.** The first pass ran one seed, so clearance resolved only to the
+nearest 10 points and the mid-range sat far above the binomial. Pooling 5 seeds (independent workload
+realisations, not repeats against noise -- the quantity is deterministic given the data) brought 5e-5 to
+76% against 74.1% predicted. Most of the apparent deviation was sampling error.
+
+### The finding that contradicts the paper
+
+`probe_gate_filelayout.py`. Four arms, **zero interleaving in all of them**, contiguous ordering,
+identical values -- `lsn_c(k) = LSN_BASE(c) + (k-1)` holds for every row in every arm, the construction
+oracle stays valid, and all four materialise the same 14,522 rows. The only difference is which file
+each key lands in.
+
+| layout | clearance |
+|---|---|
+| 1 file/commit | **100%** |
+| 4 files/commit, contiguous key blocks | **100%** |
+| 4 files/commit, hash-scattered keys | **0%** |
+| 8 files/commit, hash-scattered keys | **0%** |
+
+A real CDC sink hash-partitions by key, so each of a commit's files holds a scattered subset and its
+ordering interval spans nearly the whole commit window. Those files share a data sequence number, so
+the gate's sort cannot separate them, and the running-maximum test sees one file's maximum followed by
+the next file's much lower minimum and calls it an inversion -- on perfectly ordered data.
+
+**So Section 5.3's condition is necessary but not sufficient, and as written it is wrong about real
+CDC.** Contiguous advancing windows per commit do not buy clearance; the files WITHIN a commit must
+also carry disjoint ordering ranges, which is exactly what hash partitioning destroys. Single-file
+commits and range-partitioned sinks clear; hash-partitioned ones do not clear at all.
+
+This is not a defect in the gate -- it is sound in both cases, conservatively auditing when it cannot
+rule an inversion out. It is a defect in the paper's claim about when the gate is free.
+
+## Entry 57 -- CDC defect survey: what the outside evidence actually supports
+
+The outside review named "nothing establishes the failure class occurs in the wild" as the largest
+acceptance risk. Assembling and verifying what exists, on 21 August 2026.
+
+### The configuration survey survives, and reproduces exactly
+
+`survey/` is still in the repo -- it was cut from the PAPER, not from the artifact. Re-verified from
+the source data rather than restated: the CSV holds 152 rows, **62 vulnerable (40.8%), 5 safe (3.3%),
+85 unclear (55.9%)**, zero duplicate `(source, value)` pairs. `classify.py` embeds its own copy of the
+dataset, so running it proves nothing about the CSV; cross-checking the two found **zero value-level
+disagreements** across all 152 rows. Categories: 6 official Hudi, 80 GitHub repos, 51 vendor blogs, 15
+Q&A. Sensitivity: 78% if generic bare timestamps count as vulnerable, 96.7% "not demonstrably safe".
+
+The strongest defensible sentence is not the 41%. It is that **only 3.3% of surveyed configurations
+demonstrably use a monotone technical ordering field** (LSN/commit/offset/version/sequence). The 41%
+carries a single-coder caveat and measures configuration exposure, not realised corruption.
+
+### Community artifacts, all fetched and verified live
+
+1. **Hudi's own project blog**, "What is CDC on a Data Lake?", 22 July 2026, Sivabalan Narayanan.
+   On ordering: "Merging by the source log position, rather than arrival time, makes the pipeline
+   immune to this." On deletes: "The mirror then diverges from the source, one deleted row at a time --
+   a correctness and compliance problem (GDPR erasure requests must propagate)."
+2. **apache/iceberg#15305**, 12 Feb 2026, Flink 2.2.0 upsert + MOR on Iceberg v2, now closed. "Because
+   equality deletes apply to rows with lower sequence numbers (not equal), the delete does not remove
+   the co-committed data row." This is an INDEPENDENT public instance of the exact FLINK-38450
+   signature the paper describes in Section 2.2 and the generator injects.
+3. **apache/iceberg#10312**, 11 May 2024, "Equality delete lost after compact data files", **closed as
+   not planned** after going stale. Concurrent compaction plus equality delete leaves a deleted record
+   in the table. Never fixed.
+4. **apache/iceberg-go#946**, 28 Apr 2026, Postgres->Iceberg v2 CDC at ~1 snapshot/5s. Equality delete
+   files "intentionally preserved" through RewriteDataFiles. **Closed by PR #947, merged 30 Apr 2026.**
+5. **FLINK-20374**, 26 Nov 2020, Critical, fixed in 1.13.3/1.14.0. Changelog shuffling on non-primary-key
+   columns loses ordering between -U and +U, dropping records at the sink.
+6. **apache/hudi#7335**, 30 Nov 2022, closed. An older precombine value overwrote a newer record:
+   "it updated the Fake Name 4 record which shouldn't happen as the timestamp is lower."
+
+Searched and REJECTED as padding: DBZ-9521 (Debezium Oracle `lob.enabled` dropped events, a 3.2.3
+regression fixed in 3.2.4) is connector-internal event loss, not sink ordering discipline.
+
+### What this supports, and what it does not
+
+Supports: the class is real, recognised by the formats' own maintainers, and recurs across three
+projects over six years (2020--2026). Item 2 is a second, independent occurrence of the paper's own
+defect signature, which is the single most useful addition.
+
+Does NOT support: that these defects are generally unfixed -- items 4 and 5 are fixed, 2 and 6 closed.
+Nor any prevalence claim about realised corruption; the survey measures configuration exposure only.
+
+**The framing this argues for is not "nobody fixes these".** It is that the class recurs, is
+acknowledged, and that individual instances are found only when someone happens to catch them before
+maintenance destroys the evidence -- item 3, closed as not planned after going stale, is the clearest
+case. That is a stronger and more defensible claim than the one the paper currently gestures at.
+
+**One live accuracy risk.** Item 4 is FIXED as of 30 April 2026. Any paper text asserting that Iceberg
+deliberately preserves equality deletes through RewriteDataFiles must be scoped to the Java
+implementation and dated, or it will be wrong for iceberg-go.
+
+## Entry 58 -- The gate's same-sequence comparison was never load-bearing; removing it fixes the hash-partition failure
+
+Entry 56 measured the gate clearing 0% of groups under a hash-partitioned CDC layout at zero
+interleaving. The question was whether that was inherent or an artifact of how the test was written.
+It was an artifact, and the Lean development settles it.
+
+### The argument, mechanised rather than asserted
+
+`lean/MorFaithful/GateSoundness.lean`, six theorems, all on the three standard axioms, no `sorryAx`.
+
+`discarded_seq_lt_visible_seq`: if `i` is visible and `j` is not, then `M.s j < M.s i`. Direct from
+`Model.lean`'s `visibleSet := filter (SD ≤ s ·)` -- non-membership gives `s j < SD`, membership gives
+`SD ≤ s i`. **No hypotheses at all**: not `Injective d`, not `LinearExtension`. Proved separately in
+the updates-only model (`SD' = sup over i > 0`) so the result does not depend on which versions emit
+deletes; both proofs are the same two steps, which shows the fact follows from the SHAPE of the
+suppression rule (visible ⟺ seq ≥ max delete seq) rather than from the delete set's membership.
+
+The converse matters as much: `same_seq_both_visible` -- two versions sharing the maximum seq are BOTH
+visible. So same-sequence co-residency is not a weak ordering relation the gate might still want to
+inspect; it is **not an ordering relation at all**, neither version suppresses the other. That is the
+positive reason the comparison was never needed, not merely an argument that it is unnecessary.
+
+### The change
+
+`mayContainStaleWins` now groups the group's files by data sequence number, unions ordering bounds per
+sequence, and runs the running-maximum comparison over those per-sequence intervals. Everything else
+identical, bounds still read from the snapshot's manifests.
+
+Soundness: a violation gives `sigma_d < sigma_s`; the union at `sigma_d` has upper >= omega_d, the
+union at `sigma_s` has lower <= omega_s, so on reaching `sigma_s` the running max is >= omega_d >
+omega_s >= that lower bound and the test fires. Union intervals are WIDER than any constituent file's,
+so unioning can only make cross-sequence inversions easier to see, never harder.
+
+**Vacuous case, asserted in the probe rather than left to coincidence.** A group whose files all carry
+one sequence number clears unconditionally. Correct by the theorem. The probe builds it by
+construction -- one commit, 8 hash-scattered files, every file at sequence 1, maximally overlapping
+intervals, exactly what the old test called an inversion. It fired and held: 1 group, 100% cleared.
+
+### Layout probe, before and after
+
+Same ordering values, zero interleaving, oracle valid, all non-vacuous arms materialising 14,522 rows.
+
+| layout | before | after |
+|---|---|---|
+| 1 file/commit | 100% | 100% |
+| 4 files/commit, contiguous blocks | 100% | 100% |
+| 4 files/commit, hash-scattered | **0%** | **100%** |
+| 8 files/commit, hash-scattered | **0%** | **100%** |
+| 1 commit, 8 scattered (vacuous) | -- | 100% |
+
+### A measurement caveat that changes how the sweep should be read
+
+The interleave sweep uses `files_per_commit=1`, so each sequence number maps to exactly ONE file and
+the per-sequence union is that file's own interval. **The fixed gate reduces exactly to the old one
+there**, so the sweep cannot detect the change by construction, and the cliff could not have moved.
+
+It nonetheless differed by up to 10 points per cell between runs, which sent me looking. Re-running an
+identical cell -- same frac, same five seeds, same gate -- gave **64% then 56%**. The payload is
+`os.urandom`, so compressed file sizes vary slightly, bin-packing shifts, and group composition
+changes. So clearance carries roughly **8 points of run-to-run noise beyond seed pooling**, and
+Entry 56's comparison of measured clearance against the binomial prediction was over-read: much of
+that gap is group-formation noise, not the forward-pointing-row mechanism I conjectured there.
+
+| frac | before fix | after, run 1 | after, run 2 | binomial |
+|---|---|---|---|---|
+| 0 | 100% | 100% | 100% | 100% |
+| 1e-5 | 100% | 100% | 100% | 94.2% |
+| 2e-5 | 92% | 96% | 94% | 88.7% |
+| 5e-5 | 76% | 80% | 80% | 74.1% |
+| 1e-4 | 68% | 58% | 62% | 54.9% |
+| 1.5e-4 | 54% | 56% | 50% | 40.6% |
+| 2e-4 | 40% | 40% | 48% | 30.1% |
+| 3e-4 | 22% | 22% | 26% | 16.5% |
+| 5e-4 | 16% | 10% | 14% | 5.0% |
+| 1e-3 | 4% | 2% | 0% | 0.2% |
+| 1.0 | 0% | 0% | 0% | 0% |
+
+Cliff crosses 50% between 1.5e-4 and 2e-4 in every run. Unmoved, as it had to be.
+
+### Existing results still hold
+
+`regress_gate_behaviour.py`, 3 repeats per arm, scored against the construction oracle rather than
+against remembered numbers: clean contiguous SKIPS (gated=1, audited=0, verdict=0) in 3/3; inverted
+AUDITS (gated=0, audited=1) in 3/3 with **4,000 captured against 4,000 expected, 0 FP, 0 miss**.
+`validate_oracle_guard.py` unchanged: guard off gives 1,000 false positives, guard on gives 0 FP and
+0 misses. The paper's 11 GB timing figures were not re-measured and are not claimed here.
+
+### Theorem count
+
+15 before, **21 now** (the committed `AxiomCheck.lean` had exactly 15 `#print axioms` directives, which
+is where the paper's figure comes from; a bare grep also hits the docstring and misleads by one). All
+21 on `propext`, `Classical.choice`, `Quot.sound`; no `sorryAx`, no project-local axiom.
+
+## Entry 59 -- Seeding the payload fixed file sizes but not clearance; what the residual noise is not
+
+Entry 58 measured an identical sweep cell returning 64% then 56% clearance and blamed `os.urandom`
+payloads: varying compressed file sizes shift bin-packing, group composition changes, and clearance is
+a rate over groups. The payload is now seeded. **That diagnosis was right about the mechanism and
+wrong about it being the whole cause.**
+
+### The fix, and the entropy it did not cost
+
+`random.Random(crc32(payload_seed|basename|first_key|n_rows|payload_bytes)).randbytes(...)`, same
+alphabet translation as before. Seeding is per FILE IDENTITY, not global, so different files still get
+different payloads; `crc32` rather than `hash()` because str hashing is salted per process.
+
+Determinism was NOT bought by lowering entropy, which was the whole reason `os.urandom` was there:
+zlib ratio **0.7575 seeded against 0.7574 unseeded**, all 64 alphabet symbols present. The hazard the
+original comment warns about -- 24 MB of logical data dictionary-compressing to 167 KB -- is untouched.
+Verified in-band too: 219 B/row on disk against 195 expected.
+
+### What it fixed, and what it did not
+
+| | before | after |
+|---|---|---|
+| data file sizes, two runs of one cell | varied | **identical, all 395 files, 65,651,545 B** |
+| clearance, same cell same seeds | 64% -> 56% | **58% -> 62%, still varies** |
+
+So file-size drift was real and is gone. It was not the source of the clearance variation.
+
+### Ruled out, each with the setting verified to have taken effect
+
+* **Iceberg manifest worker pool.** `iceberg.worker.num-threads=1`, and confirmed inside the JVM that
+  `ThreadPools.WORKER_THREAD_POOL_SIZE = 1` -- so this is a real negative, not a config that silently
+  did nothing. Still varies: gated in {6,7}.
+* **Spark parallelism.** `local[1]`. Still varies: {6,7}.
+* **Table path / name hashing.** Identical table name every repeat, so identical file paths. Still
+  varies: {6,7}. Different names: {6,8}.
+
+Group COUNT is always 10; what moves is which files are packed together. The data is now provably
+identical and the fixed gate is order-independent by construction (it sorts sequence numbers), so the
+residual nondeterminism is in the planner's bin-packing input order. Leading untested hypothesis:
+snapshot and manifest identifiers are freshly generated per run and influence planning order. Not
+verified, and not worth a day in Iceberg's planner nine days from submission.
+
+**Residual noise floor, measured: +/-1 to 2 groups in 10 per seed, about +/-8pp pooled over 50.**
+Any sweep comparison closer than that is not resolvable, and null results must be reported as
+"no difference detectable, bounded at +/-8pp" rather than as "no difference".
+
+### A diagnostic that produced a false finding before it produced a true one
+
+The first run of the nondeterminism diagnostic printed "PINNING THE POOL IS NOT SUFFICIENT" from an
+arm in which **every run had failed**: the arm's tag was `single-thread`, and the hyphen makes an
+invalid SQL identifier, so each run died on `DROP TABLE`. An empty arm was being read as an unstable
+one. The script now refuses to draw a verdict from an arm that produced no runs. Same family as the
+`pgrep` self-match and the AQE knob: the failure mode is always that a broken control looks exactly
+like a measured negative.
+
+Relatedly, the sweep's header line hardcoded "1 file/commit" regardless of configuration, which would
+have made a silently-ignored `MOR_SWEEP_FPC` indistinguishable from a real result. It now prints the
+actual layout, and the FPC=4 run's environment was checked against the live process before trusting it.
+
+## Entry 60 -- Hash-scattered AND interleaved: the cell nothing covered, and it shows no layout effect
+
+The layout probe covered hash-scattered at zero interleaving. The sweep covered interleaving at one
+file per commit -- where each sequence maps to one file, the per-sequence union IS that file's
+interval, and the fixed gate reduces exactly to the old one, so the sweep could not detect its own
+change. Hash-scattered AND interleaved is the only configuration a real deployment is in, and nothing
+measured it. Now measured.
+
+### A confound that has to be removed before the curves can be compared
+
+At the same byte budget, `files_per_commit=4` forms **9 groups of 6,667 rows** where
+`files_per_commit=1` forms **10 of 6,000**. So at the same `interleave_frac` the scattered arm carries
+about 11% MORE out-of-window rows per group, and would show lower clearance for a reason that has
+nothing to do with layout. Comparing raw frac against raw frac would report a layout effect that is
+really a group-size effect.
+
+| frac | fpc1 r1 | fpc1 r2 | fpc1 avg | fpc4 scattered | diff |
+|---|---|---|---|---|---|
+| 0 | 100% | 100% | 100% | 100% | +0.0 |
+| 1e-5 | 100% | 100% | 100% | 100% | +0.0 |
+| 2e-5 | 96% | 94% | 95% | 95.6% | +0.6 |
+| 5e-5 | 80% | 80% | 80% | 84.4% | +4.4 |
+| 1e-4 | 58% | 62% | 60% | 53.3% | -6.7 |
+| 1.5e-4 | 56% | 50% | 53% | 46.7% | -6.3 |
+| 2e-4 | 40% | 48% | 44% | 35.6% | -8.4 |
+| 3e-4 | 22% | 26% | 24% | 17.8% | -6.2 |
+| 5e-4 | 10% | 14% | 12% | 11.1% | -0.9 |
+| 1e-3 | 2% | 0% | 1% | 0% | -1.0 |
+| 1.0 | 0% | 0% | 0% | 0% | +0.0 |
+
+Largest difference **8.4pp**, exactly at the measured +/-8pp noise floor (Entry 59); mean -2.7pp, in
+the direction the larger groups predict.
+
+Normalising against the binomial, which absorbs the rows-per-group difference:
+**mean excess over binomial is +7.2pp at fpc=1 and +6.7pp at fpc=4 -- a difference of -0.5pp.**
+
+Cliff: fpc=1 crosses 50% between 1.5e-4 and 2e-4, i.e. 0.9 to 1.2 out-of-window rows per group;
+fpc=4 scattered between 1e-4 and 1.5e-4, i.e. 0.67 to 1.0 per group. **Overlapping intervals, and both
+land at about one out-of-window row per file group.**
+
+### The finding
+
+Once the gate compares per SEQUENCE rather than per FILE, selectivity is a function of the interleaving
+rate per group and **not** of intra-commit file layout. The 0% vs 100% layout dependence measured in
+Entry 58 is entirely gone, not merely reduced: the residual difference is within noise and points the
+way group size predicts.
+
+This is the strong form of the Entry 58 result. The gate was not merely repaired for the zero-
+interleaving case that the layout probe tested; its whole selectivity curve is layout-independent. So
+"one out-of-window row per file group" is a workload characterisation that holds for a hash-partitioned
+sink, which is the configuration the paper's motivating deployment is actually in.
+
+Bounded, not absolute: a layout effect smaller than about 8pp would not be resolvable here.
+
+## Entry 61 -- Phase 8: the laundering claim demonstrated outside the generator, from real Postgres WAL
+
+Every quantitative claim in the paper rested on the synthetic generator, whose expected answers come
+from a closed form over its own parameters. A reviewer is entitled to ask whether generator and
+mechanism share an assumption. This run answers with a violation whose ground truth comes from
+Postgres.
+
+### Scope, fixed before the run and not to be softened afterwards
+
+**One induced failure in one pipeline.** Not a rate, not a probability, not a performance number, and
+not comparable to anything in the cost study. The reorder was induced deliberately. Nothing here says
+how often such a reorder occurs in the field.
+
+### The scoping problem found at Step 0, before any building
+
+The brief's positive controls described FLINK-38450 (the same-sequence DUPLICATE signature) while its
+success criterion required STALE_WINS. The checker defines these as mutually exclusive -- DUPLICATE is
+`mult_phys >= 2`, STALE_WINS is `mult_phys == 1` with the survivor below a discarded version -- and
+Section 4.2 already reports that **the DUPLICATE class is not masked by compaction at all**. So the
+criterion's part (c), compaction reporting the key faithful, is unreachable via FLINK-38450 by the
+paper's own finding. Raised before building; the user chose the STALE_WINS route, which also removed
+the need for the pre-fix connector entirely.
+
+### Pinned components
+
+| component | version |
+|---|---|
+| Postgres | `postgres:14`, `wal_level=logical` |
+| Debezium | `quay.io/debezium/connect:2.7.3.Final`, pgoutput, slot `mor_slot` |
+| Kafka | `apache/kafka:3.7.0` (KRaft) |
+| Flink CDC | `spoorthibasu/flink-cdc` @ `693da3ec`, stock `IcebergWriter` + `IcebergCommitter` upsert path |
+| Iceberg | `iceberg-spark-runtime-3.5_2.12-1.11.0-SNAPSHOT` for compaction and the served-row read |
+
+### The oracle is Postgres, not us
+
+200 keys, 230 change events. Each Debezium envelope carries `source.lsn`, Postgres's own commit
+position. `capture_lsn_oracle.py` persists the whole sequence **before the Iceberg table exists**, and
+checks: events captured at all, no null LSNs, arrival order already LSN-monotone (so a later inversion
+is attributable to us and not to Kafka), and the target key carrying at least two versions at distinct
+LSNs. It independently agrees with `SELECT * FROM accounts WHERE id = 42` -- latest is
+lsn 24355168, balance 9999.
+
+### How the reorder was induced
+
+Deterministically, in a plan file rather than in code, so it is auditable. Key 42's two final versions
+are assigned to checkpoints in inverted LSN order: checkpoint 3 gets lsn 24355168 (the later),
+checkpoint 4 gets lsn 24355016 (the earlier). Everything else keeps Postgres's order, one write per key
+per checkpoint so no key ever gets the same-sequence duplicate shape. Since an equality delete
+suppresses only strictly-lower sequence numbers, checkpoint 4's delete kills checkpoint 3's data: the
+logically-later version is suppressed and the earlier one survives alone. This models what FLINK-20374
+describes -- a key's events crossing parallel subtasks and landing in different checkpoints.
+
+### Result
+
+| criterion | outcome |
+|---|---|
+| (a) checker flags STALE_WINS | **key 42, `mult_phys=1`**, surviving (seq 4, lsn 24355016), suppressed (seq 3, lsn 24355168). 199 FAITHFUL, 0 DUPLICATE |
+| (b) oracle confirms the survivor is stale | survivor lsn **24355016** < logically latest **24355168**; balance 4242 served where 9999 is correct |
+| (c) compaction launders it | rewrote **4 data files**, added 1; checker goes **VIOLATIONS_FOUND -> FAITHFUL** (STALE_WINS 0); **served row unchanged**, 200 rows before and after |
+
+Positive controls all held: STALE_WINS not DUPLICATE; compaction rewrote files rather than selecting
+none; the verdict changed between observations; the served row was read successfully both times, by
+Spark rather than by the checker, so "unchanged" is not the checker's opinion of itself.
+
+**The corruption survives compaction untouched. Only the evidence for it is destroyed.** That is
+Figure 1's claim, now shown on a table whose ordering values are Postgres WAL positions.
+
+### Two process notes
+
+The first verification run FAILED on a field name -- I read `classification` where the report says
+`type` -- and reported "key 42 is None, not STALE_WINS" while the counts block plainly showed
+`STALE_WINS: 1`. Caught because the two disagreed.
+
+Worse and worth remembering: compaction mutates the table in place, so the first run left it in the
+laundered state. Re-running against that leftover would have checked an already-laundered table and
+reported a clean pass for entirely the wrong reason. `verify_end_to_end.py` now regenerates the table
+from the plan on every run.
+
+## Entry 62 -- The pipeline produces the reorder itself; the induced plan was not necessary
+
+Phase 8 induced the inversion by assigning key 42's versions to checkpoints in inverted LSN order.
+The question was whether Flink would do it unaided when configured the way FLINK-20374 describes.
+**It does, and on this configuration it does so every time.**
+
+### Setup, changed in one respect only
+
+Same Postgres events, same LSN oracle captured before the table existed, same checker, same Spark-read
+served row. The only change is at the sink: parallelism 2, events shuffled onto subtasks by hashing
+`note` -- a NON-primary-key column, which is precisely FLINK-20374's "shuffling changelog stream on
+non-primary-key columns". Each subtask writes on its own thread; a coordinator fires checkpoint
+barriers on a timer. **Nothing assigns any event to any checkpoint.** Which events precede a barrier is
+decided by thread scheduling.
+
+### Result, first run, not a re-run to success
+
+| | |
+|---|---|
+| keys flagged STALE_WINS | **27** |
+| Postgres agrees (survivor lsn < latest lsn) | **27 of 27** |
+| stale by LSN but NOT flagged | **0** |
+| compaction | rewrote 5 files -> **FAITHFUL, STALE_WINS 0** |
+| served rows changed | **0**, 200 rows before and after |
+
+Both precision and recall against the independent oracle, which the induced single-key run could not
+show. Key 42 is NOT among the 27; the flagged set is the multiples of 7, the rows the `id % 7 = 0`
+update touched.
+
+### It is deterministic, which is not what was expected
+
+Six runs, all six giving exactly 27. The expectation was a flaky race. The reason it is not flaky is
+that the shuffle splits the work very unevenly -- subtask 1 receives 29 events, subtask 0 receives 201
+-- so subtask 1 drains into an early barrier while subtask 0 is still writing. The `bump1` updates
+(higher LSN) land at sequence 1 and the `init` rows (lower LSN) at sequence 2, so the later commit's
+equality delete suppresses the logically-later version systematically rather than occasionally.
+
+Stated with its bound: deterministic **in this configuration on this machine**. Different barrier
+intervals, jitter, or a balanced shuffle could change it, and none of that was varied.
+
+### What this does and does not license
+
+It upgrades the claim from "we induced a reorder modelling FLINK-20374" to "we configured a sink the
+way FLINK-20374 describes and it reordered on its own". It remains one pipeline, one configuration.
+It is not a rate, and nothing here says how often real deployments are configured this way.
+
+One caveat carried from the checker's own output: the parallel table has 1 position-delete file that
+the checker notes it does not analyse. The equality-delete path is what is being checked.

@@ -1,0 +1,213 @@
+{
+ "config": {
+  "commits": 40,
+  "rows_per_commit": 1500,
+  "payload_bytes": 200,
+  "files_per_commit": 1,
+  "group_cap_bytes": 1500000,
+  "min_input_files": 2,
+  "rewrite_opts": "max-file-group-size-bytes=1500000,min-input-files=2,audit-cache-scan=false"
+ },
+ "points": [
+  {
+   "frac": 0.0,
+   "groups_total": 10,
+   "groups_gated": 10,
+   "groups_audited": 0,
+   "clearance": 1.0,
+   "live_rows": 14522,
+   "oracle_valid": null,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 0.0
+  },
+  {
+   "frac": 1e-05,
+   "groups_total": 10,
+   "groups_gated": 10,
+   "groups_audited": 0,
+   "clearance": 1.0,
+   "live_rows": 14522,
+   "oracle_valid": false,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 0.06
+  },
+  {
+   "frac": 2e-05,
+   "groups_total": 10,
+   "groups_gated": 9,
+   "groups_audited": 1,
+   "clearance": 0.9,
+   "live_rows": 14522,
+   "oracle_valid": false,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 0.12
+  },
+  {
+   "frac": 5e-05,
+   "groups_total": 10,
+   "groups_gated": 9,
+   "groups_audited": 1,
+   "clearance": 0.9,
+   "live_rows": 14522,
+   "oracle_valid": false,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 0.3
+  },
+  {
+   "frac": 0.0001,
+   "groups_total": 10,
+   "groups_gated": 6,
+   "groups_audited": 4,
+   "clearance": 0.6,
+   "live_rows": 14522,
+   "oracle_valid": false,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 0.6
+  },
+  {
+   "frac": 0.00015,
+   "groups_total": 10,
+   "groups_gated": 6,
+   "groups_audited": 4,
+   "clearance": 0.6,
+   "live_rows": 14522,
+   "oracle_valid": false,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 0.9
+  },
+  {
+   "frac": 0.0002,
+   "groups_total": 10,
+   "groups_gated": 5,
+   "groups_audited": 5,
+   "clearance": 0.5,
+   "live_rows": 14522,
+   "oracle_valid": false,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 1.2
+  },
+  {
+   "frac": 0.0003,
+   "groups_total": 10,
+   "groups_gated": 4,
+   "groups_audited": 6,
+   "clearance": 0.4,
+   "live_rows": 14522,
+   "oracle_valid": false,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 1.8
+  },
+  {
+   "frac": 0.0005,
+   "groups_total": 10,
+   "groups_gated": 3,
+   "groups_audited": 7,
+   "clearance": 0.3,
+   "live_rows": 14522,
+   "oracle_valid": false,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 3.0
+  },
+  {
+   "frac": 0.001,
+   "groups_total": 10,
+   "groups_gated": 0,
+   "groups_audited": 10,
+   "clearance": 0.0,
+   "live_rows": 14522,
+   "oracle_valid": false,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 6.0
+  },
+  {
+   "frac": 0.002,
+   "groups_total": 10,
+   "groups_gated": 0,
+   "groups_audited": 10,
+   "clearance": 0.0,
+   "live_rows": 14522,
+   "oracle_valid": false,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 12.0
+  },
+  {
+   "frac": 0.005,
+   "groups_total": 10,
+   "groups_gated": 0,
+   "groups_audited": 10,
+   "clearance": 0.0,
+   "live_rows": 14522,
+   "oracle_valid": false,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 30.0
+  },
+  {
+   "frac": 0.01,
+   "groups_total": 10,
+   "groups_gated": 0,
+   "groups_audited": 10,
+   "clearance": 0.0,
+   "live_rows": 14522,
+   "oracle_valid": false,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 60.0
+  },
+  {
+   "frac": 0.05,
+   "groups_total": 10,
+   "groups_gated": 0,
+   "groups_audited": 10,
+   "clearance": 0.0,
+   "live_rows": 14522,
+   "oracle_valid": false,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 300.0
+  },
+  {
+   "frac": 0.1,
+   "groups_total": 10,
+   "groups_gated": 0,
+   "groups_audited": 10,
+   "clearance": 0.0,
+   "live_rows": 14522,
+   "oracle_valid": false,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 600.0
+  },
+  {
+   "frac": 0.25,
+   "groups_total": 10,
+   "groups_gated": 0,
+   "groups_audited": 10,
+   "clearance": 0.0,
+   "live_rows": 14522,
+   "oracle_valid": false,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 1500.0
+  },
+  {
+   "frac": 0.5,
+   "groups_total": 10,
+   "groups_gated": 0,
+   "groups_audited": 10,
+   "clearance": 0.0,
+   "live_rows": 14522,
+   "oracle_valid": false,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 3000.0
+  },
+  {
+   "frac": 1.0,
+   "groups_total": 10,
+   "groups_gated": 0,
+   "groups_audited": 10,
+   "clearance": 0.0,
+   "live_rows": 14522,
+   "oracle_valid": false,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 6000.0
+  }
+ ],
+ "anchor_failures": [],
+ "control_failures": []
+}

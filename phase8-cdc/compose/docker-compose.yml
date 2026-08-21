@@ -1,0 +1,85 @@
+# Postgres -> Debezium -> Kafka. The Flink CDC / Iceberg half runs on the host against this stack.
+#
+# Every image is pinned by tag. Nothing here is `latest`: the point of the exercise is a reproduction
+# somebody else can rerun, and a floating tag makes that impossible.
+#
+# Postgres runs with wal_level=logical because Debezium's Postgres connector reads the write-ahead log
+# through a logical replication slot. That is also where the ground truth comes from: every change
+# event carries the LSN Postgres assigned it, which is the real commit order, independent of anything
+# the pipeline does downstream.
+services:
+  postgres:
+    image: postgres:14
+    container_name: mor-pg
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mordb
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+      - -c
+      - max_replication_slots=4
+      - -c
+      - max_wal_senders=4
+    ports:
+      - "55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mordb"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  kafka:
+    image: apache/kafka:3.7.0
+    container_name: mor-kafka
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,HOST://:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,HOST://localhost:59094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,HOST:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      CLUSTER_ID: MorFaithfulPhase8Cluster
+    ports:
+      - "59094:9094"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list || exit 1"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+
+  connect:
+    image: quay.io/debezium/connect:2.7.3.Final
+    container_name: mor-connect
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      BOOTSTRAP_SERVERS: kafka:9092
+      GROUP_ID: mor-connect
+      CONFIG_STORAGE_TOPIC: mor_connect_configs
+      OFFSET_STORAGE_TOPIC: mor_connect_offsets
+      STATUS_STORAGE_TOPIC: mor_connect_status
+      # Plain JSON without schemas: the LSN we need lives in the envelope's `source` block, and
+      # schemaless JSON keeps the oracle reader trivial and dependency-free.
+      KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE: "false"
+      CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE: "false"
+    ports:
+      - "58083:8083"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8083/connectors || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 40

@@ -1,0 +1,33 @@
+{
+ "config": {
+  "commits": 40,
+  "rows_per_commit": 1500,
+  "payload_bytes": 200,
+  "interleave_frac": 0.0001,
+  "seeds": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ]
+ },
+ "runs": {
+  "A": {
+   "groups": 50,
+   "gated": 29,
+   "clearance": 0.58
+  },
+  "B": {
+   "groups": 50,
+   "gated": 31,
+   "clearance": 0.62
+  }
+ },
+ "per_seed_sizes_equal": true,
+ "clearance_A": 0.58,
+ "clearance_B": 0.62,
+ "failures": [
+  "CLEARANCE STILL VARIES: 58.0% vs 62.0% (29 vs 31 gated of 50)"
+ ]
+}

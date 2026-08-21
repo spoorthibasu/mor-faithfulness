@@ -7,3 +7,4 @@ import MorFaithful.Corollaries   -- COR1, COR2 (FLINK-38450), COR3
 import MorFaithful.Global        -- multi-producer global-coherence theorem
 import MorFaithful.UpdatesModel  -- A-del-all reduction: all-versions ≡ updates-only delete model
 import MorFaithful.LocalImpossible -- Claim B: impossibility of purely-local ordering (coordination necessary)
+import MorFaithful.GateSoundness -- seq separation: discarded seq < survivor seq (licenses the metadata gate)

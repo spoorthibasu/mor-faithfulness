@@ -12,8 +12,11 @@ at controlled sequence numbers. Same-commit RowDelta => equal seq => the delete 
 suppress same-seq data => the FLINK-38450 duplicate. Ascending commits => faithful.
 """
 import json
+import math
 import os
+import random
 import resource
+import zlib
 import shutil
 import sys
 import time
@@ -81,6 +84,9 @@ _SQL_TYPE = {"int": "INT", "long": "BIGINT", "string": "STRING"}
 # Because the (k-1) term is common to every version of a key, comparing a discarded ordering value
 # against a surviving one cancels it: the comparison depends only on D_k, not on k. That is what
 # makes the closed form exact rather than a sample.
+# Payload determinism. Default 0 makes every run byte-reproducible; set MOR_PAYLOAD_SEED to vary
+# payloads deliberately (e.g. to check a result is not an artifact of one particular file-size draw).
+PAYLOAD_SEED = int(os.environ.get("MOR_PAYLOAD_SEED", "0"))
 HIGH_LSN = 999_000_000     # ordering value of the injected discarded version (out-orders everything)
 DUP_LSN_OFF = 1_000_000    # separates the two same-sequence copies so they are distinguishable rows
 
@@ -95,6 +101,17 @@ def _lsn_base(c, inverted):
 
 
 def construction_oracle(cfg):
+    # The closed form below rests on lsn_c(k) = LSN_BASE(c) + (k-1) holding for EVERY row. The
+    # `interleave_frac` knob deliberately breaks that for a fraction of rows, so the derivation no
+    # longer applies. Refuse rather than return a confidently wrong key set: the expected_* fields are
+    # None so any consumer that uses them fails loudly instead of silently comparing against nonsense.
+    if float(cfg.get("interleave_frac", 0.0)) > 0:
+        return {"oracle_valid": False,
+                "invalid_reason": "interleave_frac > 0 breaks lsn_c(k) = LSN_BASE(c) + (k-1), which the "
+                                  "closed form assumes for every row; no expected key set is derivable",
+                "interleave_frac": float(cfg["interleave_frac"]),
+                "expected_live_rows": None, "expected_stale_wins": None,
+                "expected_dup_risky": None, "risky_D_values": None}
     C = int(cfg["commits"])
     R = int(cfg["rows_per_commit"])
     n_del = max(1, int(R * float(cfg.get("delete_frac", 0.2))))
@@ -142,6 +159,7 @@ def construction_oracle(cfg):
         elif kind == "dup_risky":
             dup_risky.append(k)
     return {"derivation": "closed form over generator parameters; no table read, no engine readback",
+            "oracle_valid": True,
             "commits": C, "rows_per_commit": R, "n_del": n_del,
             "ordering": "inverted" if inverted else "contiguous", "n_injected_duplicates": n_dup,
             "expected_live_rows": live_rows,
@@ -158,7 +176,7 @@ def peak_rss_mb():
 def main():
     from pyspark.sql import SparkSession
 
-    spark = (SparkSession.builder.appName(f"mor-harness-iceberg-{NAME}").master("local[2]")
+    spark = (SparkSession.builder.appName(f"mor-harness-iceberg-{NAME}").master(os.environ.get("MOR_SPARK_MASTER", "local[2]"))
         .config("spark.jars.packages",
                 "" if ICEBERG_JAR else f"org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:{ICEBERG_VERSION}")
         .config("spark.jars", ICEBERG_JAR or "")
@@ -301,17 +319,60 @@ def main():
     _ALPHA = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
     _XLAT = bytes.maketrans(bytes(range(256)), (_ALPHA * 4)[:256])
 
-    def synth_columns(t, path, n_rows, payload_bytes, lsn_base, first_key=1):
+    def synth_columns(t, path, n_rows, payload_bytes, lsn_base, first_key=1, il=None, stride=1):
         """Build one commit's parquet column-wise (never per-row dicts) and register it. stdlib only:
-        numpy is not a dependency of this venv."""
+        numpy is not a dependency of this venv.
+
+        `il`, when given, is (frac, commit, n_commits, seed): that fraction of this file's rows take
+        their ordering value from a DIFFERENT commit's window instead of this one's. The gate reads
+        per-file [min, max] ordering bounds, so a single such row widens the file's interval and can
+        create the inversion the gate looks for -- which is exactly the workload property the sweep is
+        parameterising. Positions are drawn from a seeded RNG keyed on (seed, commit, first_key), so a
+        cell is reproducible and two files of the same commit do not receive identical patterns."""
         from array import array
         import pyarrow as pa
         import pyarrow.parquet as pq
-        buf = os.urandom(n_rows * payload_bytes).translate(_XLAT)
+        # SEEDED, not os.urandom. The payload's bytes are irrelevant to every result, but its
+        # COMPRESSED SIZE is not: it sets the data-file size, which sets bin-packing, which sets which
+        # files land in which rewrite group -- and group composition is what clearance is measured
+        # over. With os.urandom, an identical cell with identical seeds gave 64% then 56% clearance
+        # (Entry 58). Seeding removes that.
+        # Entropy is NOT lowered to get determinism: Mersenne Twister output translated through the
+        # same alphabet compresses identically to os.urandom (zlib 0.7575 vs 0.7574, all 64 symbols
+        # present), so the hazard the original comment warns about -- a nominally large table
+        # dictionary-compressing away -- is unchanged. The seed is derived from the file's own
+        # identity so different files still get different payloads, via crc32 rather than hash()
+        # because str hashing is salted per process.
+        _pseed = zlib.crc32(
+            f"{PAYLOAD_SEED}|{os.path.basename(path)}|{first_key}|{n_rows}|{payload_bytes}".encode())
+        buf = random.Random(_pseed).randbytes(n_rows * payload_bytes).translate(_XLAT)
         offs = array("i", range(0, (n_rows + 1) * payload_bytes, payload_bytes))
         vals = pa.StringArray.from_buffers(n_rows, pa.py_buffer(offs.tobytes()), pa.py_buffer(buf))
-        ids = pa.array(array("i", range(first_key, first_key + n_rows)), type=pa.int32())
-        lsns = pa.array(array("i", range(lsn_base, lsn_base + n_rows)), type=pa.int32())
+        ids = pa.array(array("i", range(first_key, first_key + n_rows * stride, stride)),
+                       type=pa.int32())
+        lsn_arr = array("i", range(lsn_base, lsn_base + n_rows * stride, stride))
+        if il:
+            frac, c_now, n_c, seed = il
+            # Each row is interleaved INDEPENDENTLY with probability `frac`, sampled exactly by
+            # geometric gaps (O(number of successes), no numpy). Rounding frac*n_rows to a whole
+            # count instead would silently floor every rate below 0.5/n_rows to zero, putting the
+            # apparent cliff wherever the rounding boundary happens to fall rather than where the
+            # gate actually fails -- an artifact indistinguishable from the result being measured.
+            if frac > 0 and n_c > 1:
+                rng = random.Random((seed * 1_000_003) ^ (c_now * 7919) ^ first_key)
+                idx = -1
+                while True:
+                    if frac >= 1.0:
+                        idx += 1
+                    else:
+                        idx += 1 + int(math.log(1.0 - rng.random()) / math.log(1.0 - frac))
+                    if idx >= n_rows:
+                        break
+                    c_other = rng.randrange(1, n_c + 1)
+                    if c_other == c_now:
+                        c_other = c_now % n_c + 1
+                    lsn_arr[idx] = c_other * 10_000_000 + (first_key + idx) - 1
+        lsns = pa.array(lsn_arr, type=pa.int32())
         names = [c["name"] for c in COLUMNS]
         cols = {n: (ids if n in KEY_COLUMNS else (lsns if n == PLAN["version_column"] else vals))
                 for n in names}
@@ -360,6 +421,17 @@ def main():
         # lsn_c(k) = LSN_BASE(c) + (k-1) regardless of which file k lands in -- so the closed-form
         # oracle is untouched by this knob.
         fpc = max(1, int(cfg.get("files_per_commit", 1)))
+        # `interleave_frac`: the fraction of each commit's rows whose ordering value is drawn from
+        # another commit's window rather than this commit's own contiguous one. 0.0 reproduces the
+        # existing contiguous shape exactly (il is not even passed), 1.0 scatters every row across the
+        # ordering domain. This is the axis the gate-selectivity sweep varies; it is NOT modelled by the
+        # `inverted` flag, which relocates whole commits rather than individual rows.
+        # `key_scatter="roundrobin"`: spread a commit's keys across its files round-robin rather than
+        # in contiguous blocks. Default "block" preserves the existing behaviour exactly.
+        scatter = cfg.get("key_scatter") == "roundrobin"
+        il_frac = float(cfg.get("interleave_frac", 0.0))
+        il_seed = int(cfg.get("interleave_seed", 1))
+        il = (il_frac, None, n_commits, il_seed) if il_frac > 0 else None
         dup_frac = float(cfg.get("dup_frac", 0.0))
         dup_start = _del_window(n_commits, n_del, rpc)[0] if n_commits >= 2 else 1
         n_dup = max(0, int(n_del * dup_frac))
@@ -369,10 +441,20 @@ def main():
             chunk = rpc // fpc
             dfs = []
             for j in range(fpc):
-                fk = 1 + j * chunk
-                nrows = (rpc - (fpc - 1) * chunk) if j == fpc - 1 else chunk
+                if scatter:
+                    # Hash-partitioned sink: file j holds keys j+1, j+1+F, j+1+2F, ... so its ordering
+                    # interval spans the WHOLE commit window instead of a disjoint slice of it. Every
+                    # value is unchanged -- lsn_c(k) = LSN_BASE(c) + (k-1) still holds for every row, so
+                    # the construction oracle stays valid and this isolates the effect of FILE LAYOUT
+                    # from the effect of the values themselves.
+                    fk, stride = 1 + j, fpc
+                    nrows = len(range(fk, rpc + 1, fpc))
+                else:
+                    fk, stride = 1 + j * chunk, 1
+                    nrows = (rpc - (fpc - 1) * chunk) if j == fpc - 1 else chunk
                 dfs.append(synth_columns(t, os.path.join(data_dir, f"synth{c}-data-{j}.parquet"),
-                                         nrows, payload_bytes, lsn_base + fk - 1, first_key=fk))
+                                         nrows, payload_bytes, lsn_base + fk - 1, first_key=fk,
+                                         il=(il[0], c, il[2], il[3]) if il else None, stride=stride))
             if c == 1:
                 app = t.newAppend()
                 for d in dfs:
@@ -572,6 +654,14 @@ def main():
     oracle = {}
     if SYNTH:
         orc = construction_oracle(SYNTH)
+    # A configuration the closed form cannot describe gets NO scored verdict. The alternative -- score
+    # against a derivation whose premise the generator has deliberately broken -- would manufacture
+    # false positives and misses out of nothing. Callers that only need metadata-level outcomes (the
+    # gate-selectivity sweep reads groups-gated, which is independent of any key set) are unaffected.
+    if SYNTH and not orc.get("oracle_valid", True):
+        oracle = dict(orc)
+        oracle["scored"] = False
+    elif SYNTH:
         exp_stale, exp_dup = set(orc["expected_stale_wins"]), set(orc["expected_dup_risky"])
 
         def parse_keys(raw):
