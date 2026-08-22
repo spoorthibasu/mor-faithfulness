@@ -105,5 +105,37 @@ naive_alive = os.path.exists(naive)
 check_(puffin_alive, "REGISTERED puffin blob SURVIVES remove_orphan_files")
 check_(not naive_alive, "NAIVE sidecar (path only in a property string) is DELETED by remove_orphan_files")
 
+# ---- results artifact ----
+# The paper cites this run's key count and blob size. Without a written artifact those figures are
+# reproducible only by re-running, which is one `git clean` away from being unsourceable; the numbers
+# below are what §6.5 quotes, so they are recorded here with the configuration that produced them.
+puffin_path = os.path.join(meta, puffins[0]) if puffins else None
+out = {
+    "what": "Puffin spill + format-reachability test; the figures §6.5 quotes",
+    "config": {"base_keys": cfg.base_keys, "seed": cfg.seed, "ooo_rate": cfg.ooo_rate,
+               "dup_rate": cfg.dup_rate, "versions_per_key_mean": BASE["versions_per_key_mean"],
+               "enforcement_mode": cfg.enforcement_mode},
+    "verdict_keys": len(captured),
+    "oracle_stale_wins": len(oracle_stale),
+    "verdict_matches_oracle": captured == oracle_stale,
+    "verdict_json_bytes": est,
+    "verdict_json_kb": round(est / 1024, 1),
+    "bytes_per_key": round(est / max(1, len(captured)), 2),
+    "spill_threshold_bytes": 65536,
+    "spilled_flag": summ.get("mor.audit.stale-wins-keys-spilled"),
+    "spill_source": summ.get("mor.audit.spill-source"),
+    "puffin_file": os.path.basename(puffin_path) if puffin_path else None,
+    "puffin_file_bytes": os.path.getsize(puffin_path) if puffin_path and os.path.exists(puffin_path) else None,
+    "registered_blob_survives_orphan_cleanup": puffin_alive,
+    "naive_sidecar_deleted_by_orphan_cleanup": not naive_alive,
+    "failures": FAIL,
+}
+dst = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test_puffin_spill.json")
+with open(dst, "w") as f:
+    json.dump(out, f, indent=1)
+print(f"\nevidence -> {dst}")
+print(f"  verdict keys={out['verdict_keys']:,}  json={out['verdict_json_kb']} KB "
+      f"({out['bytes_per_key']} B/key)  puffin={out['puffin_file_bytes']} B")
+
 print("\n" + ("ALL PASS" if not FAIL else f"FAILURES ({len(FAIL)}): {FAIL}"))
 sys.exit(1 if FAIL else 0)

@@ -1,0 +1,25 @@
+{
+ "what": "Puffin spill + format-reachability test; the figures \u00a76.5 quotes",
+ "config": {
+  "base_keys": 100000,
+  "seed": 101,
+  "ooo_rate": 0.5,
+  "dup_rate": 0.0,
+  "versions_per_key_mean": 4,
+  "enforcement_mode": "unsafe_compact"
+ },
+ "verdict_keys": 33086,
+ "oracle_stale_wins": 33086,
+ "verdict_matches_oracle": true,
+ "verdict_json_bytes": 296272,
+ "verdict_json_kb": 289.3,
+ "bytes_per_key": 8.95,
+ "spill_threshold_bytes": 65536,
+ "spilled_flag": "true",
+ "spill_source": "puffin-statistics-file",
+ "puffin_file": "mor-audit-4586166156539315101.puffin",
+ "puffin_file_bytes": 263401,
+ "registered_blob_survives_orphan_cleanup": true,
+ "naive_sidecar_deleted_by_orphan_cleanup": true,
+ "failures": []
+}

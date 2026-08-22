@@ -462,8 +462,29 @@ Three paper figures were not covered above. Traced as follows.
 | Figure | Where | Status |
 |---|---|---|
 | **1,699,998** surviving rows | §6.1 | **RESOLVED 2026-08-21 — both halves now recorded.** Ran `commits=8, rows_per_commit=500000, delete_frac=0.2`: the closed form predicts **1,699,998** and the engine reports **1,699,998**, `agree: true`. The same run captured 100,000 of 100,000 expected stale wins with 0 FP and 0 misses. Artifact: `cost-study/studies/audit/validate_closed_form_live_rows.json`; script `validate_closed_form_live_rows.py`. |
-| **33,086** keys / **296 KB** | §6.5 | **Re-runnable, not recorded.** Produced by `cost-study/studies/audit/test_puffin_spill.py` (`base_keys=100_000`, `seed=101`, `ooo_rate=0.50`), which is seeded and therefore deterministic, but writes only the Puffin blob and emits no results JSON. |
+| **33,086** keys | §6.5 | **RESOLVED 2026-08-21 — re-run and recorded.** Artifact: `cost-study/studies/audit/test_puffin_spill.json`. |
 | **36 runs**, ~~~45,000 key-level comparisons~~ | §4.1 | **Comparison count REMOVED from the paper 2026-08-21.** Run count reconstructs; comparison count did not. 36 = 32 checker runs across the two masking sweeps (8 cells x before/after x two releases) plus the 4 committed reports in `checker/realworld/checker_reports/`. The ~45,000 does not fall out of any accounting I can construct: the sweeps alone give 37,800 key comparisons per release and 75,600 across both. **Unsourced.** |
+
+## 10b. Puffin spill and format reachability
+
+Artifact: `cost-study/studies/audit/test_puffin_spill.json`; script
+`cost-study/studies/audit/test_puffin_spill.py`. Configuration `base_keys=100_000`, `seed=101`,
+`ooo_rate=0.50`, `dup_rate=0.0`, `versions_per_key_mean=4`, `enforcement_mode=unsafe_compact`
+(seeded, so deterministic).
+
+| Figure | Value | Source |
+|---|---|---|
+| Verdict keys | **33,086** | read, `verdict_keys`; equals `oracle_stale_wins`, 0 FP, 0 miss |
+| Verdict JSON size | **296,272 bytes** | read, `verdict_json_bytes` |
+| Bytes per key | **8.95** | read, `bytes_per_key` |
+| Spill threshold | **65,536 bytes** | read, `spill_threshold_bytes` |
+| Puffin file on disk | **263,401 bytes** | read, `puffin_file_bytes` — smaller than the JSON it carries |
+| Spill actually happened | `spilled_flag: true`, `spill_source: puffin-statistics-file` | read |
+| Registered blob survives orphan cleanup | **true** | read |
+| Naive sidecar deleted by orphan cleanup | **true** | read |
+
+⚠️ **Quote the byte count, not "296 KB".** 296,272 bytes is 296.3 kB decimal but **289.3 KiB**; the
+unqualified "KB" form is readable either way and differs by 2%.
 
 ## 11. Silent-success incidents — SEVEN
 
