@@ -89,7 +89,7 @@ Artifact: `cost-study/studies/audit/audit_8cell_result.json`.
 | **Total** | **5,440** | **5,440** | **0** | **0** | **704** |
 
 ⚠️ The artifact has **nine** cells: the eight configurations plus a `clean_sf1_s101` control that
-captures nothing. If Table 3 prints eight rows, the clean control is being omitted and the caption
+captures nothing. If the per-configuration capture table (paper Table 2) prints eight rows, the clean control is being omitted and the caption
 should say so, because a zero-capture control is part of the evidence that the mechanism does not fire
 spuriously.
 
@@ -99,7 +99,8 @@ Artifact: `cost-study/studies/audit/bench_scale_correctness.json`.
 
 | Figure | Value | Source |
 |---|---|---|
-| Scales | S1 1 GB, S2 3 GB, S3 6 GB, S4 11 GB | read, `ladder` keys |
+| Scale **labels** (nominal, not measured) | `S1_1GB`, `S2_3GB`, `S3_6GB`, `S4_11GB` | read, `ladder` keys |
+| Scale **measured** sizes | **2.13, 3.69, 6.93, 13.37 GB** | read, `ladder.*.pre_gb` |
 | Stale wins per scale, expected and captured | **171,000** each, all four | read, `ladder.*.oracle.expected_stale_wins` / `captured` |
 | Total true positives | **684,000** | read, `totals.tp` (= 4 × 171,000) |
 | False positives | **0** | read, `totals.fp` |
@@ -171,7 +172,7 @@ State it as "classified OOM by the harness", not as a quoted Java error.
 
 ## 6. Cost
 
-### Table 4 — gate on/off, five interleaved rounds
+### Cost table (paper Table 3) — gate on/off, five interleaved rounds
 
 Artifact: `cloud/results/results/exp1_cost.json`. Configuration: 32 commits × 3,600,000 rows,
 `files_per_commit=4`, contiguous ordering, 32 GB heap, 5 repeats, 115,200,000 rows / 44.93 GB on an
@@ -203,7 +204,7 @@ Artifact: `cloud/results2/results/exp1_cost.json`, same shape, 5 repeats.
 | `capture_cached` | 389.95 s | **2.86×** (range 2.55–2.86) | derived |
 
 Ingest control across all 15 runs: **1.0048×** (derived). Note this differs from the 1.006× in the
-Table 4 run above — they are two different experiments and the paper must not merge them.
+cost-table run above — they are two different experiments and the paper must not merge them.
 
 ### Stage attribution
 
@@ -526,6 +527,110 @@ Artifact: `cost-study/studies/audit/test_puffin_spill.json`; script
 ⚠️ **Quote the byte count, not "296 KB".** 296,272 bytes is 296.3 kB decimal but **289.3 KiB**; the
 unqualified "KB" form is readable either way and differs by 2%.
 
+## 10c. Figures indexed during the coverage sweep (2026-08-21)
+
+These are cited in the paper and traced to committed artifacts, but were not previously indexed here.
+
+### §6.3 — cross-group replication, six groups
+
+Artifact: `cost-study/studies/audit/bench_straddle_repeat.json`. The table is the ladder's S3 cell,
+**6.93 GB** (`bench_scale_correctness.json`, `ladder.S3_6GB.pre_gb`), bin-packed into six groups.
+
+| Figure | Value | Source |
+|---|---|---|
+| Per-group runs | **6** | read, `len(base)` |
+| Groups per run | **6** | read, `base[*].groups_total` |
+| Recalled, every run | **0** of **171,000** | read, `base[*].captured` and `base[*].misses` |
+| False positives, run index 4 | **180,000** | read, `base[4].fp` |
+| Runs with any FP | **1 of 6** | derived, count of `base[*].fp > 0` |
+| Per-group compaction | 16.606–23.782 s (→ "17–24 s") | read, `base[*].compact_s` |
+| Cross-group runs | **3** | read, `len(cross)` |
+| Straddle candidates | **900,000** | read, `cross[*].straddle_candidates` |
+| Cross-group captured | **171,000** of 171,000, misses **0**, FP **0** | read, `cross[*]` |
+| Cross-group compaction | 45.174, 45.663, 51.281 s (→ "45–51 s") | read, `cross[*].compact_s` |
+
+⚠️ `base[4].fp_keys` holds only **20** entries against `fp` = 180,000 — it is a truncated sample, not
+the key list. Do not count it.
+
+### §6.3 — the twenty-run replication, eleven groups
+
+Artifact: `cloud/results2/results/exp2_correctness.json` — the same artifact as §4 above.
+
+| Figure | Value | Source |
+|---|---|---|
+| Runs | **20** | read, `len(runs.base)` |
+| Groups | **11** | read, `runs.base[*].groups_total` |
+| Table size | **20.34 GiB** | derived, `plan.bytes_total` = 21,840,000,000 B ÷ 2³⁰ |
+
+⚠️ **Unit reconciliation.** §4 above records this table as **21.84 GB** (decimal, straight from
+`bytes_total`); the paper prints **20.3 GB**, correct under its own §6.1 convention that "GB and KB
+mean GiB and KiB". Same bytes, two conventions. Do not treat them as different tables.
+
+### §6.3 — straddle and miss rates by group size
+
+Artifact: `cost-study/studies/audit/straddle_rate_result.json`, cell `ooo50_sf1_s101`.
+
+| Group size | Straddle rate | Miss rate | Source |
+|---|---|---|---|
+| 20 KB | **0.9937** (→ 99.4%) | **0.9802** (→ 98.0%) | read, `rows[0].straddle_rate` / `.miss_rate` |
+| 50 KB | **0.2111** (→ 21.1%) | **0.5185** (→ 51.9%) | read, `rows[1]` |
+| 100 KB and above | 0.0 | 0.0 | read, `rows[2..4]` |
+
+Workload: **1,260** keys (`rows[*].keys_multi_file`), **405** true stale wins (`rows[*].oracle_stale`).
+
+### §6.1 — noise characterisation of the corrected baseline
+
+Derived from the cost-table rounds already recorded above (`cloud/results/results/exp1_cost.json`,
+the `off` column: 137.286, 140.408, 141.043, 139.781, 140.469).
+
+| Figure | Value | Source |
+|---|---|---|
+| Baseline spread | **1.0274×** (→ 1.03×) | derived, max ÷ min of the `off` column |
+| Coefficient of variation | **1.05%** (→ 1.1%) | derived, stdev ÷ mean of the `off` column |
+| The superseded "1.4×" | **1.416** (→ 1.42, paper says 1.4×) | derived, paired median `gateOFF`/`off`, `cost-study/studies/audit/bench_coldcache.json`, `11GB` arm |
+| That baseline's CV | **14.9%** | derived, same arm's `off` values |
+
+❌ **"roughly 38 GB free for page cache" (§6.1) is NOT sourced.** No artifact records it and it does
+not fall out of the host figures: 123 GiB total − 32 GB heap − 44.93 GB table ≈ 46 GB, not 38. Treat
+as ORPHANED until someone reconstructs it.
+
+### §4.4 — Table 1 caption, the four-cell subset
+
+Artifact: `cost-study/results/compaction_masking_sweep.json`.
+
+| Figure | Value | Source |
+|---|---|---|
+| Duplicate keys in the marked subset | **172** | read, `cells.mixed_sf1_s101.duplicate_before` |
+| The other duplicate-bearing cell | 601 | read, `cells.mixed_sf10_s101.duplicate_before` |
+| Total | **773** | derived, 172 + 601; matches `totals.duplicate_before` |
+
+### §6.3 — the 150.7M maximum ordering value: a DERIVATION, not a reading
+
+**No result file contains this number.** It is derived in closed form from the generator's ordering
+scheme, source `cost-study/src/mor_harness/adapters/drivers/iceberg_driver.py`, function `_lsn_base`
+and the header comment at lines 73–90, which fix `lsn_c(k) = LSN_BASE(c) + (k − 1)` with
+`LSN_BASE(c) = (c − 2 if inverted and c even else c) × 10,000,000`.
+
+For the offending key range `[719999, 899999)` (`D_k = 14`, survivors at commits 14–16), with
+`k − 1 = 719,999`:
+
+| Commit | LSN_BASE | Ordering value | Role |
+|---|---|---|---|
+| 13 | 130,000,000 | **130,719,999** (→ 130.7M) | discarded |
+| 14 | 120,000,000 | 120,719,999 (→ 120.7M) | survivor |
+| 15 | 150,000,000 | **150,719,999** (→ 150.7M) | survivor, the maximum |
+| 16 | 140,000,000 | 140,719,999 (→ 140.7M) | survivor |
+
+Globally clean because 150.7M > 130.7M; a group holding only the commit-13 and commit-14 versions
+sees `S_MAX` = 120.7M < `D_MAX` = 130.7M and reports a stale win. Narrative at `NOTES.md:2072`.
+
+### §6.7 — "compressed 143×"
+
+❌ **No artifact.** Recorded only as a narrative incident at `NOTES.md:1374`: the first payload
+generator sliced overlapping windows from a small pool and parquet dictionary-compressed 24 MB of
+logical data to 167 KB. 24 MB ÷ 167 KB ≈ 147, so even the ratio in the note is approximate. The
+figure is reproducible only by rebuilding the discarded generator. Treat as ORPHANED.
+
 ## 11. Silent-success incidents — SEVEN
 
 Each is a case where a measurement reported success or a clean result while doing nothing. Listed
@@ -559,6 +664,6 @@ that the claim is load-bearing rather than decorative.
 | **1 GB `maxResultSize`** | **UNSUPPORTABLE — remove from the paper.** No surviving log names it. All seven logs under `cloud/` return zero hits for `maxResultSize`, `OutOfMemoryError`, `GC overhead limit`; session 1 kept no `spark-events/`; and `exp3_ceiling.py` stores `err[:600]`, truncating from the front so the Java exception is discarded. exp3's classifier has **no `maxResultSize` branch at all** — that branch exists only in `exp5_heap_ceiling.py`, which was written on this belief and **never ran**. The belief was never tested. | Nothing recoverable. The claim comes out of §6.3 and the two-limits distinction reduces to the 8 GB OOM alone. Do not soften it to "a driver-side limit". |
 | **1,898 of 1,902** | **Derived, not read.** The inputs are all in the artifact; the split itself is not. | Present as a derivation, or add the field to the sweep's output. |
 | ~~Six community artifacts~~ | **RESOLVED 2026-08-21.** Committed as `survey/community_artifacts.json` (commit `8ba0911`) with URL, identifier, artifact date, access date, state and verbatim quotes for each, plus the iceberg-go scoping constraint and the rejected DBZ-9521. | — |
-| **Table 3 as eight rows** | **Artifact has nine cells.** The ninth is a zero-capture clean control. | Either print nine rows or state in the caption that the clean control is omitted. |
-| **Ingest control: 1.006× vs 1.0048×** | **Two different experiments.** 1.0059× is `cloud/results/results/exp1_cost.json` (Table 4 run); 1.0048× is `cloud/results2/results/exp1_cost.json` (capture-cost run). | Say which run each figure belongs to; do not merge them. |
+| **Capture table (paper Table 2) as eight rows** | **Artifact has nine cells.** The ninth is a zero-capture clean control. | Either print nine rows or state in the caption that the clean control is omitted. |
+| **Ingest control: 1.006× vs 1.0048×** | **Two different experiments.** 1.0059× is `cloud/results/results/exp1_cost.json` (cost-table run, paper Table 3); 1.0048× is `cloud/results2/results/exp1_cost.json` (capture-cost run). | Say which run each figure belongs to; do not merge them. |
 | **Ingest control: 1.073× vs 1.0042×** | **Same data, different inclusion rule.** 1.0733× includes the session's first run; 1.0042× excludes it. | State which rule is being applied. |
