@@ -24,7 +24,11 @@ services:
       - -c
       - max_wal_senders=4
     ports:
-      - "55432:5432"
+      # Loopback only. The credentials below are throwaway defaults for a container that
+      # exists just long enough to run the reproduction, but Docker publishes to 0.0.0.0 unless
+      # told otherwise, and a reviewer running this on a laptop should not be exposing an
+      # unauthenticated database to whatever network they are on.
+      - "127.0.0.1:55432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d mordb"]
       interval: 3s
@@ -49,7 +53,7 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       CLUSTER_ID: MorFaithfulPhase8Cluster
     ports:
-      - "59094:9094"
+      - "127.0.0.1:59094:9094"
     healthcheck:
       test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list || exit 1"]
       interval: 5s
@@ -77,7 +81,9 @@ services:
       CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE: "false"
       CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE: "false"
     ports:
-      - "58083:8083"
+      # The Connect REST API has no authentication at all; loopback matters more here
+      # than for the database.
+      - "127.0.0.1:58083:8083"
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:8083/connectors || exit 1"]
       interval: 5s
