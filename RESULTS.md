@@ -291,8 +291,9 @@ present in the built class, jar byte-size identical to the post-fix build, and
 | 8 files/commit, hash-scattered | **0% (0/10)** | **100% (10/10)** |
 | 1 commit, 8 scattered (vacuous) | **0% (0/1)** | **100% (1/1)** |
 
-All arms materialise the identical 14,522 rows in both builds, so the difference is file layout and
-the gate's comparison, and nothing else. The vacuous case is included: pre-fix it cleared 0%, which is
+The first four arms materialise the identical 14,522 rows in both builds, so the difference is file
+layout and the gate's comparison, and nothing else. The vacuous arm is a different table by
+construction -- one commit, 1,500 rows -- and is not part of that comparison. The vacuous case is included: pre-fix it cleared 0%, which is
 the sharpest statement of the defect — a group holding exactly one sequence number, where no
 within-group stale win can exist by `discarded_seq_lt_visible_seq`, was nonetheless audited.
 
@@ -453,6 +454,16 @@ them. See Orphaned Figures.
 
 A bare `grep -c "#print axioms"` returns **22** because the file's own docstring contains the string.
 The directive count is **21**.
+
+## 10a. Figures traced during the end-to-end read (2026-08-21)
+
+Three paper figures were not covered above. Traced as follows.
+
+| Figure | Where | Status |
+|---|---|---|
+| **1,699,998** surviving rows | §6.1 | **RESOLVED 2026-08-21 — both halves now recorded.** Ran `commits=8, rows_per_commit=500000, delete_frac=0.2`: the closed form predicts **1,699,998** and the engine reports **1,699,998**, `agree: true`. The same run captured 100,000 of 100,000 expected stale wins with 0 FP and 0 misses. Artifact: `cost-study/studies/audit/validate_closed_form_live_rows.json`; script `validate_closed_form_live_rows.py`. |
+| **33,086** keys / **296 KB** | §6.5 | **Re-runnable, not recorded.** Produced by `cost-study/studies/audit/test_puffin_spill.py` (`base_keys=100_000`, `seed=101`, `ooo_rate=0.50`), which is seeded and therefore deterministic, but writes only the Puffin blob and emits no results JSON. |
+| **36 runs**, ~~~45,000 key-level comparisons~~ | §4.1 | **Comparison count REMOVED from the paper 2026-08-21.** Run count reconstructs; comparison count did not. 36 = 32 checker runs across the two masking sweeps (8 cells x before/after x two releases) plus the 4 committed reports in `checker/realworld/checker_reports/`. The ~45,000 does not fall out of any accounting I can construct: the sweeps alone give 37,800 key comparisons per release and 75,600 across both. **Unsourced.** |
 
 ## 11. Silent-success incidents — SEVEN
 
