@@ -215,6 +215,46 @@ Artifact: `cloud/results2/results/attribute_overhead.json`.
 | Audited compaction | **267.033 s** | read, `arms.audited.compact_s` |
 | Overhead attributed | **130.02 s** | derived, 267.033 − 137.011 |
 
+Per-stage walls, same artifact. These are the figures §6.4 decomposes the 130 s into.
+
+| Figure | Value | Source |
+|---|---|---|
+| Partial aggregation, wall | **90.91 s** (→ "roughly 91 s") | read, `arms.audited.stages[0].wall_s` |
+| Partial aggregation, tasks | **128** | read, `arms.audited.stages[0].tasks` |
+| **Final aggregation, wall** | **37.76 s** (→ "38 s") | read, `arms.audited.stages[1].wall_s` |
+| **Final aggregation, tasks** | **1** | read, `arms.audited.stages[1].tasks` |
+| Write stage, audited | **136.20 s** (→ 136.2) | read, `arms.audited.stages[2].wall_s` |
+| Write stage, stock | **135.58 s** (→ 135.6) | read, `arms.stock.stages[0].wall_s` |
+| Audited input | 1.00 + 44.38 = **45.38 GB** (→ 45.4) | derived, `stages[0].input_gb` + `stages[2].input_gb` |
+| Stock input | **44.38 GB** (→ 44.4) | read, `arms.stock.stages[0].input_gb` |
+
+Two aggregation stages sum to 128.67 s of the 130.02 s; the remainder is the write-stage
+delta (136.20 − 135.58 = 0.62 s) plus sub-second stages.
+
+### Experiment 7 — stage instrumentation of the 91 s partial aggregation
+
+Artifact: `cloud/results3/exp7_stage_detail.json`, committed in `234469b`.
+
+**This is a THIRD run, not the stage-attribution run above and not one of the five
+interleaved rounds in §6 above.** The
+paper's §6.4 record-level sentence ("in another instrumented run both stages read the same
+115.2 M records…") is sourced here. The distinction that matters: the stage-attribution
+run's final aggregation is **1 task**, exp7's is **64 tasks** — exp7 was instrumented under
+the raised `spark.sql.shuffle.partitions`. Do not merge the two runs' stage numbers.
+
+| Figure | Value | Source |
+|---|---|---|
+| Partial aggregation, wall | **90.8 s** | read, `stages[0].wall_s` |
+| Partial aggregation, records in | **115,200,000** (→ 115.2 M) | read, `stages[0].in_records` |
+| Partial aggregation, task skew | **1.97** | read, `stages[0].skew` |
+| Partial aggregation, GC | 48.7 s of 180.5 s run time = **27.0%** | derived, `stages[0].gc_s` / `stages[0].run_s` |
+| Partial aggregation, spill | **0.0 GB** ("there is no spill") | read, `stages[0].spill_gb` |
+| **Final aggregation, tasks** | **64** | read, `stages[1].tasks` |
+| Final aggregation, wall | 14.09 s | read, `stages[1].wall_s` |
+| Write stage, wall | **135.26 s** (→ 135.3) | read, `stages[2].wall_s` |
+| Write stage, records in | **115,200,000** (→ 115.2 M) | read, `stages[2].in_records` |
+| Write stage, records out | **29,519,890** (→ 29.5 M) | read, `stages[2].out_records` |
+
 ### The isolation probe that refuted the delete-reconstruction hypothesis
 
 Artifact: `cloud/results2/results/probe_pass_cost.json`, field `timings_s`.
