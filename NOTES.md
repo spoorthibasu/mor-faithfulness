@@ -1238,7 +1238,7 @@ into 1 x ingest + 30 x compact.
 
 ## Entry 30 — PRE-REGISTERED PREDICTION for the GB-scale overhead run
 
-**Registered 2026-08-11T18:28:51Z, at commit `1f8419f`, BEFORE any GB-scale data exists and before the
+**Registered 2026-08-11T18:28:51Z, BEFORE any GB-scale data exists and before the
 bulk-ingest rework that makes such a run possible.** Recorded in advance so the result is a test rather
 than a rationalisation. If the prediction fails, the failure is the finding and gets reported as such.
 
