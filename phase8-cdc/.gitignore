@@ -1,0 +1,4 @@
+# Generated Iceberg warehouses. They embed absolute local paths, so they are not portable
+# across machines, and they are regenerated deterministically by replaying oracle/write_plan.tsv
+# through the generator. Same policy as checker/realworld/tables.
+results/*_wh/

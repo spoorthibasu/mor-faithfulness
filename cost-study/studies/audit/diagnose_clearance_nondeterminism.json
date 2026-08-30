@@ -1,0 +1,111 @@
+{
+ "config": {
+  "commits": 40,
+  "rows_per_commit": 1500,
+  "interleave_frac": 0.0001,
+  "seed": 1,
+  "repeats": 4
+ },
+ "arms": {
+  "default": [
+   {
+    "groups": 10,
+    "gated": 6,
+    "audited": 4
+   },
+   {
+    "groups": 10,
+    "gated": 7,
+    "audited": 3
+   },
+   {
+    "groups": 10,
+    "gated": 8,
+    "audited": 2
+   },
+   {
+    "groups": 10,
+    "gated": 6,
+    "audited": 4
+   }
+  ],
+  "singlethread": [
+   {
+    "groups": 10,
+    "gated": 7,
+    "audited": 3
+   },
+   {
+    "groups": 10,
+    "gated": 7,
+    "audited": 3
+   },
+   {
+    "groups": 10,
+    "gated": 6,
+    "audited": 4
+   },
+   {
+    "groups": 10,
+    "gated": 6,
+    "audited": 4
+   }
+  ],
+  "serialspark": [
+   {
+    "groups": 10,
+    "gated": 7,
+    "audited": 3
+   },
+   {
+    "groups": 10,
+    "gated": 6,
+    "audited": 4
+   },
+   {
+    "groups": 10,
+    "gated": 6,
+    "audited": 4
+   },
+   {
+    "groups": 10,
+    "gated": 7,
+    "audited": 3
+   }
+  ]
+ },
+ "verdict": {
+  "default": {
+   "gated_values": [
+    6,
+    7,
+    8
+   ],
+   "groups_values": [
+    10
+   ],
+   "stable": false
+  },
+  "singlethread": {
+   "gated_values": [
+    6,
+    7
+   ],
+   "groups_values": [
+    10
+   ],
+   "stable": false
+  },
+  "serialspark": {
+   "gated_values": [
+    6,
+    7
+   ],
+   "groups_values": [
+    10
+   ],
+   "stable": false
+  }
+ },
+ "failures": []
+}

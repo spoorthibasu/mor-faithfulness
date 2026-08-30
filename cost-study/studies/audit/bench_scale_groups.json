@@ -1,0 +1,160 @@
+{
+ "L2": {
+  "base_1group": {
+   "oracle": {
+    "derivation": "closed form over generator parameters; no table read, no engine readback",
+    "expected_live_rows": 4508978,
+    "measured_live_rows": 4508978,
+    "live_rows_match": true,
+    "expected_stale_wins": 171000,
+    "expected_dup_risky": 9000,
+    "captured": 171000,
+    "true_positives": 171000,
+    "false_positives_other": 0,
+    "false_positives_from_duplicates": 0,
+    "misses": 0,
+    "risky_D_values": [
+     16
+    ],
+    "stale_sample": [
+     368998,
+     368999,
+     369000,
+     369001,
+     369002
+    ],
+    "dup_sample": [
+     359998,
+     359999,
+     360000,
+     360001,
+     360002
+    ]
+   },
+   "err": null,
+   "wall_s": 50.3,
+   "groups": "1",
+   "gated": "0",
+   "compact_s": 24.745
+  },
+  "base_6groups": {
+   "oracle": {
+    "derivation": "closed form over generator parameters; no table read, no engine readback",
+    "expected_live_rows": 4508978,
+    "measured_live_rows": 4508978,
+    "live_rows_match": true,
+    "expected_stale_wins": 171000,
+    "expected_dup_risky": 9000,
+    "captured": 1,
+    "true_positives": 0,
+    "false_positives_other": 1,
+    "false_positives_from_duplicates": 0,
+    "misses": 171000,
+    "risky_D_values": [
+     16
+    ],
+    "stale_sample": [
+     368998,
+     368999,
+     369000,
+     369001,
+     369002
+    ],
+    "dup_sample": [
+     359998,
+     359999,
+     360000,
+     360001,
+     360002
+    ]
+   },
+   "err": null,
+   "wall_s": 42.3,
+   "groups": "2",
+   "gated": "4",
+   "compact_s": 18.282
+  },
+  "cross_6groups": {
+   "oracle": {
+    "derivation": "closed form over generator parameters; no table read, no engine readback",
+    "expected_live_rows": 4508978,
+    "measured_live_rows": 4508978,
+    "live_rows_match": true,
+    "expected_stale_wins": 171000,
+    "expected_dup_risky": 9000,
+    "captured": 0,
+    "true_positives": 0,
+    "false_positives_other": 0,
+    "false_positives_from_duplicates": 0,
+    "misses": 171000,
+    "risky_D_values": [
+     16
+    ],
+    "stale_sample": [
+     368998,
+     368999,
+     369000,
+     369001,
+     369002
+    ],
+    "dup_sample": [
+     359998,
+     359999,
+     360000,
+     360001,
+     360002
+    ]
+   },
+   "err": null,
+   "wall_s": 60.4,
+   "groups": "6",
+   "gated": "0",
+   "compact_s": 36.464
+  }
+ },
+ "L3": {
+  "1000000": {
+   "ok": true,
+   "err": null,
+   "wall_s": 6.6,
+   "peak_rss_mb": 160.9,
+   "compact_s": 0.189,
+   "captured": 0,
+   "misses": 0,
+   "fp": 0
+  },
+  "5000000": {
+   "ok": true,
+   "err": null,
+   "wall_s": 31.2,
+   "peak_rss_mb": 510.4,
+   "compact_s": 22.712,
+   "captured": 0,
+   "misses": 0,
+   "fp": 0
+  },
+  "20000000": {
+   "ok": true,
+   "err": null,
+   "wall_s": 419.7,
+   "peak_rss_mb": 1391.6,
+   "compact_s": 396.889,
+   "captured": 0,
+   "misses": 0,
+   "fp": 0
+  },
+  "50000000": {
+   "ok": false,
+   "err": "RuntimeError: driver iceberg_driver.py error: iceberg driver failed\nTraceback (most recent call last):\n  File \"/Users/spoorthibasu/IdeaProjects/mor-faithfulness/cost-study/src/mor_harness/adapters/drivers/iceberg_driver.py\", line 613, in <module>\n    \"delete_files\": int(delete_files),\n  File \"/Users/spoorthibasu/IdeaProjects/mor-faithfulness/cost-study/src/mor_harness/adapters/drivers/iceberg_driver.py\", line 4",
+   "wall_s": 976.7,
+   "peak_rss_mb": null,
+   "compact_s": null,
+   "captured": null,
+   "misses": null,
+   "fp": null
+  }
+ },
+ "failures": [
+  "L2/base_6groups: SOUNDNESS BROKEN -- straddling produced false positives"
+ ]
+}

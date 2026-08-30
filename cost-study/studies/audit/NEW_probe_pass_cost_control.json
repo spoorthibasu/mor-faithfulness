@@ -1,0 +1,18 @@
+{
+ "rows_written_mor": 1440000,
+ "rows_written_clean": 1440000,
+ "delete_files_in_scope": 11,
+ "data_records_physical": 1440000,
+ "plain_read_rows": 503990,
+ "marked_read_rows": 503990,
+ "marked_rows_flagged": 936010,
+ "clean_table_rows": 1440000,
+ "timings_s": {
+  "narrow_scan": 0.36,
+  "no_deletes": 0.28,
+  "true_floor": 0.1
+ },
+ "deletes_applied_in_no_deletes_arm": true,
+ "failures": [],
+ "what": "NEW measurement; does cloud/probe_pass_cost.py's `no_deletes` arm omit delete application? Not a regeneration of probe_pass_cost.json."
+}

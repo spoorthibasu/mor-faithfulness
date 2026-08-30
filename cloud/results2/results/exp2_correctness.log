@@ -1,0 +1,47 @@
+exp2: 56,000,000 rows, ~20.3 GB, 112 files of ~186 MB, group cap 2 GB => ~10 groups, heap 32g
+
+============================================================================================
+PER-GROUP mode, 20 repeats of one configuration
+============================================================================================
+  r0 base: groups 1/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=72.612s
+  r1 base: groups 6/11 scored=stale-wins-keys exp=380,000 captured=219,994 TP=199,994 miss=180,006 FP=20,000 traps=20,000 compact=112.092s
+       FALSE POSITIVES: 20,000  first keys [799995, 799996, 799997, 799998, 799999, 800000]
+  r2 base: groups 4/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=95.785s
+  r3 base: groups 7/11 scored=stale-wins-keys exp=380,000 captured=1 TP=0 miss=380,000 FP=1 traps=20,000 compact=118.436s
+       FALSE POSITIVES: 1  first keys [1199995]
+  r4 base: groups 5/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=104.243s
+  r5 base: groups 8/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=128.273s
+  r6 base: groups 6/11 scored=stale-wins-keys exp=380,000 captured=199,994 TP=199,994 miss=180,006 FP=0 traps=20,000 compact=113.333s
+  r7 base: groups 5/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=102.59s
+  r8 base: groups 3/11 scored=stale-wins-keys exp=380,000 captured=20,000 TP=0 miss=380,000 FP=20,000 traps=20,000 compact=89.27s
+       FALSE POSITIVES: 20,000  first keys [799995, 799996, 799997, 799998, 799999, 800000]
+  r9 base: groups 7/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=108.541s
+  r10 base: groups 6/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=112.328s
+  r11 base: groups 5/11 scored=stale-wins-keys exp=380,000 captured=2 TP=0 miss=380,000 FP=2 traps=20,000 compact=105.203s
+       FALSE POSITIVES: 2  first keys [1999996, 1999998]
+  r12 base: groups 2/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=77.529s
+  r13 base: groups 6/11 scored=stale-wins-keys exp=380,000 captured=1 TP=0 miss=380,000 FP=1 traps=20,000 compact=111.496s
+       FALSE POSITIVES: 1  first keys [1999998]
+  r14 base: groups 4/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=95.055s
+  r15 base: groups 6/11 scored=stale-wins-keys exp=380,000 captured=400,000 TP=0 miss=380,000 FP=400,000 traps=20,000 compact=111.563s
+       FALSE POSITIVES: 400,000  first keys [1599996, 1599997, 1599998, 1599999, 1600000, 1600001]
+  r16 base: groups 4/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=95.596s
+  r17 base: groups 7/11 scored=stale-wins-keys exp=380,000 captured=199,994 TP=199,994 miss=180,006 FP=0 traps=20,000 compact=123.465s
+  r18 base: groups 5/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=105.612s
+  r19 base: groups 5/11 scored=stale-wins-keys exp=380,000 captured=2 TP=0 miss=380,000 FP=2 traps=20,000 compact=103.28s
+       FALSE POSITIVES: 2  first keys [1999996, 2000000]
+
+============================================================================================
+CROSS-GROUP mode, 3 repeats, scored on the merged property
+============================================================================================
+  r0 cross: groups 11/11 scored=cross-group-keys exp=380,000 captured=380,000 TP=380,000 miss=0 FP=0 traps=20,000 compact=173.648s
+  r1 cross: groups 11/11 scored=cross-group-keys exp=380,000 captured=380,000 TP=380,000 miss=0 FP=0 traps=20,000 compact=158.872s
+  r2 cross: groups 11/11 scored=cross-group-keys exp=380,000 captured=380,000 TP=380,000 miss=0 FP=0 traps=20,000 compact=181.456s
+
+============================================================================================
+PER-GROUP false positives: 7 of 20 runs (440,006 keys)   recall 0-199,994 of 380,000
+CROSS-GROUP: false positives 0; recall 380,000/380,000, 380,000/380,000, 380,000/380,000
+
+PASS
+
+evidence -> /opt/mor/results/exp2_correctness.json

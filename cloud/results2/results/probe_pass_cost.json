@@ -1,0 +1,22 @@
+{
+ "timings_s": {
+  "aggregate_only": 27.86,
+  "full_scan": 32.99,
+  "narrow_scan": 17.3,
+  "no_deletes": 18.27,
+  "aggregate_plan": "== Parsed Logical Plan ==\n'Aggregate ['id], ['id, max(CASE WHEN '_del THEN 'lsn END) AS dmax#107]\n+- Project [id#8, val#9, lsn#10, _deleted#19 AS _del#14]\n   +- RelationV2[id#8, val#9, lsn#10, _spec_id#15, _partition#16, _file#17, _pos#18L, _deleted#19, _row_id#20L, _last_updated_sequence_number#21L] local.db.probe_pass local.db.probe_pass\n\n== Analyzed Logical Plan ==\nid: int, dmax: int\nAggregate [id#8], [id#8, max(CASE WHEN _del#14 THEN lsn#10 END) AS dmax#107]\n+- Project [id#8, val#9, lsn#10, _deleted#19 AS _del#14]\n   +- RelationV2[id#8, val#9, lsn#10, _spec_id#15, _partition#16, _file#17, _pos#18L, _deleted#19, _row_id#20L, _last_updated_sequence_number#21L] local.db.probe_pass local.db.probe_pass\n\n== Optimized Logical Plan ==\nAggregate [id#8], [id#8, max(CASE WHEN _del#14 THEN lsn#10 END) AS dmax#107]\n+- Project [id#8, lsn#10, _deleted#19 AS _del#14]\n   +- RelationV2[id#8, lsn#10, _deleted#19] local.db.probe_pass\n\n== Physical Plan ==\nAdaptiveSparkPlan isFinalPlan=false\n+- HashAggregate(keys=[id#8], functions=[max(CASE WHEN _del#14 THEN lsn#10 END)], output=[id#8, dmax#107])\n   +- Exchange hashpartitioning(id#8, 200), ENSURE_REQUIREMENTS, [plan_id=155]\n      +- HashAggregate(keys=[id#8], functions=[partial_max(CASE WHEN _del#14 THEN lsn#10 END)], output=[id#8, max#114])\n         +- Project [id#8, lsn#10, _deleted#19 AS _del#14]\n            +- BatchScan local.db.probe_pass[id#8, lsn#10, _deleted#19] local.db.probe_pass (branch=null) [filters=, groupedBy=] RuntimeFilters: []\n"
+ },
+ "host": {
+  "nproc": "16",
+  "mem_total": "123 GiB",
+  "warehouse_dev": "/dev/nvme1n1",
+  "root_dev": "/dev/nvme0n1p1",
+  "kernel": "6.17.0-1017-aws",
+  "instance": "i4i.4xlarge"
+ },
+ "config": {
+  "commits": 32,
+  "rows_per_commit": 3600000,
+  "heap": "32g"
+ }
+}

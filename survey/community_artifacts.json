@@ -1,0 +1,114 @@
+{
+ "what": "Six public artifacts establishing that the merge-on-read ordering-discipline failure class occurs outside this project. Each was fetched and read on the access date below; the summaries describe what the artifact states, not what we infer from it.",
+ "method": "Direct fetch of each URL. Quotes are verbatim from the artifact. No artifact is included on the strength of a search-result snippet alone.",
+ "accessed": "2026-08-21",
+ "scope_note": "These are individual occurrences, not a sample. Nothing here supports a prevalence or rate claim, and no sentence in the paper may present the six as a measured frequency.",
+ "artifacts": [
+  {
+   "id": 1,
+   "project": "Apache Hudi",
+   "identifier": "blog post 2026/07/22, 'What is CDC on a Data Lake?'",
+   "kind": "project blog post",
+   "url": "https://hudi.apache.org/blog/2026/07/22/what-is-cdc-on-a-data-lake/",
+   "artifact_date": "2026-07-22",
+   "accessed": "2026-08-21",
+   "author": "Sivabalan Narayanan",
+   "state": "published",
+   "shows": "The format's own project documents the ordering hazard and calls silently dropped deletes a correctness and compliance problem.",
+   "quotes": [
+    "Merging by the source log position, rather than arrival time, makes the pipeline immune to this.",
+    "The mirror then diverges from the source, one deleted row at a time — a correctness and compliance problem (GDPR erasure requests must propagate)."
+   ]
+  },
+  {
+   "id": 2,
+   "project": "Apache Iceberg",
+   "identifier": "issue #15305",
+   "kind": "github issue",
+   "url": "https://github.com/apache/iceberg/issues/15305",
+   "artifact_date": "2026-02-12",
+   "accessed": "2026-08-21",
+   "author": "anais-source",
+   "state": "closed",
+   "environment": "Flink 2.2.0, upsert + merge-on-read, Iceberg v2",
+   "shows": "An independent public occurrence of the same-sequence-number signature this paper describes in Section 2.2: a data file and its co-committed equality delete share a sequence number, so the delete is inert. This is the most directly relevant of the six.",
+   "quotes": [
+    "Because equality deletes apply to rows with lower sequence numbers (not equal), the delete does not remove the co-committed data row."
+   ]
+  },
+  {
+   "id": 3,
+   "project": "Apache Iceberg",
+   "identifier": "issue #10312",
+   "kind": "github issue",
+   "url": "https://github.com/apache/iceberg/issues/10312",
+   "artifact_date": "2024-05-11",
+   "accessed": "2026-08-21",
+   "author": "CodingJun",
+   "state": "closed as not planned (went stale)",
+   "shows": "Concurrent compaction interleaved with an equality delete left a deleted record in the table. Never fixed; the clearest case of an instance of this class going unaddressed.",
+   "quotes": [
+    "after compact the data files, some of the data was not deleted correctly"
+   ]
+  },
+  {
+   "id": 4,
+   "project": "Apache Iceberg (Go implementation)",
+   "identifier": "issue #946, fixed by pull request #947",
+   "kind": "github issue + merged fix",
+   "url": "https://github.com/apache/iceberg-go/issues/946",
+   "fix_url": "https://github.com/apache/iceberg-go/pull/947",
+   "artifact_date": "2026-04-28",
+   "fix_merged": "2026-04-30",
+   "accessed": "2026-08-21",
+   "author": "laskoviymishka",
+   "state": "CLOSED — FIXED",
+   "environment": "PostgreSQL to Iceberg v2 CDC replication, approximately one snapshot every 5 seconds, one equality delete file per snapshot",
+   "shows": "Equality delete files were preserved through RewriteDataFiles, leaving dangling entries in every subsequent snapshot's manifests on a high-churn CDC workload.",
+   "quotes": [
+    "Equality delete files are intentionally preserved",
+    "For high-churn CDC workloads this leaves dangling equality delete entries in every subsequent snapshot's manifests forever"
+   ],
+   "SCOPING_CONSTRAINT": "THIS ISSUE IS FIXED. PR #947 was merged 2026-04-30 and added dead-equality-delete removal to RewriteDataFiles in iceberg-go. No paper text may state or imply that Iceberg preserves equality deletes through RewriteDataFiles without (a) scoping the statement to the Java implementation, and (b) dating it. An undated, unscoped claim is wrong for iceberg-go as of 2026-04-30."
+  },
+  {
+   "id": 5,
+   "project": "Apache Flink",
+   "identifier": "FLINK-20374",
+   "kind": "jira issue",
+   "url": "https://issues.apache.org/jira/browse/FLINK-20374",
+   "artifact_date": "2020-11-26",
+   "accessed": "2026-08-21",
+   "state": "closed, fixed in 1.13.3 and 1.14.0",
+   "priority": "Critical",
+   "shows": "Shuffling a changelog stream on non-primary-key columns sends a key's update and retraction to different subtasks, so their arrival order at the sink is not guaranteed and records are lost. This is the configuration Phase 8's parallel-sink run reproduces.",
+   "quotes": [
+    "the -U[2, name2, ...1] and +U[2, name2, ...2] will possible be shuffled to different join task, so the order of joined results is not guaranteed when they arrive to the sink task."
+   ]
+  },
+  {
+   "id": 6,
+   "project": "Apache Hudi",
+   "identifier": "issue #7335",
+   "kind": "github issue",
+   "url": "https://github.com/apache/hudi/issues/7335",
+   "artifact_date": "2022-11-30",
+   "accessed": "2026-08-21",
+   "author": "praneethh",
+   "state": "closed",
+   "shows": "A record with a lower precombine value overwrote a newer one, i.e. the configured ordering discipline did not hold.",
+   "quotes": [
+    "it updated the Fake Name 4 record which shouldn't happen as the timestamp is lower"
+   ]
+  }
+ ],
+ "searched_and_rejected": [
+  {
+   "identifier": "DBZ-9521",
+   "project": "Debezium",
+   "why_rejected": "Oracle connector dropped events when lob.enabled was set; a regression in 3.2.3.Final fixed in 3.2.4.Final. This is connector-internal event loss, not sink-side ordering discipline, so including it would pad the list without supporting the claim."
+  }
+ ],
+ "what_this_supports": "The class is real, is acknowledged by the formats' own maintainers, and recurs across three projects over six years (2020-2026).",
+ "what_this_does_not_support": "That these defects are generally unfixed - items 4 and 5 are fixed and items 2 and 6 are closed. Nor any prevalence claim: the survey of configurations (hudi_precombine_survey.csv) measures configuration exposure, not realised corruption, and these six are individual occurrences rather than a sample."
+}

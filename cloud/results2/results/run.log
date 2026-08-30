@@ -1,0 +1,207 @@
+
+[1m=== host ===[0m  (t+0s)
+Linux ip-172-31-14-142 6.17.0-1017-aws #17~24.04.1-Ubuntu SMP Tue May 26 21:30:32 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+16
+               total        used        free      shared  buff/cache   available
+Mem:             123           1         122           0           0         122
+Swap:              0           0           0
+
+
+[1m=== NVMe instance storage ===[0m  (t+0s)
+candidate: /dev/nvme1n1     root is on: /dev/nvme0n1p1
+formatting /dev/nvme1n1 (ephemeral instance store; data does not survive a stop)
+mke2fs 1.47.0 (5-Feb-2023)
+warehouse /mnt/nvme/warehouse is on /dev/nvme1n1
+warehouse free space: 3437 GB
+4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.81899 s, 2.4 GB/s
+
+[1m=== packages ===[0m  (t+38s)
+JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+openjdk version "17.0.19" 2026-04-21
+OpenJDK Runtime Environment (build 17.0.19+10-1-24.04.2-Ubuntu)
+OpenJDK 64-Bit Server VM (build 17.0.19+10-1-24.04.2-Ubuntu, mixed mode, sharing)
+
+[1m=== python 3.11 + pinned deps ===[0m  (t+77s)
+downloading uv 0.12.5 x86_64-unknown-linux-gnu
+Downloading cpython-3.11.16-linux-x86_64-gnu (download) (29.5MiB)
+ Downloaded cpython-3.11.16-linux-x86_64-gnu (download)
+Installed Python 3.11.16 in 784ms
+ + cpython-3.11.16-linux-x86_64-gnu (python3.11)
+warning: `/root/.local/bin` is not on your PATH. To use installed Python executables, run `export PATH="/root/.local/bin:$PATH"` or `uv python update-shell`.
+Using CPython 3.11.16
+Creating virtual environment at: /opt/mor/venv
+Activate with: source /opt/mor/venv/bin/activate
+python 3.11.16 pyspark 3.5.3 pyarrow 21.0.0
+
+[1m=== sources ===[0m  (t+93s)
+Cloning into '/opt/mor/mor-faithfulness'...
+3660ff6 audit-fail-closed switch; exp2 to 20 repeats; exp1 cache arms
+Cloning into '/opt/mor/iceberg'...
+Note: switching to '57396d628cb9f92e121f9c2919398475393f0a3a'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+iceberg apache-iceberg-1.10.2 -> 57396d628cb9f92e121f9c2919398475393f0a3a (patch was generated against 57396d628cb9f92e121f9c2919398475393f0a3a)
+patch applied:  2 files changed, 624 insertions(+), 4 deletions(-)
+
+[1m=== build shadow jar (cold gradle cache; this is the long pole of setup) ===[0m  (t+95s)
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0 35 43764   35 15442    0     0   130k      0 --:--:-- --:--:-- --:--:--  130k100 43764  100 43764    0     0   365k      0 --:--:-- --:--:-- --:--:--  365k
+/opt/mor/iceberg/common/src/main/java/org/apache/iceberg/common/DynConstructors.java:266: Note: [SafeLoggingPropagation] Safe logging annotations should be propagated to encapsulating elements to allow static analysis tooling to work with as much information as possible. This check can be auto-fixed using `./gradlew classes testClasses -PerrorProneApply=SafeLoggingPropagation`
+  private static String formatProblems(Map<String, Throwable> problems) {
+                        ^
+    (see https://github.com/palantir/gradle-baseline#baseline-error-prone-checks)
+  Did you mean '@Unsafe private static String formatProblems(Map<String, Throwable> problems) {'?
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+Note: /opt/mor/iceberg/nessie/src/main/java/org/apache/iceberg/nessie/NessieIcebergClient.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Exception in thread "Thread-3" org.gradle.api.UncheckedIOException: java.io.IOException: Input/output error
+	at org.gradle.internal.UncheckedException.throwAsUncheckedException(UncheckedException.java:63)
+	at org.gradle.internal.UncheckedException.throwAsUncheckedException(UncheckedException.java:42)
+	at org.gradle.internal.daemon.client.clientinput.DaemonClientInputForwarder$ForwardingUserInput.lambda$readAndForwardStdin$0(DaemonClientInputForwarder.java:99)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: java.io.IOException: Input/output error
+	at java.base/java.io.FileInputStream.readBytes(Native Method)
+	at java.base/java.io.FileInputStream.read(FileInputStream.java:276)
+	at java.base/java.io.BufferedInputStream.read1(BufferedInputStream.java:282)
+	at java.base/java.io.BufferedInputStream.read(BufferedInputStream.java:343)
+	at java.base/sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:287)
+	at java.base/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:330)
+	at java.base/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:190)
+	at java.base/java.io.InputStreamReader.read(InputStreamReader.java:177)
+	at java.base/java.io.BufferedReader.read1(BufferedReader.java:211)
+	at java.base/java.io.BufferedReader.read(BufferedReader.java:287)
+	at java.base/java.io.Reader.read(Reader.java:250)
+	at org.gradle.internal.daemon.client.clientinput.DaemonClientInputForwarder$ForwardingUserInput.lambda$readAndForwardStdin$0(DaemonClientInputForwarder.java:97)
+	... 3 more
+-rw-r--r-- 1 root root 47175176 Aug 20 13:29 /opt/mor/iceberg/spark/v3.5/spark-runtime/build/libs/iceberg-spark-runtime-3.5_2.12-1.11.0-SNAPSHOT.jar
+drop_caches OK
+experiments: exp1_cost exp2_correctness
+
+[1m=== exp1_cost ===[0m  (t+258s)
+exp1: 115,200,000 rows, ~41.8 GB, 128 files of ~335 MB, heap 32g
+host: {'nproc': '16', 'mem_total': '123 GiB', 'warehouse_dev': '/dev/nvme1n1', 'root_dev': '/dev/nvme0n1p1', 'kernel': '6.17.0-1017-aws', 'instance': 'i4i.4xlarge'}
+  r0 off      compact=  138.25s ingest=  228.7s evict=4.24s disk= 53.1GB B/row=495 groups tot/gated/aud=None/None/None
+  r0 capture_cached compact=  370.03s ingest=  228.3s evict=4.53s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r0 capture_uncached compact=  264.16s ingest=  228.5s evict=4.17s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r1 off      compact=  139.99s ingest=  228.6s evict=4.55s disk= 53.1GB B/row=495 groups tot/gated/aud=None/None/None
+  r1 capture_cached compact=  357.11s ingest=  228.2s evict=4.53s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r1 capture_uncached compact=  258.55s ingest=  228.5s evict=4.45s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r2 off      compact=  136.28s ingest=  228.4s evict=4.42s disk= 53.1GB B/row=495 groups tot/gated/aud=None/None/None
+  r2 capture_cached compact=  390.14s ingest=  227.9s evict=4.35s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r2 capture_uncached compact=  260.61s ingest=  228.5s evict=4.04s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r3 off      compact=  137.25s ingest=  228.6s evict=4.08s disk= 53.1GB B/row=495 groups tot/gated/aud=None/None/None
+  r3 capture_cached compact=  393.12s ingest=  228.5s evict=4.24s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r3 capture_uncached compact=  264.14s ingest=  228.5s evict=4.21s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r4 off      compact=  136.11s ingest=  228.5s evict=4.24s disk= 53.1GB B/row=495 groups tot/gated/aud=None/None/None
+  r4 capture_cached compact=  389.95s ingest=  229.0s evict=4.37s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r4 capture_uncached compact=  269.76s ingest=  228.6s evict=4.22s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+
+============================================================================================
+INGEST CONTROL (must not vary with arm): all 15 runs span 1.005x; excluding the first (session warmup) 14 runs span 1.005x
+BASELINE STABILITY: median 137.2s  spread 1.03x  CV 1.2%   (local cold 11 GB was 1.44x / 15%; local 22 GB was 9.14x and unusable)
+capture_cached vs off: paired median 2.86 (range 2.55-2.86, 5/5 above 1)
+capture_uncached vs off: paired median 1.91 (range 1.85-1.98, 5/5 above 1)
+
+PASS
+
+evidence -> /opt/mor/results/exp1_cost.json
+exp1_cost exit=0  (t+7813s)
+
+[1m=== exp2_correctness ===[0m  (t+7813s)
+exp2: 56,000,000 rows, ~20.3 GB, 112 files of ~186 MB, group cap 2 GB => ~10 groups, heap 32g
+
+============================================================================================
+PER-GROUP mode, 20 repeats of one configuration
+============================================================================================
+  r0 base: groups 1/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=72.612s
+  r1 base: groups 6/11 scored=stale-wins-keys exp=380,000 captured=219,994 TP=199,994 miss=180,006 FP=20,000 traps=20,000 compact=112.092s
+       FALSE POSITIVES: 20,000  first keys [799995, 799996, 799997, 799998, 799999, 800000]
+  r2 base: groups 4/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=95.785s
+  r3 base: groups 7/11 scored=stale-wins-keys exp=380,000 captured=1 TP=0 miss=380,000 FP=1 traps=20,000 compact=118.436s
+       FALSE POSITIVES: 1  first keys [1199995]
+  r4 base: groups 5/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=104.243s
+  r5 base: groups 8/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=128.273s
+  r6 base: groups 6/11 scored=stale-wins-keys exp=380,000 captured=199,994 TP=199,994 miss=180,006 FP=0 traps=20,000 compact=113.333s
+  r7 base: groups 5/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=102.59s
+  r8 base: groups 3/11 scored=stale-wins-keys exp=380,000 captured=20,000 TP=0 miss=380,000 FP=20,000 traps=20,000 compact=89.27s
+       FALSE POSITIVES: 20,000  first keys [799995, 799996, 799997, 799998, 799999, 800000]
+  r9 base: groups 7/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=108.541s
+  r10 base: groups 6/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=112.328s
+  r11 base: groups 5/11 scored=stale-wins-keys exp=380,000 captured=2 TP=0 miss=380,000 FP=2 traps=20,000 compact=105.203s
+       FALSE POSITIVES: 2  first keys [1999996, 1999998]
+  r12 base: groups 2/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=77.529s
+  r13 base: groups 6/11 scored=stale-wins-keys exp=380,000 captured=1 TP=0 miss=380,000 FP=1 traps=20,000 compact=111.496s
+       FALSE POSITIVES: 1  first keys [1999998]
+  r14 base: groups 4/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=95.055s
+  r15 base: groups 6/11 scored=stale-wins-keys exp=380,000 captured=400,000 TP=0 miss=380,000 FP=400,000 traps=20,000 compact=111.563s
+       FALSE POSITIVES: 400,000  first keys [1599996, 1599997, 1599998, 1599999, 1600000, 1600001]
+  r16 base: groups 4/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=95.596s
+  r17 base: groups 7/11 scored=stale-wins-keys exp=380,000 captured=199,994 TP=199,994 miss=180,006 FP=0 traps=20,000 compact=123.465s
+  r18 base: groups 5/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=105.612s
+  r19 base: groups 5/11 scored=stale-wins-keys exp=380,000 captured=2 TP=0 miss=380,000 FP=2 traps=20,000 compact=103.28s
+       FALSE POSITIVES: 2  first keys [1999996, 2000000]
+
+============================================================================================
+CROSS-GROUP mode, 3 repeats, scored on the merged property
+============================================================================================
+  r0 cross: groups 11/11 scored=cross-group-keys exp=380,000 captured=380,000 TP=380,000 miss=0 FP=0 traps=20,000 compact=173.648s
+  r1 cross: groups 11/11 scored=cross-group-keys exp=380,000 captured=380,000 TP=380,000 miss=0 FP=0 traps=20,000 compact=158.872s
+  r2 cross: groups 11/11 scored=cross-group-keys exp=380,000 captured=380,000 TP=380,000 miss=0 FP=0 traps=20,000 compact=181.456s
+
+============================================================================================
+PER-GROUP false positives: 7 of 20 runs (440,006 keys)   recall 0-199,994 of 380,000
+CROSS-GROUP: false positives 0; recall 380,000/380,000, 380,000/380,000, 380,000/380,000
+
+PASS
+
+evidence -> /opt/mor/results/exp2_correctness.json
+exp2_correctness exit=0  (t+13369s)
+
+[1m=== summary ===[0m  (t+13369s)
+  exp1_cost          exit=0
+  exp2_correctness   exit=0
+  total wall: 222 min
+
+[1m=== packaging results (exit code 0) ===[0m  (t+13369s)

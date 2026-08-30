@@ -1,0 +1,85 @@
+{
+ "result": {
+  "pre_verdict": "VIOLATIONS_FOUND",
+  "pre_counts": {
+   "FAITHFUL": 199,
+   "DUPLICATE": 0,
+   "WRONGLY_SUPPRESSED_CURRENT": 0,
+   "STALE_WINS": 1,
+   "UNDECIDABLE": 0,
+   "NEEDS_CONTEXT": 0
+  },
+  "pre_finding": {
+   "type": "STALE_WINS",
+   "mult_phys": 1,
+   "surviving": [
+    [
+     4,
+     24355016
+    ]
+   ],
+   "suppressed": [
+    [
+     3,
+     24355168
+    ],
+    [
+     2,
+     24349808
+    ],
+    [
+     1,
+     24326848
+    ]
+   ]
+  },
+  "served_before": [
+   {
+    "id": 42,
+    "balance": 4242,
+    "note": "target-v1",
+    "lsn": 24355016
+   }
+  ],
+  "total_rows": 200,
+  "oracle_latest": {
+   "lsn": 24355168,
+   "balance": 9999,
+   "note": "target-v2"
+  },
+  "survivor": {
+   "id": 42,
+   "balance": 4242,
+   "note": "target-v1",
+   "lsn": 24355016
+  },
+  "oracle_confirms_stale": true,
+  "compaction": {
+   "rewritten_data_files": 4,
+   "added_data_files": 1
+  },
+  "post_verdict": "FAITHFUL",
+  "post_counts": {
+   "FAITHFUL": 200,
+   "DUPLICATE": 0,
+   "WRONGLY_SUPPRESSED_CURRENT": 0,
+   "STALE_WINS": 0,
+   "UNDECIDABLE": 0,
+   "NEEDS_CONTEXT": 0
+  },
+  "post_finding": null,
+  "served_after": [
+   {
+    "id": 42,
+    "balance": 4242,
+    "note": "target-v1",
+    "lsn": 24355016
+   }
+  ],
+  "total_rows_after": 200,
+  "verdict_changed": true,
+  "served_unchanged": true
+ },
+ "failures": [],
+ "scope": "one induced failure in one pipeline; not a rate, not a performance claim"
+}

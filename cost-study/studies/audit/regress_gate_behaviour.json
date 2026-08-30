@@ -1,0 +1,166 @@
+{
+ "config": {
+  "commits": 8,
+  "rows_per_commit": 20000,
+  "payload_bytes": 200,
+  "repeats": 3,
+  "gate": "per-sequence union intervals"
+ },
+ "arms": {
+  "contiguous": [
+   {
+    "ordering": "contiguous",
+    "repeat": 0,
+    "groups": 1,
+    "gated": 1,
+    "audited": 0,
+    "verdict_count": "0",
+    "captured": 0,
+    "expected": 0,
+    "fp": 0,
+    "miss": 0,
+    "oracle": {
+     "scored_property": "stale-wins-keys",
+     "live_rows_match": true,
+     "expected_stale_wins": 0,
+     "captured": 0,
+     "true_positives": 0,
+     "false_positives_other": 0,
+     "false_positives_from_duplicates": 0,
+     "misses": 0
+    },
+    "live_rows": 67998,
+    "oracle_expected_live_rows": 67998,
+    "live_rows_match": true
+   },
+   {
+    "ordering": "contiguous",
+    "repeat": 1,
+    "groups": 1,
+    "gated": 1,
+    "audited": 0,
+    "verdict_count": "0",
+    "captured": 0,
+    "expected": 0,
+    "fp": 0,
+    "miss": 0,
+    "oracle": {
+     "scored_property": "stale-wins-keys",
+     "live_rows_match": true,
+     "expected_stale_wins": 0,
+     "captured": 0,
+     "true_positives": 0,
+     "false_positives_other": 0,
+     "false_positives_from_duplicates": 0,
+     "misses": 0
+    },
+    "live_rows": 67998,
+    "oracle_expected_live_rows": 67998,
+    "live_rows_match": true
+   },
+   {
+    "ordering": "contiguous",
+    "repeat": 2,
+    "groups": 1,
+    "gated": 1,
+    "audited": 0,
+    "verdict_count": "0",
+    "captured": 0,
+    "expected": 0,
+    "fp": 0,
+    "miss": 0,
+    "oracle": {
+     "scored_property": "stale-wins-keys",
+     "live_rows_match": true,
+     "expected_stale_wins": 0,
+     "captured": 0,
+     "true_positives": 0,
+     "false_positives_other": 0,
+     "false_positives_from_duplicates": 0,
+     "misses": 0
+    },
+    "live_rows": 67998,
+    "oracle_expected_live_rows": 67998,
+    "live_rows_match": true
+   }
+  ],
+  "inverted": [
+   {
+    "ordering": "inverted",
+    "repeat": 0,
+    "groups": 1,
+    "gated": 0,
+    "audited": 1,
+    "verdict_count": "4000",
+    "captured": 4000,
+    "expected": 4000,
+    "fp": 0,
+    "miss": 0,
+    "oracle": {
+     "scored_property": "stale-wins-keys",
+     "live_rows_match": true,
+     "expected_stale_wins": 4000,
+     "captured": 4000,
+     "true_positives": 4000,
+     "false_positives_other": 0,
+     "false_positives_from_duplicates": 0,
+     "misses": 0
+    },
+    "live_rows": 67998,
+    "oracle_expected_live_rows": 67998,
+    "live_rows_match": true
+   },
+   {
+    "ordering": "inverted",
+    "repeat": 1,
+    "groups": 1,
+    "gated": 0,
+    "audited": 1,
+    "verdict_count": "4000",
+    "captured": 4000,
+    "expected": 4000,
+    "fp": 0,
+    "miss": 0,
+    "oracle": {
+     "scored_property": "stale-wins-keys",
+     "live_rows_match": true,
+     "expected_stale_wins": 4000,
+     "captured": 4000,
+     "true_positives": 4000,
+     "false_positives_other": 0,
+     "false_positives_from_duplicates": 0,
+     "misses": 0
+    },
+    "live_rows": 67998,
+    "oracle_expected_live_rows": 67998,
+    "live_rows_match": true
+   },
+   {
+    "ordering": "inverted",
+    "repeat": 2,
+    "groups": 1,
+    "gated": 0,
+    "audited": 1,
+    "verdict_count": "4000",
+    "captured": 4000,
+    "expected": 4000,
+    "fp": 0,
+    "miss": 0,
+    "oracle": {
+     "scored_property": "stale-wins-keys",
+     "live_rows_match": true,
+     "expected_stale_wins": 4000,
+     "captured": 4000,
+     "true_positives": 4000,
+     "false_positives_other": 0,
+     "false_positives_from_duplicates": 0,
+     "misses": 0
+    },
+    "live_rows": 67998,
+    "oracle_expected_live_rows": 67998,
+    "live_rows_match": true
+   }
+  ]
+ },
+ "failures": []
+}

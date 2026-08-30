@@ -1,0 +1,27 @@
+exp1: 115,200,000 rows, ~41.8 GB, 128 files of ~335 MB, heap 32g
+host: {'nproc': '16', 'mem_total': '123 GiB', 'warehouse_dev': '/dev/nvme1n1', 'root_dev': '/dev/nvme0n1p1', 'kernel': '6.17.0-1017-aws', 'instance': 'i4i.4xlarge'}
+  r0 off      compact=  138.25s ingest=  228.7s evict=4.24s disk= 53.1GB B/row=495 groups tot/gated/aud=None/None/None
+  r0 capture_cached compact=  370.03s ingest=  228.3s evict=4.53s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r0 capture_uncached compact=  264.16s ingest=  228.5s evict=4.17s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r1 off      compact=  139.99s ingest=  228.6s evict=4.55s disk= 53.1GB B/row=495 groups tot/gated/aud=None/None/None
+  r1 capture_cached compact=  357.11s ingest=  228.2s evict=4.53s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r1 capture_uncached compact=  258.55s ingest=  228.5s evict=4.45s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r2 off      compact=  136.28s ingest=  228.4s evict=4.42s disk= 53.1GB B/row=495 groups tot/gated/aud=None/None/None
+  r2 capture_cached compact=  390.14s ingest=  227.9s evict=4.35s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r2 capture_uncached compact=  260.61s ingest=  228.5s evict=4.04s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r3 off      compact=  137.25s ingest=  228.6s evict=4.08s disk= 53.1GB B/row=495 groups tot/gated/aud=None/None/None
+  r3 capture_cached compact=  393.12s ingest=  228.5s evict=4.24s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r3 capture_uncached compact=  264.14s ingest=  228.5s evict=4.21s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r4 off      compact=  136.11s ingest=  228.5s evict=4.24s disk= 53.1GB B/row=495 groups tot/gated/aud=None/None/None
+  r4 capture_cached compact=  389.95s ingest=  229.0s evict=4.37s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r4 capture_uncached compact=  269.76s ingest=  228.6s evict=4.22s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+
+============================================================================================
+INGEST CONTROL (must not vary with arm): all 15 runs span 1.005x; excluding the first (session warmup) 14 runs span 1.005x
+BASELINE STABILITY: median 137.2s  spread 1.03x  CV 1.2%   (local cold 11 GB was 1.44x / 15%; local 22 GB was 9.14x and unusable)
+capture_cached vs off: paired median 2.86 (range 2.55-2.86, 5/5 above 1)
+capture_uncached vs off: paired median 1.91 (range 1.85-1.98, 5/5 above 1)
+
+PASS
+
+evidence -> /opt/mor/results/exp1_cost.json

@@ -1,0 +1,162 @@
+{
+ "off/contig": [
+  {
+   "compact_s": 34.765,
+   "apply_s": 39.683,
+   "pre_gb": 11.094100881367922,
+   "rows": 7379890,
+   "groups": null,
+   "gated": null,
+   "audited": null,
+   "verdict": null
+  },
+  {
+   "compact_s": 30.102,
+   "apply_s": 36.889,
+   "pre_gb": 11.094100492075086,
+   "rows": 7379890,
+   "groups": null,
+   "gated": null,
+   "audited": null,
+   "verdict": null
+  },
+  {
+   "compact_s": 30.955,
+   "apply_s": 36.64,
+   "pre_gb": 11.094100910238922,
+   "rows": 7379890,
+   "groups": null,
+   "gated": null,
+   "audited": null,
+   "verdict": null
+  }
+ ],
+ "gateON/contig": [
+  {
+   "compact_s": 32.551,
+   "apply_s": 36.796,
+   "pre_gb": 11.094101109541953,
+   "rows": 7379890,
+   "groups": "1",
+   "gated": "1",
+   "audited": "0",
+   "verdict": "0"
+  },
+  {
+   "compact_s": 33.855,
+   "apply_s": 36.69,
+   "pre_gb": 11.094100964255631,
+   "rows": 7379890,
+   "groups": "1",
+   "gated": "1",
+   "audited": "0",
+   "verdict": "0"
+  },
+  {
+   "compact_s": 38.744,
+   "apply_s": 36.887,
+   "pre_gb": 11.094101015478373,
+   "rows": 7379890,
+   "groups": "1",
+   "gated": "1",
+   "audited": "0",
+   "verdict": "0"
+  }
+ ],
+ "gateOFF/contig": [
+  {
+   "compact_s": 78.391,
+   "apply_s": 37.287,
+   "pre_gb": 11.094101388007402,
+   "rows": 7379890,
+   "groups": "1",
+   "gated": "0",
+   "audited": "1",
+   "verdict": "0"
+  },
+  {
+   "compact_s": 74.139,
+   "apply_s": 37.165,
+   "pre_gb": 11.094101696275175,
+   "rows": 7379890,
+   "groups": "1",
+   "gated": "0",
+   "audited": "1",
+   "verdict": "0"
+  },
+  {
+   "compact_s": 78.634,
+   "apply_s": 36.819,
+   "pre_gb": 11.094101257622242,
+   "rows": 7379890,
+   "groups": "1",
+   "gated": "0",
+   "audited": "1",
+   "verdict": "0"
+  }
+ ],
+ "off/inverted": [
+  {
+   "compact_s": 45.797,
+   "apply_s": 36.971,
+   "pre_gb": 11.094100950285792,
+   "rows": 7379890,
+   "groups": null,
+   "gated": null,
+   "audited": null,
+   "verdict": null
+  },
+  {
+   "compact_s": 57.708,
+   "apply_s": 39.134,
+   "pre_gb": 11.094101163558662,
+   "rows": 7379890,
+   "groups": null,
+   "gated": null,
+   "audited": null,
+   "verdict": null
+  },
+  {
+   "compact_s": 51.12,
+   "apply_s": 37.516,
+   "pre_gb": 11.094101400114596,
+   "rows": 7379890,
+   "groups": null,
+   "gated": null,
+   "audited": null,
+   "verdict": null
+  }
+ ],
+ "gateON/inverted": [
+  {
+   "compact_s": 78.595,
+   "apply_s": 38.594,
+   "pre_gb": 11.094101245515049,
+   "rows": 7379890,
+   "groups": "1",
+   "gated": "0",
+   "audited": "1",
+   "verdict": "180000"
+  },
+  {
+   "compact_s": 75.267,
+   "apply_s": 37.332,
+   "pre_gb": 11.094101100228727,
+   "rows": 7379890,
+   "groups": "1",
+   "gated": "0",
+   "audited": "1",
+   "verdict": "180000"
+  },
+  {
+   "compact_s": 66.666,
+   "apply_s": 36.859,
+   "pre_gb": 11.094101343303919,
+   "rows": 7379890,
+   "groups": "1",
+   "gated": "0",
+   "audited": "1",
+   "verdict": "180000"
+  }
+ ]
+}

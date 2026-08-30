@@ -1,0 +1,121 @@
+{
+ "commits": 32,
+ "rows_per_commit": 900000,
+ "repeats": 4,
+ "arms": {
+  "off": [
+   {
+    "compact_s": 36.82,
+    "apply_s": 38.515,
+    "pre_gb": 11.094100970774889,
+    "live_rows": 7379890,
+    "verdict": null,
+    "groups": null,
+    "gated": null
+   },
+   {
+    "compact_s": 35.229,
+    "apply_s": 37.135,
+    "pre_gb": 11.094100669957697,
+    "live_rows": 7379890,
+    "verdict": null,
+    "groups": null,
+    "gated": null
+   },
+   {
+    "compact_s": 33.095,
+    "apply_s": 36.764,
+    "pre_gb": 11.094100842252374,
+    "live_rows": 7379890,
+    "verdict": null,
+    "groups": null,
+    "gated": null
+   },
+   {
+    "compact_s": 36.999,
+    "apply_s": 36.843,
+    "pre_gb": 11.094100562855601,
+    "live_rows": 7379890,
+    "verdict": null,
+    "groups": null,
+    "gated": null
+   }
+  ],
+  "base": [
+   {
+    "compact_s": 32.958,
+    "apply_s": 37.222,
+    "pre_gb": 11.09410095680505,
+    "live_rows": 7379890,
+    "verdict": "0",
+    "groups": "1",
+    "gated": "1"
+   },
+   {
+    "compact_s": 37.46,
+    "apply_s": 37.23,
+    "pre_gb": 11.094100913964212,
+    "live_rows": 7379890,
+    "verdict": "0",
+    "groups": "1",
+    "gated": "1"
+   },
+   {
+    "compact_s": 35.206,
+    "apply_s": 37.433,
+    "pre_gb": 11.09410135447979,
+    "live_rows": 7379890,
+    "verdict": "0",
+    "groups": "1",
+    "gated": "1"
+   },
+   {
+    "compact_s": 34.752,
+    "apply_s": 37.477,
+    "pre_gb": 11.094101199880242,
+    "live_rows": 7379890,
+    "verdict": "0",
+    "groups": "1",
+    "gated": "1"
+   }
+  ],
+  "cross": [
+   {
+    "compact_s": 90.311,
+    "apply_s": 37.64,
+    "pre_gb": 11.094100908376276,
+    "live_rows": 7379890,
+    "verdict": "0",
+    "groups": "1",
+    "gated": "0"
+   },
+   {
+    "compact_s": 92.783,
+    "apply_s": 38.185,
+    "pre_gb": 11.094100968912244,
+    "live_rows": 7379890,
+    "verdict": "0",
+    "groups": "1",
+    "gated": "0"
+   },
+   {
+    "compact_s": 92.661,
+    "apply_s": 38.216,
+    "pre_gb": 11.094101624563336,
+    "live_rows": 7379890,
+    "verdict": "0",
+    "groups": "1",
+    "gated": "0"
+   },
+   {
+    "compact_s": 107.302,
+    "apply_s": 37.796,
+    "pre_gb": 11.094101017341018,
+    "live_rows": 7379890,
+    "verdict": "0",
+    "groups": "1",
+    "gated": "0"
+   }
+  ]
+ }
+}

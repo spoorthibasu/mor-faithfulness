@@ -1,0 +1,23 @@
+{
+  "margin_note": "keys_changed==0 => materialized content preserved (corollary holds)",
+  "scales": {
+    "sf1": {
+      "base_keys": 1200,
+      "n_keys": 1247,
+      "keys_changed_unsafe_vs_unsafe_compact": 0,
+      "sample_changed": [],
+      "oracle_violations_unsafe": 984,
+      "oracle_violations_unsafe_compact": 984,
+      "corollary_holds": true
+    },
+    "sf10": {
+      "base_keys": 4000,
+      "n_keys": 4150,
+      "keys_changed_unsafe_vs_unsafe_compact": 0,
+      "sample_changed": [],
+      "oracle_violations_unsafe": 3313,
+      "oracle_violations_unsafe_compact": 3313,
+      "corollary_holds": true
+    }
+  }
+}

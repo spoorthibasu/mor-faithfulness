@@ -1,0 +1,283 @@
+{
+ "iceberg_build_version": "1.10.2",
+ "engine_is_stock_not_fork": true,
+ "lineage_columns": {
+  "row_id": "_row_id",
+  "last_updated_sequence_number": "_last_updated_sequence_number"
+ },
+ "eqdel_javaapi": {
+  "format_version_read_back": 3,
+  "next_row_id_at_create": 0,
+  "writer_path": "java-api",
+  "after_insert": {
+   "lineage": [
+    {
+     "id": 1,
+     "lsn": 10,
+     "payload": "v1-k1",
+     "row_id": 0,
+     "last_updated_seq": 1
+    },
+    {
+     "id": 2,
+     "lsn": 11,
+     "payload": "v1-k2",
+     "row_id": 1,
+     "last_updated_seq": 1
+    },
+    {
+     "id": 3,
+     "lsn": 12,
+     "payload": "v1-k3",
+     "row_id": 2,
+     "last_updated_seq": 1
+    }
+   ],
+   "next_row_id": 3
+  },
+  "after_eq_delete_update": {
+   "lineage": [
+    {
+     "id": 1,
+     "lsn": 10,
+     "payload": "v1-k1",
+     "row_id": 0,
+     "last_updated_seq": 1
+    },
+    {
+     "id": 2,
+     "lsn": 20,
+     "payload": "v2-k2",
+     "row_id": 3,
+     "last_updated_seq": 2
+    },
+    {
+     "id": 3,
+     "lsn": 12,
+     "payload": "v1-k3",
+     "row_id": 2,
+     "last_updated_seq": 1
+    }
+   ],
+   "next_row_id": 4,
+   "files": [
+    {
+     "content": 0,
+     "file_path": "c2-data.parquet",
+     "record_count": 1,
+     "first_row_id": 3
+    },
+    {
+     "content": 0,
+     "file_path": "c1-data.parquet",
+     "record_count": 3,
+     "first_row_id": 0
+    },
+    {
+     "content": 2,
+     "file_path": "c2-eqdel.parquet",
+     "record_count": 1,
+     "first_row_id": null
+    }
+   ],
+   "replacement_file_parquet_columns": [
+    "id",
+    "lsn",
+    "payload"
+   ]
+  },
+  "verdict": {
+   "key2_row_id_before": 1,
+   "key2_row_id_after": 3,
+   "key2_row_id_null_after": false,
+   "key2_row_id_preserved": false,
+   "key2_last_updated_seq_after": 2
+  }
+ },
+ "eqdel_bulk": {
+  "format_version_read_back": 3,
+  "next_row_id_at_create": 0,
+  "writer_path": "bulk",
+  "after_insert": {
+   "lineage": [
+    {
+     "id": 1,
+     "lsn": 10,
+     "payload": "v1-k1",
+     "row_id": 0,
+     "last_updated_seq": 1
+    },
+    {
+     "id": 2,
+     "lsn": 11,
+     "payload": "v1-k2",
+     "row_id": 1,
+     "last_updated_seq": 1
+    },
+    {
+     "id": 3,
+     "lsn": 12,
+     "payload": "v1-k3",
+     "row_id": 2,
+     "last_updated_seq": 1
+    }
+   ],
+   "next_row_id": 3
+  },
+  "after_eq_delete_update": {
+   "lineage": [
+    {
+     "id": 1,
+     "lsn": 10,
+     "payload": "v1-k1",
+     "row_id": 0,
+     "last_updated_seq": 1
+    },
+    {
+     "id": 2,
+     "lsn": 20,
+     "payload": "v2-k2",
+     "row_id": 3,
+     "last_updated_seq": 2
+    },
+    {
+     "id": 3,
+     "lsn": 12,
+     "payload": "v1-k3",
+     "row_id": 2,
+     "last_updated_seq": 1
+    }
+   ],
+   "next_row_id": 4,
+   "files": [
+    {
+     "content": 0,
+     "file_path": "c2-data.parquet",
+     "record_count": 1,
+     "first_row_id": 3
+    },
+    {
+     "content": 0,
+     "file_path": "c1-data.parquet",
+     "record_count": 3,
+     "first_row_id": 0
+    },
+    {
+     "content": 2,
+     "file_path": "c2-eqdel.parquet",
+     "record_count": 1,
+     "first_row_id": null
+    }
+   ],
+   "replacement_file_parquet_columns": [
+    "id",
+    "lsn",
+    "payload"
+   ]
+  },
+  "verdict": {
+   "key2_row_id_before": 1,
+   "key2_row_id_after": 3,
+   "key2_row_id_null_after": false,
+   "key2_row_id_preserved": false,
+   "key2_last_updated_seq_after": 2
+  }
+ },
+ "control_sql": {
+  "format_version_read_back": 3,
+  "next_row_id_at_create": 0,
+  "writer_path": "spark-sql",
+  "after_insert": {
+   "lineage": [
+    {
+     "id": 1,
+     "lsn": 10,
+     "payload": "v1-k1",
+     "row_id": 0,
+     "last_updated_seq": 1
+    },
+    {
+     "id": 2,
+     "lsn": 11,
+     "payload": "v1-k2",
+     "row_id": 1,
+     "last_updated_seq": 1
+    },
+    {
+     "id": 3,
+     "lsn": 12,
+     "payload": "v1-k3",
+     "row_id": 2,
+     "last_updated_seq": 1
+    }
+   ],
+   "next_row_id": 3
+  },
+  "after_sql_update": {
+   "lineage": [
+    {
+     "id": 1,
+     "lsn": 10,
+     "payload": "v1-k1",
+     "row_id": 0,
+     "last_updated_seq": 1
+    },
+    {
+     "id": 2,
+     "lsn": 20,
+     "payload": "v2-k2",
+     "row_id": 1,
+     "last_updated_seq": 2
+    },
+    {
+     "id": 3,
+     "lsn": 12,
+     "payload": "v1-k3",
+     "row_id": 2,
+     "last_updated_seq": 1
+    }
+   ],
+   "next_row_id": 4,
+   "files": [
+    {
+     "content": 0,
+     "file_path": "00000-15-74aade6c-8b50-4001-bd66-e3ca73a7027c-00001.parquet",
+     "record_count": 1,
+     "first_row_id": 3
+    },
+    {
+     "content": 0,
+     "file_path": "00000-10-438a0979-401c-41c4-b746-8ff764ced2f1-0-00001.parquet",
+     "record_count": 1,
+     "first_row_id": 0
+    },
+    {
+     "content": 0,
+     "file_path": "00001-11-438a0979-401c-41c4-b746-8ff764ced2f1-0-00001.parquet",
+     "record_count": 2,
+     "first_row_id": 1
+    },
+    {
+     "content": 1,
+     "file_path": "00000-15-74aade6c-8b50-4001-bd66-e3ca73a7027c-00001-deletes.puffin",
+     "record_count": 1,
+     "first_row_id": null
+    }
+   ],
+   "rewritten_file_parquet_columns": [
+    "id",
+    "lsn",
+    "payload",
+    "_row_id",
+    "_last_updated_sequence_number"
+   ]
+  },
+  "verdict": {
+   "key2_row_id_before": 1,
+   "key2_row_id_after": 1,
+   "key2_row_id_preserved": true,
+   "key2_last_updated_seq_after": 2
+  }
+ },
+ "failures": []
+}

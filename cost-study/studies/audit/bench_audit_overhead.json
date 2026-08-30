@@ -1,0 +1,424 @@
+{
+ "repeats": 10,
+ "cell": "ooo50_sf1_s101",
+ "arms": {
+  "off": {
+   "compact_s": {
+    "median": 2.089,
+    "mean": 2.149,
+    "stdev": 0.258,
+    "min": 1.971,
+    "max": 2.864
+   },
+   "apply_s": {
+    "median": 9.895,
+    "mean": 9.915,
+    "stdev": 0.182,
+    "min": 9.678,
+    "max": 10.264
+   },
+   "rows": 1123,
+   "compact_rows_per_s": 537.6,
+   "verdict_keys": 0,
+   "verdict_bytes": 0,
+   "runs": [
+    {
+     "compact_s": 2.162,
+     "apply_s": 10.264,
+     "rows": 1123,
+     "bytes_total": 38268,
+     "verdict_bytes": 0,
+     "verdict_keys": 0,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 2.132,
+     "apply_s": 10.149,
+     "rows": 1123,
+     "bytes_total": 38285,
+     "verdict_bytes": 0,
+     "verdict_keys": 0,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 2.089,
+     "apply_s": 9.902,
+     "rows": 1123,
+     "bytes_total": 38272,
+     "verdict_bytes": 0,
+     "verdict_keys": 0,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 2.02,
+     "apply_s": 9.888,
+     "rows": 1123,
+     "bytes_total": 38282,
+     "verdict_bytes": 0,
+     "verdict_keys": 0,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 1.971,
+     "apply_s": 9.731,
+     "rows": 1123,
+     "bytes_total": 38247,
+     "verdict_bytes": 0,
+     "verdict_keys": 0,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 2.018,
+     "apply_s": 9.961,
+     "rows": 1123,
+     "bytes_total": 38229,
+     "verdict_bytes": 0,
+     "verdict_keys": 0,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 2.098,
+     "apply_s": 9.972,
+     "rows": 1123,
+     "bytes_total": 38265,
+     "verdict_bytes": 0,
+     "verdict_keys": 0,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 2.047,
+     "apply_s": 9.799,
+     "rows": 1123,
+     "bytes_total": 38266,
+     "verdict_bytes": 0,
+     "verdict_keys": 0,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 2.864,
+     "apply_s": 9.678,
+     "rows": 1123,
+     "bytes_total": 38246,
+     "verdict_bytes": 0,
+     "verdict_keys": 0,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 2.089,
+     "apply_s": 9.804,
+     "rows": 1123,
+     "bytes_total": 38260,
+     "verdict_bytes": 0,
+     "verdict_keys": 0,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    }
+   ]
+  },
+  "base": {
+   "compact_s": {
+    "median": 3.284,
+    "mean": 3.581,
+    "stdev": 0.649,
+    "min": 3.08,
+    "max": 4.919
+   },
+   "apply_s": {
+    "median": 10.334,
+    "mean": 10.866,
+    "stdev": 1.5,
+    "min": 9.695,
+    "max": 14.329
+   },
+   "rows": 1123,
+   "compact_rows_per_s": 342.0,
+   "verdict_keys": 405,
+   "verdict_bytes": 2480,
+   "runs": [
+    {
+     "compact_s": 3.186,
+     "apply_s": 9.899,
+     "rows": 1123,
+     "bytes_total": 38303,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 3.473,
+     "apply_s": 9.829,
+     "rows": 1123,
+     "bytes_total": 38258,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 3.143,
+     "apply_s": 10.249,
+     "rows": 1123,
+     "bytes_total": 38247,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 3.14,
+     "apply_s": 9.878,
+     "rows": 1123,
+     "bytes_total": 38277,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 3.08,
+     "apply_s": 9.695,
+     "rows": 1123,
+     "bytes_total": 38247,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 4.571,
+     "apply_s": 10.951,
+     "rows": 1123,
+     "bytes_total": 38277,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 4.919,
+     "apply_s": 12.682,
+     "rows": 1123,
+     "bytes_total": 38261,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 3.732,
+     "apply_s": 14.329,
+     "rows": 1123,
+     "bytes_total": 38289,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 3.382,
+     "apply_s": 10.729,
+     "rows": 1123,
+     "bytes_total": 38258,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 3.184,
+     "apply_s": 10.419,
+     "rows": 1123,
+     "bytes_total": 38250,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    }
+   ]
+  },
+  "cross": {
+   "compact_s": {
+    "median": 4.392,
+    "mean": 4.763,
+    "stdev": 0.939,
+    "min": 3.877,
+    "max": 6.458
+   },
+   "apply_s": {
+    "median": 10.779,
+    "mean": 12.427,
+    "stdev": 3.3,
+    "min": 9.835,
+    "max": 18.239
+   },
+   "rows": 1123,
+   "compact_rows_per_s": 255.7,
+   "verdict_keys": 405,
+   "verdict_bytes": 2480,
+   "runs": [
+    {
+     "compact_s": 4.122,
+     "apply_s": 10.151,
+     "rows": 1123,
+     "bytes_total": 38268,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 3.877,
+     "apply_s": 10.242,
+     "rows": 1123,
+     "bytes_total": 38293,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 4.01,
+     "apply_s": 9.835,
+     "rows": 1123,
+     "bytes_total": 38287,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 4.502,
+     "apply_s": 10.915,
+     "rows": 1123,
+     "bytes_total": 38284,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 4.122,
+     "apply_s": 10.565,
+     "rows": 1123,
+     "bytes_total": 38279,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 4.453,
+     "apply_s": 10.954,
+     "rows": 1123,
+     "bytes_total": 38248,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 4.33,
+     "apply_s": 10.643,
+     "rows": 1123,
+     "bytes_total": 38258,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 6.458,
+     "apply_s": 18.239,
+     "rows": 1123,
+     "bytes_total": 38290,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 6.024,
+     "apply_s": 18.017,
+     "rows": 1123,
+     "bytes_total": 38288,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    },
+    {
+     "compact_s": 5.737,
+     "apply_s": 14.704,
+     "rows": 1123,
+     "bytes_total": 38276,
+     "verdict_bytes": 2480,
+     "verdict_keys": 405,
+     "oracle_stale": 405,
+     "n_keys": 1260
+    }
+   ]
+  }
+ },
+ "verdict_size": [
+  {
+   "ooo_rate": 0.0,
+   "oracle_stale": 0,
+   "n_keys": 1260,
+   "violation_rate": 0.0,
+   "verdict_bytes": 2,
+   "verdict_keys": 0,
+   "table_bytes": 37763,
+   "fraction_of_table": 5.296e-05
+  },
+  {
+   "ooo_rate": 0.05,
+   "oracle_stale": 39,
+   "n_keys": 1260,
+   "violation_rate": 0.031,
+   "verdict_bytes": 240,
+   "verdict_keys": 39,
+   "table_bytes": 37873,
+   "fraction_of_table": 0.00633697
+  },
+  {
+   "ooo_rate": 0.1,
+   "oracle_stale": 87,
+   "n_keys": 1260,
+   "violation_rate": 0.069,
+   "verdict_bytes": 535,
+   "verdict_keys": 87,
+   "table_bytes": 37980,
+   "fraction_of_table": 0.01408636
+  },
+  {
+   "ooo_rate": 0.25,
+   "oracle_stale": 206,
+   "n_keys": 1260,
+   "violation_rate": 0.1635,
+   "verdict_bytes": 1256,
+   "verdict_keys": 206,
+   "table_bytes": 38166,
+   "fraction_of_table": 0.03290887
+  },
+  {
+   "ooo_rate": 0.5,
+   "oracle_stale": 405,
+   "n_keys": 1260,
+   "violation_rate": 0.3214,
+   "verdict_bytes": 2480,
+   "verdict_keys": 405,
+   "table_bytes": 38259,
+   "fraction_of_table": 0.06482135
+  }
+ ]
+}

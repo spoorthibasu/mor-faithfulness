@@ -1,0 +1,499 @@
+{
+ "what": "Iceberg rewrite_data_files: physical layout before vs after, per key",
+ "config": {
+  "base_keys": 1200,
+  "seed": 101,
+  "operating_point": "clock_skew_ms=400, ooo_rate=0.05, dup_rate=0.05, schema_change_freq=0.2",
+  "version_column": "lsn (present in both arms)"
+ },
+ "arms": {
+  "unsafe": {
+   "table_dir": "/var/folders/6x/6knq7vvs2_n3s_9qd6w2hbv80000gn/T/mor_harness/cost_wh/db/run_f2c41c4e6829_iceberg",
+   "correctness": {
+    "n_keys": 1260,
+    "n_match": 276,
+    "n_duplicate": 811,
+    "n_stale_wins": 1,
+    "n_missing_current": 0,
+    "n_ghost": 172,
+    "n_violations": 984,
+    "violation_rate": 0.780952380952381,
+    "n_agree": 1075,
+    "n_checker_abstain": 0,
+    "n_delete_tail_blind": 46,
+    "n_correctly_absent": 13,
+    "checker_oracle_mismatch": false,
+    "n_checker_masked": 0,
+    "checker_masked_by_compaction": false,
+    "checker_masked_keys": []
+   },
+   "cost": {
+    "commit_count": 10,
+    "data_files": 10,
+    "delete_files": 9,
+    "bytes_data": 55571,
+    "bytes_delete": 6570
+   },
+   "checker_verdict_tally": {
+    "FAITHFUL": 309,
+    "DUPLICATE": 935,
+    "NEEDS_CONTEXT": 13,
+    "STALE_WINS": 3
+   }
+  },
+  "unsafe_compact": {
+   "table_dir": "/var/folders/6x/6knq7vvs2_n3s_9qd6w2hbv80000gn/T/mor_harness/cost_wh/db/run_3557d290ffe5_iceberg",
+   "correctness": {
+    "n_keys": 1260,
+    "n_match": 276,
+    "n_duplicate": 811,
+    "n_stale_wins": 1,
+    "n_missing_current": 0,
+    "n_ghost": 172,
+    "n_violations": 984,
+    "violation_rate": 0.780952380952381,
+    "n_agree": 1074,
+    "n_checker_abstain": 0,
+    "n_delete_tail_blind": 48,
+    "n_correctly_absent": 13,
+    "checker_oracle_mismatch": false,
+    "n_checker_masked": 1,
+    "checker_masked_by_compaction": true,
+    "checker_masked_keys": [
+     {
+      "key": [
+       544
+      ],
+      "oracle": "STALE_WINS",
+      "checker": "FAITHFUL"
+     }
+    ]
+   },
+   "cost": {
+    "commit_count": 11,
+    "data_files": 1,
+    "delete_files": 1,
+    "bytes_data": 24466,
+    "bytes_delete": 454
+   },
+   "checker_verdict_tally": {
+    "DUPLICATE": 935,
+    "FAITHFUL": 312
+   }
+  }
+ },
+ "conclusion": "Mechanism (a). Compaction applies the equality deletes and physically discards every version that lost (delete files drop to zero, S_D becomes null). The stale survivor becomes the only version present, so current_version_record equals it and the STALE_WINS test can no longer fire. Every checker STALE_WINS verdict is erased; every DUPLICATE verdict survives, because both duplicate rows were visible and are retained. This holds with the monotonic version column present.",
+ "flipped_keys": {
+  "(1218,)": {
+   "before": {
+    "n_data_records": 14,
+    "data": [
+     {
+      "version": 1406,
+      "seq": 2
+     },
+     {
+      "version": 1463,
+      "seq": 2
+     },
+     {
+      "version": 2228,
+      "seq": 2
+     },
+     {
+      "version": 2640,
+      "seq": 2
+     },
+     {
+      "version": 4182,
+      "seq": 2
+     },
+     {
+      "version": 4202,
+      "seq": 2
+     },
+     {
+      "version": 4202,
+      "seq": 2
+     },
+     {
+      "version": 4537,
+      "seq": 2
+     },
+     {
+      "version": 4694,
+      "seq": 2
+     },
+     {
+      "version": 4732,
+      "seq": 3
+     },
+     {
+      "version": 5492,
+      "seq": 3
+     },
+     {
+      "version": 6033,
+      "seq": 3
+     },
+     {
+      "version": 6236,
+      "seq": 4
+     },
+     {
+      "version": 6553,
+      "seq": 3
+     }
+    ],
+    "delete_seqs": [
+     2,
+     3,
+     4
+    ],
+    "S_D": 4,
+    "mult_phys": 1,
+    "survivor_version": 6236,
+    "current_version_record_version": 6553,
+    "verdict": "STALE_WINS"
+   },
+   "after": {
+    "n_data_records": 1,
+    "data": [
+     {
+      "version": 6236,
+      "seq": 10
+     }
+    ],
+    "delete_seqs": [],
+    "S_D": null,
+    "mult_phys": 1,
+    "survivor_version": 6236,
+    "current_version_record_version": 6236,
+    "verdict": "FAITHFUL"
+   }
+  },
+  "(507,)": {
+   "before": {
+    "n_data_records": 9,
+    "data": [
+     {
+      "version": 507,
+      "seq": 1
+     },
+     {
+      "version": 1407,
+      "seq": 2
+     },
+     {
+      "version": 1828,
+      "seq": 2
+     },
+     {
+      "version": 2111,
+      "seq": 2
+     },
+     {
+      "version": 3509,
+      "seq": 2
+     },
+     {
+      "version": 3562,
+      "seq": 2
+     },
+     {
+      "version": 3660,
+      "seq": 3
+     },
+     {
+      "version": 5822,
+      "seq": 2
+     },
+     {
+      "version": 6752,
+      "seq": 2
+     }
+    ],
+    "delete_seqs": [
+     2,
+     3
+    ],
+    "S_D": 3,
+    "mult_phys": 1,
+    "survivor_version": 3660,
+    "current_version_record_version": 6752,
+    "verdict": "STALE_WINS"
+   },
+   "after": {
+    "n_data_records": 1,
+    "data": [
+     {
+      "version": 3660,
+      "seq": 10
+     }
+    ],
+    "delete_seqs": [],
+    "S_D": null,
+    "mult_phys": 1,
+    "survivor_version": 3660,
+    "current_version_record_version": 3660,
+    "verdict": "FAITHFUL"
+   }
+  },
+  "(544,)": {
+   "before": {
+    "n_data_records": 9,
+    "data": [
+     {
+      "version": 544,
+      "seq": 1
+     },
+     {
+      "version": 2119,
+      "seq": 2
+     },
+     {
+      "version": 2385,
+      "seq": 2
+     },
+     {
+      "version": 2385,
+      "seq": 2
+     },
+     {
+      "version": 3525,
+      "seq": 2
+     },
+     {
+      "version": 3983,
+      "seq": 2
+     },
+     {
+      "version": 6047,
+      "seq": 2
+     },
+     {
+      "version": 6223,
+      "seq": 3
+     },
+     {
+      "version": 6386,
+      "seq": 2
+     }
+    ],
+    "delete_seqs": [
+     2,
+     3
+    ],
+    "S_D": 3,
+    "mult_phys": 1,
+    "survivor_version": 6223,
+    "current_version_record_version": 6386,
+    "verdict": "STALE_WINS"
+   },
+   "after": {
+    "n_data_records": 1,
+    "data": [
+     {
+      "version": 6223,
+      "seq": 10
+     }
+    ],
+    "delete_seqs": [],
+    "S_D": null,
+    "mult_phys": 1,
+    "survivor_version": 6223,
+    "current_version_record_version": 6223,
+    "verdict": "FAITHFUL"
+   }
+  }
+ },
+ "duplicate_sample": {
+  "(1,)": {
+   "before": {
+    "n_data_records": 4,
+    "data": [
+     {
+      "version": 1,
+      "seq": 1
+     },
+     {
+      "version": 2715,
+      "seq": 2
+     },
+     {
+      "version": 5727,
+      "seq": 2
+     },
+     {
+      "version": 6715,
+      "seq": 2
+     }
+    ],
+    "delete_seqs": [
+     2
+    ],
+    "S_D": 2,
+    "mult_phys": 3,
+    "survivor_version": 2715,
+    "current_version_record_version": 6715,
+    "verdict": "DUPLICATE"
+   },
+   "after": {
+    "n_data_records": 3,
+    "data": [
+     {
+      "version": 2715,
+      "seq": 10
+     },
+     {
+      "version": 5727,
+      "seq": 10
+     },
+     {
+      "version": 6715,
+      "seq": 10
+     }
+    ],
+    "delete_seqs": [],
+    "S_D": null,
+    "mult_phys": 3,
+    "survivor_version": 2715,
+    "current_version_record_version": 6715,
+    "verdict": "DUPLICATE"
+   }
+  },
+  "(10,)": {
+   "before": {
+    "n_data_records": 10,
+    "data": [
+     {
+      "version": 10,
+      "seq": 1
+     },
+     {
+      "version": 1220,
+      "seq": 2
+     },
+     {
+      "version": 1864,
+      "seq": 2
+     },
+     {
+      "version": 2155,
+      "seq": 2
+     },
+     {
+      "version": 3165,
+      "seq": 2
+     },
+     {
+      "version": 3583,
+      "seq": 2
+     },
+     {
+      "version": 4775,
+      "seq": 2
+     },
+     {
+      "version": 4804,
+      "seq": 3
+     },
+     {
+      "version": 6338,
+      "seq": 3
+     },
+     {
+      "version": 6874,
+      "seq": 3
+     }
+    ],
+    "delete_seqs": [
+     2,
+     3
+    ],
+    "S_D": 3,
+    "mult_phys": 3,
+    "survivor_version": 4804,
+    "current_version_record_version": 6874,
+    "verdict": "DUPLICATE"
+   },
+   "after": {
+    "n_data_records": 3,
+    "data": [
+     {
+      "version": 4804,
+      "seq": 10
+     },
+     {
+      "version": 6338,
+      "seq": 10
+     },
+     {
+      "version": 6874,
+      "seq": 10
+     }
+    ],
+    "delete_seqs": [],
+    "S_D": null,
+    "mult_phys": 3,
+    "survivor_version": 4804,
+    "current_version_record_version": 6874,
+    "verdict": "DUPLICATE"
+   }
+  },
+  "(100,)": {
+   "before": {
+    "n_data_records": 4,
+    "data": [
+     {
+      "version": 100,
+      "seq": 1
+     },
+     {
+      "version": 1789,
+      "seq": 2
+     },
+     {
+      "version": 4884,
+      "seq": 2
+     },
+     {
+      "version": 5252,
+      "seq": 2
+     }
+    ],
+    "delete_seqs": [
+     2
+    ],
+    "S_D": 2,
+    "mult_phys": 3,
+    "survivor_version": 1789,
+    "current_version_record_version": 5252,
+    "verdict": "DUPLICATE"
+   },
+   "after": {
+    "n_data_records": 3,
+    "data": [
+     {
+      "version": 1789,
+      "seq": 10
+     },
+     {
+      "version": 4884,
+      "seq": 10
+     },
+     {
+      "version": 5252,
+      "seq": 10
+     }
+    ],
+    "delete_seqs": [],
+    "S_D": null,
+    "mult_phys": 3,
+    "survivor_version": 1789,
+    "current_version_record_version": 5252,
+    "verdict": "DUPLICATE"
+   }
+  }
+ }
+}

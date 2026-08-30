@@ -1,0 +1,1 @@
+d45c965 Merge-on-read faithfulness: theory, detection, and audit-preserving compaction

@@ -1,0 +1,772 @@
+diff --git a/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/RewriteDataFilesSparkAction.java b/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/RewriteDataFilesSparkAction.java
+index a42ce0e..3676b32 100644
+--- a/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/RewriteDataFilesSparkAction.java
++++ b/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/RewriteDataFilesSparkAction.java
+@@ -18,11 +18,16 @@
+  */
+ package org.apache.iceberg.spark.actions;
+ 
++import java.io.IOException;
++import java.io.UncheckedIOException;
+ import java.math.RoundingMode;
++import java.nio.ByteBuffer;
++import java.nio.charset.StandardCharsets;
+ import java.util.Arrays;
+ import java.util.Collection;
+ import java.util.List;
+ import java.util.Locale;
++import java.util.Map;
+ import java.util.Set;
+ import java.util.concurrent.ConcurrentLinkedQueue;
+ import java.util.concurrent.ExecutorService;
+@@ -31,14 +36,18 @@ import java.util.concurrent.ThreadPoolExecutor;
+ import java.util.stream.Collectors;
+ import org.apache.iceberg.DataFile;
+ import org.apache.iceberg.FileScanTask;
++import org.apache.iceberg.GenericBlobMetadata;
++import org.apache.iceberg.GenericStatisticsFile;
++import org.apache.iceberg.Snapshot;
+ import org.apache.iceberg.SortOrder;
++import org.apache.iceberg.StatisticsFile;
+ import org.apache.iceberg.StructLike;
+ import org.apache.iceberg.Table;
+ import org.apache.iceberg.actions.BinPackRewriteFilePlanner;
+ import org.apache.iceberg.actions.FileRewritePlan;
+ import org.apache.iceberg.actions.FileRewriteRunner;
+-import org.apache.iceberg.actions.ImmutableRewriteDataFiles;
+ import org.apache.iceberg.actions.ImmutableRewriteDataFiles.Result.Builder;
++import org.apache.iceberg.actions.ImmutableRewriteDataFiles;
+ import org.apache.iceberg.actions.RewriteDataFiles;
+ import org.apache.iceberg.actions.RewriteDataFilesCommitManager;
+ import org.apache.iceberg.actions.RewriteFileGroup;
+@@ -46,11 +55,15 @@ import org.apache.iceberg.exceptions.CommitFailedException;
+ import org.apache.iceberg.exceptions.ValidationException;
+ import org.apache.iceberg.expressions.Expression;
+ import org.apache.iceberg.expressions.Expressions;
++import org.apache.iceberg.puffin.Blob;
++import org.apache.iceberg.puffin.Puffin;
++import org.apache.iceberg.puffin.PuffinWriter;
+ import org.apache.iceberg.relocated.com.google.common.annotations.VisibleForTesting;
+ import org.apache.iceberg.relocated.com.google.common.base.Preconditions;
+ import org.apache.iceberg.relocated.com.google.common.collect.ImmutableList;
+ import org.apache.iceberg.relocated.com.google.common.collect.ImmutableSet;
+ import org.apache.iceberg.relocated.com.google.common.collect.Iterables;
++import org.apache.iceberg.relocated.com.google.common.collect.Lists;
+ import org.apache.iceberg.relocated.com.google.common.collect.Queues;
+ import org.apache.iceberg.relocated.com.google.common.collect.Sets;
+ import org.apache.iceberg.relocated.com.google.common.math.IntMath;
+@@ -98,6 +111,9 @@ public class RewriteDataFilesSparkAction
+   private boolean caseSensitive;
+   private BinPackRewriteFilePlanner planner = null;
+   private FileRewriteRunner<FileGroupInfo, FileScanTask, DataFile, RewriteFileGroup> runner = null;
++  // Mutable, held by reference by the commit manager; the stale-wins verdict is merged in before commit.
++  private final Map<String, String> snapshotSummaryProperties =
++      new java.util.concurrent.ConcurrentHashMap<>();
+ 
+   RewriteDataFilesSparkAction(SparkSession spark, Table table) {
+     super(spark.cloneSession());
+@@ -229,8 +245,73 @@ public class RewriteDataFilesSparkAction
+ 
+   @VisibleForTesting
+   RewriteDataFilesCommitManager commitManager(long startingSnapshotId) {
++    snapshotSummaryProperties.putAll(commitSummary());
+     return new RewriteDataFilesCommitManager(
+-        table, startingSnapshotId, useStartingSequenceNumber, commitSummary());
++        table, startingSnapshotId, useStartingSequenceNumber, snapshotSummaryProperties);
++  }
++
++  /** Merge the audited runner's stale-wins verdict into the rewrite commit's snapshot summary. */
++  private void mergeAuditSummary() {
++    if (runner instanceof SparkBinPackFileRewriteRunner) {
++      snapshotSummaryProperties.putAll(
++          ((SparkBinPackFileRewriteRunner) runner).auditSnapshotSummary());
++    }
++  }
++
++  /**
++   * Spill a large stale-wins verdict to a Puffin blob and REGISTER it as a table statistics file.
++   *
++   * <p>Registration is the point. `remove_orphan_files` treats as reachable only the metadata files, the
++   * version hint, and {@code ReachableFileUtil.statisticsFilesLocations} — so a sidecar whose path lives
++   * only inside a snapshot-summary string is an orphan and routine maintenance deletes it. Going through
++   * {@code updateStatistics()} makes the blob format-reachable, at the cost of a second commit (the
++   * statistics file must carry the rewrite commit's snapshot id, which does not exist until it commits).
++   */
++  private void writeAuditSpill() {
++    if (!(runner instanceof SparkBinPackFileRewriteRunner)) {
++      return;
++    }
++    SparkBinPackFileRewriteRunner auditRunner = (SparkBinPackFileRewriteRunner) runner;
++    String json = auditRunner.takePendingSpill();
++    if (json == null) {
++      return;
++    }
++    Snapshot snapshot = table.currentSnapshot();
++    long snapshotId = snapshot.snapshotId();
++    long sequenceNumber = snapshot.sequenceNumber();
++    String path =
++        String.format("%s/metadata/mor-audit-%d.puffin", table.location(), snapshotId);
++    List<Integer> fields = Lists.newArrayList();
++    for (String id : auditRunner.auditKeyFieldIds()) {
++      fields.add(Integer.parseInt(id));
++    }
++
++    long start = System.currentTimeMillis();
++    StatisticsFile statisticsFile;
++    try (PuffinWriter writer =
++        Puffin.write(table.io().newOutputFile(path)).createdBy("mor-stale-wins-audit").build()) {
++      writer.add(
++          new Blob(
++              SparkBinPackFileRewriteRunner.BLOB_TYPE,
++              fields,
++              snapshotId,
++              sequenceNumber,
++              ByteBuffer.wrap(json.getBytes(StandardCharsets.UTF_8))));
++      writer.finish();
++      statisticsFile =
++          new GenericStatisticsFile(
++              snapshotId,
++              path,
++              writer.fileSize(),
++              writer.footerSize(),
++              GenericBlobMetadata.from(writer.writtenBlobsMetadata()));
++    } catch (IOException e) {
++      throw new UncheckedIOException("failed writing the stale-wins verdict blob", e);
++    }
++    table.updateStatistics().setStatistics(statisticsFile).commit();
++    LOG.info(
++        "MOR-AUDIT spilled {} bytes of verdict to {} and registered it as a statistics file in {} ms",
++        json.length(), path, System.currentTimeMillis() - start);
+   }
+ 
+   private Builder doExecute(
+@@ -277,8 +358,10 @@ public class RewriteDataFilesSparkAction
+       rewriteService.shutdown();
+     }
+ 
++    mergeAuditSummary();
+     try {
+       commitManager.commitOrClean(Sets.newHashSet(rewrittenGroups));
++      writeAuditSpill();
+     } catch (ValidationException | CommitFailedException e) {
+       String errorMessage =
+           String.format(
+diff --git a/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/SparkBinPackFileRewriteRunner.java b/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/SparkBinPackFileRewriteRunner.java
+index 6d2ef58..c62ed53 100644
+--- a/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/SparkBinPackFileRewriteRunner.java
++++ b/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/SparkBinPackFileRewriteRunner.java
+@@ -18,17 +18,137 @@
+  */
+ package org.apache.iceberg.spark.actions;
+ 
++import java.io.BufferedWriter;
++import java.io.FileWriter;
++import java.io.IOException;
++import java.io.UncheckedIOException;
++import java.nio.ByteBuffer;
++import java.util.Collections;
++import java.util.Comparator;
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++import java.util.Set;
++import java.util.concurrent.atomic.AtomicInteger;
++import java.util.stream.Collectors;
++import org.apache.iceberg.DataFile;
+ import org.apache.iceberg.DistributionMode;
++import org.apache.iceberg.FileScanTask;
++import org.apache.iceberg.ManifestFile;
++import org.apache.iceberg.ManifestFiles;
++import org.apache.iceberg.ManifestReader;
++import org.apache.iceberg.MetadataColumns;
++import org.apache.iceberg.Snapshot;
+ import org.apache.iceberg.Table;
+ import org.apache.iceberg.actions.RewriteFileGroup;
++import org.apache.iceberg.relocated.com.google.common.base.Preconditions;
++import org.apache.iceberg.relocated.com.google.common.base.Splitter;
++import org.apache.iceberg.relocated.com.google.common.collect.ImmutableSet;
++import org.apache.iceberg.relocated.com.google.common.collect.Lists;
++import org.apache.iceberg.relocated.com.google.common.collect.Maps;
+ import org.apache.iceberg.spark.SparkReadOptions;
+ import org.apache.iceberg.spark.SparkWriteOptions;
++import org.apache.iceberg.types.Comparators;
++import org.apache.iceberg.types.Conversions;
++import org.apache.iceberg.types.Type;
++import org.apache.iceberg.types.Types;
++import org.apache.spark.sql.Column;
+ import org.apache.spark.sql.Dataset;
+ import org.apache.spark.sql.Row;
+ import org.apache.spark.sql.SparkSession;
++import org.apache.spark.sql.functions;
++import org.apache.spark.storage.StorageLevel;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
+ 
+ class SparkBinPackFileRewriteRunner extends SparkDataFileRewriteRunner {
+ 
++  private static final Logger LOG = LoggerFactory.getLogger(SparkBinPackFileRewriteRunner.class);
++
++  // ---- stale-wins audit options (MOR faithfulness mechanism; default off = stock behaviour) ----
++  // When on, the rewrite records, per file group, the keys whose maximum ordering-column value among
++  // the versions the equality deletes discard exceeds the surviving version's ordering value. The
++  // survivor and its discarded versions are never co-resident (one PartitionReader per Spark task), so
++  // the verdict is accumulated across the group via a shuffle, not settled at a point.
++  static final String AUDIT_STALE_WINS = "audit-stale-wins";
++  static final String AUDIT_ORDERING_COLUMN = "audit-ordering-column";
++  static final String AUDIT_KEY_COLUMNS = "audit-key-columns";
++  static final String AUDIT_OUTPUT_PATH = "audit-output-path"; // optional debug side-file sink
++  static final String AUDIT_GATE = "audit-gate"; // metadata gate: skip groups with no seq/ordering inversion
++  // OPT-IN cross-group merge: resolves keys whose versions straddle file groups. Off by default so the
++  // base path keeps its "cost scales with corruption" property; with it on, cost scales with straddling.
++  static final String AUDIT_CROSS_GROUP = "audit-cross-group";
++  // TEST-ONLY. Disables the single-survivor guard so the guard can be shown to be load-bearing:
++  // with a table carrying a same-sequence duplicate whose discarded version out-orders both copies,
++  // turning this off must produce the false positive the guard exists to prevent. Never turn it off
++  // in production -- the mechanism's one-sidedness depends on it.
++  static final String AUDIT_REQUIRE_SINGLE_SURVIVOR = "audit-require-single-survivor";
++  // The marked scan is consumed twice, once by the aggregation and once by the write. Caching it
++  // between them is the obvious fix; leaving it off is kept measurable so the cost of the DESIGN can
++  // be separated from the cost of the missing cache.
++  static final String AUDIT_CACHE_SCAN = "audit-cache-scan";
++  // TEST-ONLY, and the second switch of its kind. Suppresses the straddling abstention so the
++  // behaviour it replaces can still be measured -- the false-positive RATE under straddling is a
++  // number the paper reports, and once the mechanism abstains that number is no longer observable.
++  // Never turn this off in production: it re-enables a known-unsound verdict.
++  static final String AUDIT_FAIL_CLOSED = "audit-fail-closed";
++  // Above this many bytes the inline key list is spilled to a Puffin blob registered as a table
++  // statistics file. The summary lives in metadata.json, which is re-read on every table load, so a
++  // large inline list would bloat every read; 64 KB is ~10K keys at the measured 6.1 B/key (Entry 25).
++  static final String AUDIT_SPILL_THRESHOLD = "audit-spill-threshold-bytes";
++  static final String BLOB_TYPE = "mor-stale-wins-verdict-v1";
++
++  // Snapshot-summary keys the verdict rides on (read by the post-compaction checker).
++  static final String SUMMARY_COUNT = "mor.audit.stale-wins-count";
++  static final String SUMMARY_ORDERING = "mor.audit.ordering-column";
++  static final String SUMMARY_KEY_COLUMNS = "mor.audit.key-columns";
++  static final String SUMMARY_KEYS = "mor.audit.stale-wins-keys";
++  static final String SUMMARY_GROUPS_TOTAL = "mor.audit.groups-total";
++  static final String SUMMARY_GROUPS_GATED = "mor.audit.groups-gated";
++  static final String SUMMARY_GROUPS_AUDITED = "mor.audit.groups-audited";
++  static final String SUMMARY_KEYS_SPILLED = "mor.audit.stale-wins-keys-spilled";
++  static final String SUMMARY_CROSS_GROUP = "mor.audit.cross-group";
++  static final String SUMMARY_CROSS_GROUP_KEYS = "mor.audit.cross-group-keys";
++  static final String SUMMARY_STRADDLE_CANDIDATES = "mor.audit.straddle-candidates";
++  static final String SUMMARY_VERDICT = "mor.audit.verdict";
++  static final String SUMMARY_UNDECIDABLE_REASON = "mor.audit.undecidable-reason";
++
++  private static final String DELETED_FLAG = "_mor_audit_deleted";
++  private static final String D_MAX = "_mor_audit_dmax";
++  private static final String S_MAX = "_mor_audit_smax";
++  private static final String S_CNT = "_mor_audit_scnt";
++
++  private boolean auditStaleWins = false;
++  private boolean auditGate = true;
++  private boolean auditCrossGroup = false;
++  private boolean auditRequireSingleSurvivor = true;
++  private boolean auditCacheScan = true;
++  private boolean auditFailClosed = true;
++  // Cross-group merge state (only populated when auditCrossGroup): per key, the max ordering value among
++  // versions DISCARDED in any group, and the ordering value of the key's single surviving version
++  // (whichever group holds it). A key is a cross-group stale-win iff maxDiscarded > survivor.
++  private final Map<String, Comparable<Object>> crossMaxDiscarded = Maps.newConcurrentMap();
++  private final Map<String, Comparable<Object>> crossSurvivor = Maps.newConcurrentMap();
++  private final Map<String, String> crossKeyJson = Maps.newConcurrentMap();
++  private final Map<String, Long> crossSurvivorCount = Maps.newConcurrentMap();
++  private String orderingColumn = null;
++  private List<String> keyColumns = null;
++  private String auditOutputPath = null;
++  private final Object verdictLock = new Object();
++  // Accumulates per-key JSON (e.g. "[123]") across the groups of one rewrite, for the commit summary.
++  private final List<String> auditStaleWinsKeyJson = Collections.synchronizedList(Lists.newArrayList());
++  // Gate instrumentation (selectivity): groups seen, skipped by the gate, and actually audited.
++  private final AtomicInteger groupsTotal = new AtomicInteger();
++  private final AtomicInteger groupsGated = new AtomicInteger();
++  private final AtomicInteger groupsAudited = new AtomicInteger();
++  // Per-file ordering bounds from the manifests (path -> [lower, upper]). The rewrite scan task's
++  // DataFile has column stats dropped, so the gate reads bounds from metadata instead. Built once.
++  private volatile Map<String, ByteBuffer[]> orderingBoundsByPath = null;
++  private long spillThresholdBytes = 65536;
++  // Set by auditSnapshotSummary() when the key list exceeds the threshold; the action writes it to a
++  // Puffin blob AFTER the rewrite commit (the statistics file must carry that commit's snapshot id).
++  private volatile String pendingSpillJson = null;
++
+   SparkBinPackFileRewriteRunner(SparkSession spark, Table table) {
+     super(spark, table);
+   }
+@@ -38,9 +158,62 @@ class SparkBinPackFileRewriteRunner extends SparkDataFileRewriteRunner {
+     return "BIN-PACK";
+   }
+ 
++  @Override
++  public Set<String> validOptions() {
++    return ImmutableSet.of(
++        AUDIT_STALE_WINS, AUDIT_ORDERING_COLUMN, AUDIT_KEY_COLUMNS, AUDIT_OUTPUT_PATH, AUDIT_GATE,
++        AUDIT_CROSS_GROUP, AUDIT_SPILL_THRESHOLD, AUDIT_REQUIRE_SINGLE_SURVIVOR,
++        AUDIT_CACHE_SCAN, AUDIT_FAIL_CLOSED);
++  }
++
++  @Override
++  public void init(Map<String, String> options) {
++    this.auditStaleWins = Boolean.parseBoolean(options.getOrDefault(AUDIT_STALE_WINS, "false"));
++    if (auditStaleWins) {
++      this.auditGate = Boolean.parseBoolean(options.getOrDefault(AUDIT_GATE, "true"));
++      this.auditCrossGroup = Boolean.parseBoolean(options.getOrDefault(AUDIT_CROSS_GROUP, "false"));
++      this.auditRequireSingleSurvivor =
++          Boolean.parseBoolean(options.getOrDefault(AUDIT_REQUIRE_SINGLE_SURVIVOR, "true"));
++      this.auditCacheScan = Boolean.parseBoolean(options.getOrDefault(AUDIT_CACHE_SCAN, "true"));
++      this.auditFailClosed = Boolean.parseBoolean(options.getOrDefault(AUDIT_FAIL_CLOSED, "true"));
++      this.spillThresholdBytes =
++          Long.parseLong(options.getOrDefault(AUDIT_SPILL_THRESHOLD, "65536"));
++      if (auditCrossGroup && auditGate) {
++        // SOUNDNESS: the metadata gate is sound only for WITHIN-group detection. A group with no
++        // internal seq/ordering inversion can still hold a discarded version that out-orders a
++        // survivor living in another group, so gating it would drop a cross-group operand. Cross-group
++        // mode therefore disables the gate.
++        LOG.info("MOR-AUDIT: {} disables {} (gate is sound only within a group)",
++            AUDIT_CROSS_GROUP, AUDIT_GATE);
++        this.auditGate = false;
++      }
++      this.orderingColumn = options.get(AUDIT_ORDERING_COLUMN);
++      this.auditOutputPath = options.get(AUDIT_OUTPUT_PATH); // optional
++      String keys = options.get(AUDIT_KEY_COLUMNS);
++      Preconditions.checkArgument(
++          orderingColumn != null && keys != null,
++          "%s requires %s and %s",
++          AUDIT_STALE_WINS,
++          AUDIT_ORDERING_COLUMN,
++          AUDIT_KEY_COLUMNS);
++      this.keyColumns =
++          Lists.newArrayList(Splitter.on(',').trimResults().omitEmptyStrings().split(keys));
++      Preconditions.checkArgument(!keyColumns.isEmpty(), "%s must be non-empty", AUDIT_KEY_COLUMNS);
++    }
++  }
++
+   @Override
+   protected void doRewrite(String groupId, RewriteFileGroup group) {
+-    // read the files packing them into splits of the required size
++    if (auditStaleWins) {
++      auditedRewrite(groupId, group);
++    } else {
++      stockRewrite(groupId, group);
++    }
++  }
++
++  // ------------------------------------------------------------------ stock (unchanged)
++
++  private void stockRewrite(String groupId, RewriteFileGroup group) {
+     Dataset<Row> scanDF =
+         spark()
+             .read()
+@@ -50,7 +223,6 @@ class SparkBinPackFileRewriteRunner extends SparkDataFileRewriteRunner {
+             .option(SparkReadOptions.FILE_OPEN_COST, "0")
+             .load(groupId);
+ 
+-    // write the packed data into new files where each split becomes a new file
+     scanDF
+         .write()
+         .format("iceberg")
+@@ -62,6 +234,404 @@ class SparkBinPackFileRewriteRunner extends SparkDataFileRewriteRunner {
+         .save(groupId);
+   }
+ 
++  // ------------------------------------------------------------------ audited (single pass)
++
++  private void auditedRewrite(String groupId, RewriteFileGroup group) {
++    groupsTotal.incrementAndGet();
++    // Metadata gate: if per-file ordering bounds prove no seq-vs-ordering inversion in this group, no
++    // stale-win is possible here, so skip the capture shuffle and rewrite as stock. SOUND (a real
++    // stale-win always creates a file-level inversion); selectivity is workload-dependent (see NOTES).
++    if (auditGate && !mayContainStaleWins(group)) {
++      groupsGated.incrementAndGet();
++      stockRewrite(groupId, group);
++      return;
++    }
++    groupsAudited.incrementAndGet();
++
++    // Project _deleted so DeleteFilter marks (not drops) the discarded versions in the one rewrite scan.
++    Dataset<Row> loaded =
++        spark()
++            .read()
++            .format("iceberg")
++            .option(SparkReadOptions.SCAN_TASK_SET_ID, groupId)
++            .option(SparkReadOptions.SPLIT_SIZE, group.inputSplitSize())
++            .option(SparkReadOptions.FILE_OPEN_COST, "0")
++            .load(groupId);
++
++    List<String> tableCols =
++        table().schema().columns().stream()
++            .map(Types.NestedField::name)
++            .collect(Collectors.toList());
++
++    Column[] markedCols = new Column[tableCols.size() + 1];
++    for (int i = 0; i < tableCols.size(); i++) {
++      markedCols[i] = functions.col(tableCols.get(i));
++    }
++    markedCols[tableCols.size()] =
++        functions.col(MetadataColumns.IS_DELETED.name()).alias(DELETED_FLAG);
++    Dataset<Row> marked = loaded.select(markedCols);
++    // The aggregation below and the survivor write further down are two actions over the same scan.
++    // Without a cache Spark runs the whole thing twice -- re-reading Parquet and re-applying the
++    // delete filter -- which is roughly a doubling, and roughly what the measured overhead was. So
++    // cache between them. Note this is not free at scale: the cached representation of wide rows can
++    // exceed the Parquet it came from, and MEMORY_AND_DISK will spill. Whether it actually wins is an
++    // empirical question, which is why the uncached path stays reachable behind AUDIT_CACHE_SCAN.
++    if (auditCacheScan) {
++      marked = marked.persist(StorageLevel.MEMORY_AND_DISK());
++    }
++
++    Column deleted = functions.col(DELETED_FLAG);
++    Column ordering = functions.col(orderingColumn);
++    Column[] keyCols = keyColumns.stream().map(functions::col).toArray(Column[]::new);
++
++    // Per key: max ordering among discarded versions vs the surviving version's ordering, plus the
++    // survivor count. Stale-wins iff a key has exactly one survivor and a discarded version out-orders
++    // it. The single-survivor guard excludes DUPLICATE keys (>= 2 survivors) — a distinct violation
++    // class that compaction does not mask and the post-compaction checker still sees.
++    Dataset<Row> perKey =
++        marked
++            .groupBy(keyCols)
++            .agg(
++                functions.max(functions.when(deleted, ordering)).alias(D_MAX),
++                functions.max(functions.when(functions.not(deleted), ordering)).alias(S_MAX),
++                functions.count(functions.when(functions.not(deleted), functions.lit(1))).alias(S_CNT));
++
++    if (auditCrossGroup) {
++      // Contribute this group's per-key partials to the table-level merge. Only keys that carry a
++      // discarded version (a possible violation operand) or a survivor (the comparison operand) matter.
++      collectCrossGroup(perKey.where(
++          functions.col(D_MAX).isNotNull().or(functions.col(S_CNT).gt(0))));
++    }
++
++    Column staleWin =
++        functions
++            .col(D_MAX)
++            .isNotNull()
++            .and(functions.col(S_MAX).isNotNull())
++            .and(functions.col(D_MAX).gt(functions.col(S_MAX)));
++    if (auditRequireSingleSurvivor) {
++      staleWin = functions.col(S_CNT).equalTo(1).and(staleWin);
++    }
++
++    Dataset<Row> verdicts = perKey.where(staleWin).select(keyCols);
++
++    recordVerdict(groupId, keyColumns, verdicts.collectAsList());
++
++    // Write survivors only (drop the marked-deleted rows and the flag) — identical to stock output.
++    Column[] survivorCols = tableCols.stream().map(functions::col).toArray(Column[]::new);
++    marked
++        .where(functions.not(deleted))
++        .select(survivorCols)
++        .write()
++        .format("iceberg")
++        .option(SparkWriteOptions.REWRITTEN_FILE_SCAN_TASK_SET_ID, groupId)
++        .option(SparkWriteOptions.TARGET_FILE_SIZE_BYTES, group.maxOutputFileSize())
++        .option(SparkWriteOptions.DISTRIBUTION_MODE, distributionMode(group).modeName())
++        .option(SparkWriteOptions.OUTPUT_SPEC_ID, group.outputSpecId())
++        .mode("append")
++        .save(groupId);
++
++    if (auditCacheScan) {
++      marked.unpersist(false); // both actions are done; do not hold the group's blocks per rewrite
++    }
++  }
++
++  /**
++   * Accumulate one group's violating keys for the commit summary, and (if a debug path is set) append
++   * one JSON line per group to the side file.
++   */
++  private void recordVerdict(String groupId, List<String> keyCols, List<Row> violating) {
++    List<String> perKey = Lists.newArrayListWithCapacity(violating.size());
++    for (Row row : violating) {
++      StringBuilder k = new StringBuilder("[");
++      for (int c = 0; c < keyCols.size(); c++) {
++        k.append(c == 0 ? "" : ",").append(jsonValue(row.get(c)));
++      }
++      k.append("]");
++      perKey.add(k.toString());
++    }
++    auditStaleWinsKeyJson.addAll(perKey); // for the snapshot summary (accumulated across groups)
++    LOG.info("MOR-AUDIT group {}: {} stale-wins keys", groupId, perKey.size());
++    if (auditOutputPath != null) {
++      String line =
++          String.format(
++              "{\"group\":\"%s\",\"n\":%d,\"keys\":[%s]}%n",
++              groupId, perKey.size(), String.join(",", perKey));
++      synchronized (verdictLock) {
++        try (BufferedWriter w = new BufferedWriter(new FileWriter(auditOutputPath, true))) {
++          w.write(line);
++        } catch (IOException e) {
++          throw new UncheckedIOException("failed to write audit verdict to " + auditOutputPath, e);
++        }
++      }
++    }
++  }
++
++  /** The spilled verdict JSON, or null when it fit inline. Consumed once by the action after commit. */
++  String takePendingSpill() {
++    String s = pendingSpillJson;
++    this.pendingSpillJson = null;
++    return s;
++  }
++
++  List<String> auditKeyFieldIds() {
++    List<String> ids = Lists.newArrayList();
++    for (String k : keyColumns) {
++      ids.add(String.valueOf(table().schema().findField(k).fieldId()));
++    }
++    return ids;
++  }
++
++  /**
++   * Merge one group's per-key partials into the table-level accumulators. Rows are
++   * (key..., D_MAX, S_MAX, S_CNT): the max ordering among versions this group discarded, the ordering of
++   * the survivor if this group holds it, and the local survivor count. A key's versions may be spread
++   * over several groups, so each group contributes what it saw and the comparison happens at commit.
++   */
++  private void collectCrossGroup(Dataset<Row> perKey) {
++    int nk = keyColumns.size();
++    for (Row row : perKey.collectAsList()) {
++      StringBuilder k = new StringBuilder("[");
++      for (int c = 0; c < nk; c++) {
++        k.append(c == 0 ? "" : ",").append(jsonValue(row.get(c)));
++      }
++      k.append("]");
++      String key = k.toString();
++      crossKeyJson.putIfAbsent(key, key);
++
++      Object dmax = row.get(nk);
++      Object smax = row.get(nk + 1);
++      long scnt = row.getLong(nk + 2);
++      if (dmax != null) {
++        crossMaxDiscarded.merge(key, asComparable(dmax), SparkBinPackFileRewriteRunner::maxOf);
++      }
++      if (scnt > 0) {
++        crossSurvivorCount.merge(key, scnt, Long::sum);
++        if (smax != null) {
++          crossSurvivor.merge(key, asComparable(smax), SparkBinPackFileRewriteRunner::maxOf);
++        }
++      }
++    }
++  }
++
++  @SuppressWarnings("unchecked")
++  private static Comparable<Object> asComparable(Object v) {
++    return (Comparable<Object>) v;
++  }
++
++  private static Comparable<Object> maxOf(Comparable<Object> a, Comparable<Object> b) {
++    return a.compareTo(b) >= 0 ? a : b;
++  }
++
++  /**
++   * Table-level resolution: a key is a cross-group stale-win iff it has exactly one surviving version
++   * table-wide and the maximum ordering value among versions discarded in ANY group exceeds it. Keys
++   * already flagged within a single group are included by the same test, so this is a superset of the
++   * base verdict.
++   */
++  private List<String> crossGroupStaleWins() {
++    List<String> out = Lists.newArrayList();
++    for (Map.Entry<String, Comparable<Object>> e : crossMaxDiscarded.entrySet()) {
++      String key = e.getKey();
++      Comparable<Object> survivor = crossSurvivor.get(key);
++      Long scnt = crossSurvivorCount.get(key);
++      if (survivor == null || scnt == null || scnt != 1L) {
++        continue; // no surviving version (deleted), or a duplicate: not the stale-wins class
++      }
++      if (e.getValue().compareTo((Object) survivor) > 0) {
++        out.add(key);
++      }
++    }
++    return out;
++  }
++
++  /**
++   * The stale-wins verdict as snapshot-summary properties, merged into the rewrite commit by the action.
++   * Empty when the audit is off. (M2: inline key list; Puffin spill for large lists is a follow-up.)
++   */
++  Map<String, String> auditSnapshotSummary() {
++    if (!auditStaleWins) {
++      return Collections.emptyMap();
++    }
++    List<String> keys;
++    synchronized (auditStaleWinsKeyJson) {
++      keys = Lists.newArrayList(auditStaleWinsKeyJson);
++    }
++    Map<String, String> props = new HashMap<>();
++    props.put(SUMMARY_ORDERING, orderingColumn);
++    props.put(SUMMARY_KEY_COLUMNS, String.join(",", keyColumns));
++    props.put(SUMMARY_GROUPS_TOTAL, String.valueOf(groupsTotal.get()));
++    props.put(SUMMARY_GROUPS_GATED, String.valueOf(groupsGated.get()));
++    props.put(SUMMARY_GROUPS_AUDITED, String.valueOf(groupsAudited.get()));
++    props.put(SUMMARY_CROSS_GROUP, String.valueOf(auditCrossGroup));
++
++    // FAIL CLOSED. The single-survivor guard is evaluated WITHIN a group, so it is sound only while
++    // every surviving version of a key is co-resident there. Once the rewrite forms more than one
++    // group that precondition is not established, and a per-group verdict can contain keys that are
++    // not violations -- measured, not hypothetical. Publishing it anyway would trade the mechanism's
++    // one-sidedness for recall it does not even have in that regime. So we abstain: no key list, no
++    // count, an explicit undecidable in its place. Cross-group mode makes the survivor count global
++    // and is the way to get a verdict here.
++    if (auditFailClosed && !auditCrossGroup && groupsTotal.get() > 1) {
++      props.put(SUMMARY_VERDICT, "undecidable");
++      props.put(
++          SUMMARY_UNDECIDABLE_REASON,
++          "key versions may straddle "
++              + groupsTotal.get()
++              + " file groups; per-group detection cannot establish a global survivor count. "
++              + "Re-run with "
++              + AUDIT_CROSS_GROUP
++              + "=true for a decidable verdict.");
++      this.pendingSpillJson = null;
++      return props;
++    }
++
++    props.put(SUMMARY_VERDICT, "decided");
++    props.put(SUMMARY_COUNT, String.valueOf(keys.size()));
++    String keysJson = "[" + String.join(",", keys) + "]";
++    if (keysJson.length() > spillThresholdBytes) {
++      // Spill: the list goes to a Puffin blob registered as a statistics file (see the action). It is
++      // deliberately NOT referenced by a path string in this summary -- a path in a property is not in
++      // the set `remove_orphan_files` treats as reachable, so such a sidecar is deleted by routine
++      // maintenance. Registration is what makes it format-reachable.
++      this.pendingSpillJson = keysJson;
++      props.put(SUMMARY_KEYS_SPILLED, "true");
++    } else {
++      props.put(SUMMARY_KEYS, keysJson);
++      props.put(SUMMARY_KEYS_SPILLED, "false");
++    }
++    if (auditCrossGroup) {
++      // The complete (cross-group) verdict. The per-group list above stays as written, so both the
++      // base result and the merged result are visible in the same snapshot.
++      List<String> merged = crossGroupStaleWins();
++      props.put(SUMMARY_CROSS_GROUP_KEYS, "[" + String.join(",", merged) + "]");
++      props.put(SUMMARY_COUNT, String.valueOf(merged.size()));
++      props.put(SUMMARY_STRADDLE_CANDIDATES, String.valueOf(crossMaxDiscarded.size()));
++    }
++    return props;
++  }
++
++  private static String jsonValue(Object v) {
++    if (v == null) {
++      return "null";
++    }
++    if (v instanceof Number || v instanceof Boolean) {
++      return v.toString();
++    }
++    return "\"" + v.toString().replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
++  }
++
++  /**
++   * Metadata-only necessary condition for a within-group stale-win: over the group's DISTINCT data
++   * sequence numbers in increasing order, some sequence's union ordering upper bound exceeds a later
++   * sequence's union ordering lower bound (an inversion). Sound, conservative, missing bounds ⇒ audit.
++   *
++   * <p>WHY PER SEQUENCE AND NOT PER FILE. A stale-win needs a survivor {@code s} and a discarded
++   * {@code d} of the same key. {@code d} is discarded only if some equality delete out-sequences it,
++   * and {@code s} survives only if its sequence is at least the maximum delete sequence, so
++   * {@code d.seq < s.seq} strictly: every violation is an inversion across two DISTINCT sequence
++   * numbers. This is mechanised as {@code discarded_seq_lt_visible_seq} in
++   * {@code lean/MorFaithful/GateSoundness.lean}, in both the all-versions and the updates-only delete
++   * models, and the converse {@code same_seq_both_visible} shows two versions sharing the maximum
++   * sequence are BOTH visible -- so same-sequence co-residency is not an ordering relation at all and
++   * neither version suppresses the other.
++   *
++   * <p>The earlier implementation sorted individual FILES and tracked a running maximum, which also
++   * compared files sharing a sequence number against one another. Those comparisons can never witness
++   * a violation, but they do fire: a hash-partitioned CDC sink writes each commit as several files
++   * whose ordering intervals each span the whole commit window, so on perfectly ordered data the gate
++   * cleared nothing (measured, {@code probe_gate_filelayout.py}). Unioning bounds per sequence removes
++   * exactly those comparisons and keeps every cross-sequence one.
++   *
++   * <p>VACUOUS CASE, stated because it is a real consequence rather than an oversight: a group whose
++   * files all carry ONE sequence number has no distinct-sequence pair and is therefore cleared
++   * unconditionally. That is correct, not a gap -- by the theorem above no within-group stale-win can
++   * exist among versions that all share a sequence number.
++   */
++  private boolean mayContainStaleWins(RewriteFileGroup group) {
++    Type.PrimitiveType type =
++        table().schema().findField(orderingColumn).type().asPrimitiveType();
++    Comparator<Object> cmp = Comparators.forType(type);
++    Map<String, ByteBuffer[]> bounds = orderingBoundsByPath();
++
++    // seq -> {unionOrdMin, unionOrdMax} over every file carrying that data sequence number
++    Map<Long, Object[]> bySeq = Maps.newHashMap();
++    for (FileScanTask task : group.fileScanTasks()) {
++      DataFile file = task.file();
++      Long seq = file.dataSequenceNumber();
++      ByteBuffer[] b = bounds.get(file.location());
++      if (seq == null || b == null) {
++        return true; // cannot rule out a stale-win without seq + ordering bounds
++      }
++      Object lo = Conversions.fromByteBuffer(type, b[0]);
++      Object hi = Conversions.fromByteBuffer(type, b[1]);
++      Object[] cur = bySeq.get(seq);
++      if (cur == null) {
++        bySeq.put(seq, new Object[] {lo, hi});
++      } else {
++        if (cmp.compare(lo, cur[0]) < 0) {
++          cur[0] = lo;
++        }
++        if (cmp.compare(hi, cur[1]) > 0) {
++          cur[1] = hi;
++        }
++      }
++    }
++
++    List<Long> seqs = Lists.newArrayList(bySeq.keySet());
++    Collections.sort(seqs);
++    Object runningMaxOrd = null;
++    for (Long seq : seqs) {
++      Object[] iv = bySeq.get(seq);
++      Object ordMin = iv[0];
++      Object ordMax = iv[1];
++      if (runningMaxOrd != null && cmp.compare(ordMin, runningMaxOrd) < 0) {
++        return true; // an earlier SEQUENCE out-orders this later sequence's minimum
++      }
++      if (runningMaxOrd == null || cmp.compare(ordMax, runningMaxOrd) > 0) {
++        runningMaxOrd = ordMax;
++      }
++    }
++    return false;
++  }
++
++  /**
++   * Ordering-column [lower, upper] per data-file path, read once from the current snapshot's manifests
++   * (the rewrite scan task drops column stats, so the gate cannot read them off the task's DataFile).
++   * Files whose ordering bounds are absent are simply not in the map, and the gate audits them.
++   */
++  private Map<String, ByteBuffer[]> orderingBoundsByPath() {
++    if (orderingBoundsByPath == null) {
++      synchronized (this) {
++        if (orderingBoundsByPath == null) {
++          int fieldId = table().schema().findField(orderingColumn).fieldId();
++          Map<String, ByteBuffer[]> map = Maps.newHashMap();
++          Snapshot snapshot = table().currentSnapshot();
++          if (snapshot != null) {
++            for (ManifestFile manifest : snapshot.dataManifests(table().io())) {
++              try (ManifestReader<DataFile> reader =
++                  ManifestFiles.read(manifest, table().io(), table().specs())) {
++                for (DataFile file : reader) {
++                  Map<Integer, ByteBuffer> lower = file.lowerBounds();
++                  Map<Integer, ByteBuffer> upper = file.upperBounds();
++                  ByteBuffer lo = lower == null ? null : lower.get(fieldId);
++                  ByteBuffer hi = upper == null ? null : upper.get(fieldId);
++                  if (lo != null && hi != null) {
++                    map.put(file.location(), new ByteBuffer[] {lo, hi});
++                  }
++                }
++              } catch (IOException e) {
++                throw new UncheckedIOException("failed reading manifest for audit gate", e);
++              }
++            }
++          }
++          orderingBoundsByPath = map;
++        }
++      }
++    }
++    return orderingBoundsByPath;
++  }
++
+   // invoke a shuffle if the original spec does not match the output spec
+   private DistributionMode distributionMode(RewriteFileGroup group) {
+     boolean requiresRepartition =

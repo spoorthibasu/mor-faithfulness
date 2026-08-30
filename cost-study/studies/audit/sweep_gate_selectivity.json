@@ -1,0 +1,279 @@
+{
+ "config": {
+  "commits": 40,
+  "rows_per_commit": 1500,
+  "payload_bytes": 200,
+  "files_per_commit": 1,
+  "group_cap_bytes": 1500000,
+  "min_input_files": 2,
+  "rewrite_opts": "max-file-group-size-bytes=1500000,min-input-files=2,audit-cache-scan=false"
+ },
+ "points": [
+  {
+   "frac": 0.0,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 50,
+   "groups_gated": 50,
+   "groups_audited": 0,
+   "clearance": 1.0,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 0.0,
+   "per_seed_clearance": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "binomial_prediction": 1.0
+  },
+  {
+   "frac": 1e-05,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 50,
+   "groups_gated": 50,
+   "groups_audited": 0,
+   "clearance": 1.0,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 0.06,
+   "per_seed_clearance": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "binomial_prediction": 0.9418
+  },
+  {
+   "frac": 2e-05,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 50,
+   "groups_gated": 47,
+   "groups_audited": 3,
+   "clearance": 0.94,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 0.12,
+   "per_seed_clearance": [
+    0.9,
+    0.9,
+    1.0,
+    0.9,
+    1.0
+   ],
+   "binomial_prediction": 0.8869
+  },
+  {
+   "frac": 5e-05,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 50,
+   "groups_gated": 40,
+   "groups_audited": 10,
+   "clearance": 0.8,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 0.3,
+   "per_seed_clearance": [
+    0.9,
+    0.7,
+    0.9,
+    0.8,
+    0.7
+   ],
+   "binomial_prediction": 0.7408
+  },
+  {
+   "frac": 0.0001,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 50,
+   "groups_gated": 31,
+   "groups_audited": 19,
+   "clearance": 0.62,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 0.6,
+   "per_seed_clearance": [
+    0.6,
+    0.6,
+    0.6,
+    0.6,
+    0.7
+   ],
+   "binomial_prediction": 0.5488
+  },
+  {
+   "frac": 0.00015,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 50,
+   "groups_gated": 25,
+   "groups_audited": 25,
+   "clearance": 0.5,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 0.9,
+   "per_seed_clearance": [
+    0.7,
+    0.3,
+    0.4,
+    0.5,
+    0.6
+   ],
+   "binomial_prediction": 0.4065
+  },
+  {
+   "frac": 0.0002,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 50,
+   "groups_gated": 24,
+   "groups_audited": 26,
+   "clearance": 0.48,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 1.2,
+   "per_seed_clearance": [
+    0.7,
+    0.4,
+    0.5,
+    0.5,
+    0.3
+   ],
+   "binomial_prediction": 0.3012
+  },
+  {
+   "frac": 0.0003,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 50,
+   "groups_gated": 13,
+   "groups_audited": 37,
+   "clearance": 0.26,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 1.8,
+   "per_seed_clearance": [
+    0.5,
+    0.2,
+    0.4,
+    0.1,
+    0.1
+   ],
+   "binomial_prediction": 0.1653
+  },
+  {
+   "frac": 0.0005,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 50,
+   "groups_gated": 7,
+   "groups_audited": 43,
+   "clearance": 0.14,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 3.0,
+   "per_seed_clearance": [
+    0.3,
+    0.2,
+    0.0,
+    0.1,
+    0.1
+   ],
+   "binomial_prediction": 0.0497
+  },
+  {
+   "frac": 0.001,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 50,
+   "groups_gated": 0,
+   "groups_audited": 50,
+   "clearance": 0.0,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 6.0,
+   "per_seed_clearance": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "binomial_prediction": 0.0025
+  },
+  {
+   "frac": 1.0,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 50,
+   "groups_gated": 0,
+   "groups_audited": 50,
+   "clearance": 0.0,
+   "rows_per_group": 6000,
+   "expected_interleaved_per_group": 6000.0,
+   "per_seed_clearance": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "binomial_prediction": 0.0
+  }
+ ],
+ "anchor_failures": [],
+ "control_failures": []
+}

@@ -1,0 +1,280 @@
+{
+ "config": {
+  "commits": 40,
+  "rows_per_commit": 1500,
+  "payload_bytes": 200,
+  "files_per_commit": 4,
+  "key_scatter": "roundrobin",
+  "group_cap_bytes": 1500000,
+  "min_input_files": 2,
+  "rewrite_opts": "max-file-group-size-bytes=1500000,min-input-files=2,audit-cache-scan=false"
+ },
+ "points": [
+  {
+   "frac": 0.0,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 45,
+   "groups_gated": 45,
+   "groups_audited": 0,
+   "clearance": 1.0,
+   "rows_per_group": 6667,
+   "expected_interleaved_per_group": 0.0,
+   "per_seed_clearance": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "binomial_prediction": 1.0
+  },
+  {
+   "frac": 1e-05,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 45,
+   "groups_gated": 45,
+   "groups_audited": 0,
+   "clearance": 1.0,
+   "rows_per_group": 6667,
+   "expected_interleaved_per_group": 0.067,
+   "per_seed_clearance": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "binomial_prediction": 0.9355
+  },
+  {
+   "frac": 2e-05,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 45,
+   "groups_gated": 43,
+   "groups_audited": 2,
+   "clearance": 0.9555555555555556,
+   "rows_per_group": 6667,
+   "expected_interleaved_per_group": 0.133,
+   "per_seed_clearance": [
+    1.0,
+    0.889,
+    1.0,
+    1.0,
+    0.889
+   ],
+   "binomial_prediction": 0.8752
+  },
+  {
+   "frac": 5e-05,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 45,
+   "groups_gated": 38,
+   "groups_audited": 7,
+   "clearance": 0.8444444444444444,
+   "rows_per_group": 6667,
+   "expected_interleaved_per_group": 0.333,
+   "per_seed_clearance": [
+    0.778,
+    0.778,
+    0.889,
+    1.0,
+    0.778
+   ],
+   "binomial_prediction": 0.7165
+  },
+  {
+   "frac": 0.0001,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 45,
+   "groups_gated": 24,
+   "groups_audited": 21,
+   "clearance": 0.5333333333333333,
+   "rows_per_group": 6667,
+   "expected_interleaved_per_group": 0.667,
+   "per_seed_clearance": [
+    0.778,
+    0.222,
+    0.444,
+    0.778,
+    0.444
+   ],
+   "binomial_prediction": 0.5134
+  },
+  {
+   "frac": 0.00015,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 45,
+   "groups_gated": 21,
+   "groups_audited": 24,
+   "clearance": 0.4666666666666667,
+   "rows_per_group": 6667,
+   "expected_interleaved_per_group": 1.0,
+   "per_seed_clearance": [
+    0.556,
+    0.222,
+    0.556,
+    0.667,
+    0.333
+   ],
+   "binomial_prediction": 0.3679
+  },
+  {
+   "frac": 0.0002,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 45,
+   "groups_gated": 16,
+   "groups_audited": 29,
+   "clearance": 0.35555555555555557,
+   "rows_per_group": 6667,
+   "expected_interleaved_per_group": 1.333,
+   "per_seed_clearance": [
+    0.444,
+    0.333,
+    0.222,
+    0.556,
+    0.222
+   ],
+   "binomial_prediction": 0.2636
+  },
+  {
+   "frac": 0.0003,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 45,
+   "groups_gated": 8,
+   "groups_audited": 37,
+   "clearance": 0.17777777777777778,
+   "rows_per_group": 6667,
+   "expected_interleaved_per_group": 2.0,
+   "per_seed_clearance": [
+    0.111,
+    0.111,
+    0.333,
+    0.222,
+    0.111
+   ],
+   "binomial_prediction": 0.1353
+  },
+  {
+   "frac": 0.0005,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 45,
+   "groups_gated": 5,
+   "groups_audited": 40,
+   "clearance": 0.1111111111111111,
+   "rows_per_group": 6667,
+   "expected_interleaved_per_group": 3.333,
+   "per_seed_clearance": [
+    0.111,
+    0.0,
+    0.0,
+    0.444,
+    0.0
+   ],
+   "binomial_prediction": 0.0356
+  },
+  {
+   "frac": 0.001,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 45,
+   "groups_gated": 0,
+   "groups_audited": 45,
+   "clearance": 0.0,
+   "rows_per_group": 6667,
+   "expected_interleaved_per_group": 6.667,
+   "per_seed_clearance": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "binomial_prediction": 0.0013
+  },
+  {
+   "frac": 1.0,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "groups_total": 45,
+   "groups_gated": 0,
+   "groups_audited": 45,
+   "clearance": 0.0,
+   "rows_per_group": 6667,
+   "expected_interleaved_per_group": 6666.667,
+   "per_seed_clearance": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "binomial_prediction": 0.0
+  }
+ ],
+ "anchor_failures": [],
+ "control_failures": []
+}

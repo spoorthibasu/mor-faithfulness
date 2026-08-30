@@ -1,0 +1,64 @@
+{
+ "points": [
+  {
+   "heap": "8g",
+   "keys": 20000000,
+   "wall_s": 207.0,
+   "rows": 60000000,
+   "gb": 1.3,
+   "outcome": "ok",
+   "compact_s": 169.298,
+   "ingest_s": 26.379,
+   "straddle_candidates": "8000000",
+   "groups_total": "1"
+  },
+  {
+   "heap": "8g",
+   "keys": 35000000,
+   "wall_s": 250.2,
+   "rows": 105000000,
+   "gb": 2.3,
+   "outcome": "OOM",
+   "detail": "RuntimeError: driver iceberg_driver.py error: iceberg driver failed\nTraceback (most recent call last):\n  File \"/opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapters/drivers/iceberg_driver.py\", line 643, in <module>\n    main()\n  File \"/opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapters/drivers/iceberg_driver.py\", line 490, in main\n    spark.sql(f\"CALL local.system.rewrite_data_files(table => 'db.{NAME}'{opts})\")\n  File \"/opt/mor/venv/lib/python3.11/site-packages/pyspark/sql/session.py\", line 1631, in sql\n    return DataFrame(self._jsparkSession.sql(sqlQuery, litArgs), self)\n  "
+  },
+  {
+   "heap": "24g",
+   "keys": 50000000,
+   "wall_s": 403.3,
+   "rows": 150000000,
+   "gb": 3.3,
+   "outcome": "ok",
+   "compact_s": 324.025,
+   "ingest_s": 64.208,
+   "straddle_candidates": "20000000",
+   "groups_total": "1"
+  },
+  {
+   "heap": "24g",
+   "keys": 100000000,
+   "wall_s": 381.9,
+   "rows": 300000000,
+   "gb": 6.5,
+   "outcome": "error",
+   "detail": "RuntimeError: driver iceberg_driver.py error: iceberg driver failed\nTraceback (most recent call last):\n  File \"/opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapters/drivers/iceberg_driver.py\", line 643, in <module>\n    main()\n  File \"/opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapters/drivers/iceberg_driver.py\", line 490, in main\n    spark.sql(f\"CALL local.system.rewrite_data_files(table => 'db.{NAME}'{opts})\")\n  File \"/opt/mor/venv/lib/python3.11/site-packages/pyspark/sql/session.py\", line 1631, in sql\n    return DataFrame(self._jsparkSession.sql(sqlQuery, litArgs), self)\n  "
+  }
+ ],
+ "skipped": [
+  {
+   "heap": "8g",
+   "keys": 50000000,
+   "why": "a smaller key count already failed at this heap"
+  }
+ ],
+ "host": {
+  "nproc": "16",
+  "mem_total": "123 GiB",
+  "warehouse_dev": "/dev/nvme1n1",
+  "root_dev": "/dev/nvme0n1p1",
+  "kernel": "6.17.0-1017-aws",
+  "instance": "i4i.4xlarge"
+ },
+ "budget_s": 4500.0,
+ "timeout_s": 1500.0,
+ "failures": []
+}

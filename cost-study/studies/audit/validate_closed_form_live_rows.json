@@ -1,0 +1,20 @@
+{
+ "what": "the closed form's expected_live_rows against the engine's reported live_rows",
+ "why": "Section 6.1 cites this agreement as what licenses treating the construction oracle as an oracle; only the prediction half was previously reproducible",
+ "config": {
+  "commits": 8,
+  "rows_per_commit": 500000,
+  "payload_bytes": 100,
+  "delete_frac": 0.2,
+  "ordering": "inverted"
+ },
+ "closed_form_expected_live_rows": 1699998,
+ "engine_reported_live_rows": 1699998,
+ "agree": true,
+ "expected_stale_wins": 100000,
+ "captured": 100000,
+ "false_positives_other": 0,
+ "misses": 0,
+ "bytes_on_disk": 602153207,
+ "failures": []
+}

@@ -1,0 +1,29 @@
+{
+  "verdict": "FAITHFUL",
+  "exit_code": 0,
+  "table": {
+    "format": "iceberg",
+    "metadata_location": "realworld/tables/t2_postfix_wh/realworld/t2_postfix/metadata/v4.metadata.json",
+    "snapshot_id": 3208493940337412231,
+    "key_columns": [
+      "id"
+    ],
+    "version_column": "op_seq",
+    "upsert_only": false,
+    "position_delete_files_not_analyzed": 0
+  },
+  "metadata_screen": {
+    "duplicate_candidates": [],
+    "note": "Tier A: duplicate-key candidates from metadata only, no data scan. Tier B (findings) is the exact prover."
+  },
+  "counts": {
+    "FAITHFUL": 1,
+    "DUPLICATE": 0,
+    "WRONGLY_SUPPRESSED_CURRENT": 0,
+    "STALE_WINS": 0,
+    "UNDECIDABLE": 0,
+    "NEEDS_CONTEXT": 0
+  },
+  "keys_checked": 1,
+  "findings": []
+}

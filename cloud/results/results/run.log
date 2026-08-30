@@ -1,0 +1,220 @@
+
+[1m=== host ===[0m  (t+0s)
+Linux ip-172-31-7-85 6.17.0-1017-aws #17~24.04.1-Ubuntu SMP Tue May 26 21:30:32 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+16
+               total        used        free      shared  buff/cache   available
+Mem:             123           1         122           0           0         122
+Swap:              0           0           0
+
+
+[1m=== NVMe instance storage ===[0m  (t+0s)
+candidate: /dev/nvme1n1     root is on: /dev/nvme0n1p1
+formatting /dev/nvme1n1 (ephemeral instance store; data does not survive a stop)
+mke2fs 1.47.0 (5-Feb-2023)
+warehouse /mnt/nvme/warehouse is on /dev/nvme1n1
+warehouse free space: 3437 GB
+4294967296 bytes (4.3 GB, 4.0 GiB) copied, 1.73036 s, 2.5 GB/s
+
+[1m=== packages ===[0m  (t+38s)
+JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+openjdk version "17.0.19" 2026-04-21
+OpenJDK Runtime Environment (build 17.0.19+10-1-24.04.2-Ubuntu)
+OpenJDK 64-Bit Server VM (build 17.0.19+10-1-24.04.2-Ubuntu, mixed mode, sharing)
+
+[1m=== python 3.11 + pinned deps ===[0m  (t+77s)
+downloading uv 0.12.5 x86_64-unknown-linux-gnu
+Downloading cpython-3.11.16-linux-x86_64-gnu (download) (29.5MiB)
+ Downloaded cpython-3.11.16-linux-x86_64-gnu (download)
+Installed Python 3.11.16 in 741ms
+ + cpython-3.11.16-linux-x86_64-gnu (python3.11)
+warning: `/root/.local/bin` is not on your PATH. To use installed Python executables, run `export PATH="/root/.local/bin:$PATH"` or `uv python update-shell`.
+Using CPython 3.11.16
+Creating virtual environment at: /opt/mor/venv
+Activate with: source /opt/mor/venv/bin/activate
+python 3.11.16 pyspark 3.5.3 pyarrow 21.0.0
+
+[1m=== sources ===[0m  (t+93s)
+Cloning into '/opt/mor/mor-faithfulness'...
+d45c965 Merge-on-read faithfulness: theory, detection, and audit-preserving compaction
+Cloning into '/opt/mor/iceberg'...
+Note: switching to '57396d628cb9f92e121f9c2919398475393f0a3a'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+iceberg apache-iceberg-1.10.2 -> 57396d628cb9f92e121f9c2919398475393f0a3a (patch was generated against 57396d628cb9f92e121f9c2919398475393f0a3a)
+patch applied:  2 files changed, 571 insertions(+), 4 deletions(-)
+
+[1m=== build shadow jar (cold gradle cache; this is the long pole of setup) ===[0m  (t+95s)
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 43764  100 43764    0     0   320k      0 --:--:-- --:--:-- --:--:--  321k
+/opt/mor/iceberg/common/src/main/java/org/apache/iceberg/common/DynConstructors.java:266: Note: [SafeLoggingPropagation] Safe logging annotations should be propagated to encapsulating elements to allow static analysis tooling to work with as much information as possible. This check can be auto-fixed using `./gradlew classes testClasses -PerrorProneApply=SafeLoggingPropagation`
+  private static String formatProblems(Map<String, Throwable> problems) {
+                        ^
+    (see https://github.com/palantir/gradle-baseline#baseline-error-prone-checks)
+  Did you mean '@Unsafe private static String formatProblems(Map<String, Throwable> problems) {'?
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+Note: /opt/mor/iceberg/nessie/src/main/java/org/apache/iceberg/nessie/NessieIcebergClient.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Exception in thread "Thread-3" org.gradle.api.UncheckedIOException: java.io.IOException: Input/output error
+	at org.gradle.internal.UncheckedException.throwAsUncheckedException(UncheckedException.java:63)
+	at org.gradle.internal.UncheckedException.throwAsUncheckedException(UncheckedException.java:42)
+	at org.gradle.internal.daemon.client.clientinput.DaemonClientInputForwarder$ForwardingUserInput.lambda$readAndForwardStdin$0(DaemonClientInputForwarder.java:99)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: java.io.IOException: Input/output error
+	at java.base/java.io.FileInputStream.readBytes(Native Method)
+	at java.base/java.io.FileInputStream.read(FileInputStream.java:276)
+	at java.base/java.io.BufferedInputStream.read1(BufferedInputStream.java:282)
+	at java.base/java.io.BufferedInputStream.read(BufferedInputStream.java:343)
+	at java.base/sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:287)
+	at java.base/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:330)
+	at java.base/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:190)
+	at java.base/java.io.InputStreamReader.read(InputStreamReader.java:177)
+	at java.base/java.io.BufferedReader.read1(BufferedReader.java:211)
+	at java.base/java.io.BufferedReader.read(BufferedReader.java:287)
+	at java.base/java.io.Reader.read(Reader.java:250)
+	at org.gradle.internal.daemon.client.clientinput.DaemonClientInputForwarder$ForwardingUserInput.lambda$readAndForwardStdin$0(DaemonClientInputForwarder.java:97)
+	... 3 more
+-rw-r--r-- 1 root root 47174615 Aug 20 07:15 /opt/mor/iceberg/spark/v3.5/spark-runtime/build/libs/iceberg-spark-runtime-3.5_2.12-1.11.0-SNAPSHOT.jar
+drop_caches OK
+
+[1m=== exp1_cost ===[0m  (t+265s)
+exp1: 115,200,000 rows, ~41.8 GB, 128 files of ~335 MB, heap 32g
+host: {'nproc': '16', 'mem_total': '123 GiB', 'warehouse_dev': '/dev/nvme1n1', 'root_dev': '/dev/nvme0n1p1', 'kernel': '6.17.0-1017-aws', 'instance': 'i4i.4xlarge'}
+  r0 off      compact=  137.29s ingest=  230.3s evict=4.44s disk= 53.1GB B/row=495 groups tot/gated/aud=None/None/None
+  r0 gateON   compact=  142.24s ingest=  230.3s evict=4.33s disk= 53.1GB B/row=495 groups tot/gated/aud=1/1/0
+  r0 gateOFF  compact=  274.46s ingest=  230.9s evict=4.31s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r1 off      compact=  140.41s ingest=  230.0s evict=4.3s disk= 53.1GB B/row=495 groups tot/gated/aud=None/None/None
+  r1 gateON   compact=  138.63s ingest=  230.9s evict=4.19s disk= 53.1GB B/row=495 groups tot/gated/aud=1/1/0
+  r1 gateOFF  compact=  269.63s ingest=  230.1s evict=4.32s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r2 off      compact=  141.04s ingest=  229.8s evict=4.16s disk= 53.1GB B/row=495 groups tot/gated/aud=None/None/None
+  r2 gateON   compact=  142.67s ingest=  230.6s evict=4.19s disk= 53.1GB B/row=495 groups tot/gated/aud=1/1/0
+  r2 gateOFF  compact=  273.84s ingest=  231.1s evict=4.46s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r3 off      compact=  139.78s ingest=  230.2s evict=4.31s disk= 53.1GB B/row=495 groups tot/gated/aud=None/None/None
+  r3 gateON   compact=  141.19s ingest=  230.2s evict=4.29s disk= 53.1GB B/row=495 groups tot/gated/aud=1/1/0
+  r3 gateOFF  compact=  274.88s ingest=  230.7s evict=4.35s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+  r4 off      compact=  140.47s ingest=  230.5s evict=4.48s disk= 53.1GB B/row=495 groups tot/gated/aud=None/None/None
+  r4 gateON   compact=  139.48s ingest=  230.6s evict=4.06s disk= 53.1GB B/row=495 groups tot/gated/aud=1/1/0
+  r4 gateOFF  compact=  274.73s ingest=  229.7s evict=3.97s disk= 53.1GB B/row=495 groups tot/gated/aud=1/0/1
+
+============================================================================================
+INGEST CONTROL (must not vary with arm): all 15 runs span 1.006x; excluding the first (session warmup) 14 runs span 1.006x
+BASELINE STABILITY: median 140.4s  spread 1.03x  CV 1.1%   (local cold 11 GB was 1.44x / 15%; local 22 GB was 9.14x and unusable)
+gateON   vs off: paired median 1.01 (range 0.99-1.04, 3/5 above 1)
+gateOFF  vs off: paired median 1.96 (range 1.92-2.00, 5/5 above 1)
+
+PASS
+
+evidence -> /opt/mor/results/exp1_cost.json
+exp1_cost exit=0  (t+6717s)
+
+[1m=== exp2_correctness ===[0m  (t+6717s)
+exp2: 56,000,000 rows, ~20.3 GB, 112 files of ~186 MB, group cap 2 GB => ~10 groups, heap 32g
+
+============================================================================================
+PER-GROUP mode, 6 repeats of one configuration
+============================================================================================
+  r0 base: groups 5/11 scored=stale-wins-keys exp=380,000 captured=1 TP=0 miss=380,000 FP=1 traps=20,000 compact=85.327s
+       FALSE POSITIVES: 1  first keys [1999997]
+  r1 base: groups 7/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=93.843s
+  r2 base: groups 6/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=86.549s
+  r3 base: groups 5/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=85.716s
+  r4 base: groups 5/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=82.168s
+  r5 base: groups 6/11 scored=stale-wins-keys exp=380,000 captured=0 TP=0 miss=380,000 FP=0 traps=20,000 compact=91.633s
+
+============================================================================================
+CROSS-GROUP mode, 3 repeats, scored on the merged property
+============================================================================================
+  r0 cross: groups 11/11 scored=cross-group-keys exp=380,000 captured=380,000 TP=380,000 miss=0 FP=0 traps=20,000 compact=159.624s
+  r1 cross: groups 11/11 scored=cross-group-keys exp=380,000 captured=380,000 TP=380,000 miss=0 FP=0 traps=20,000 compact=158.147s
+  r2 cross: groups 11/11 scored=cross-group-keys exp=380,000 captured=380,000 TP=380,000 miss=0 FP=0 traps=20,000 compact=159.1s
+
+============================================================================================
+PER-GROUP false positives: 1 of 6 runs (1 keys)   recall 0-0 of 380,000
+CROSS-GROUP: false positives 0; recall 380,000/380,000, 380,000/380,000, 380,000/380,000
+
+PASS
+
+evidence -> /opt/mor/results/exp2_correctness.json
+exp2_correctness exit=0  (t+8886s)
+
+[1m=== exp3_ceiling ===[0m  (t+8886s)
+exp3: budget 75 min, per-point timeout 25 min
+host: {'nproc': '16', 'mem_total': '123 GiB', 'warehouse_dev': '/dev/nvme1n1', 'root_dev': '/dev/nvme0n1p1', 'kernel': '6.17.0-1017-aws', 'instance': 'i4i.4xlarge'}
+
+--- 20,000,000 distinct keys, heap 8g: 60,000,000 rows, ~1.3 GB, 12 files of 112 MB ---
+  ok: compact=169.298s ingest=26.379s candidates=8000000 groups=1
+
+--- 35,000,000 distinct keys, heap 8g: 105,000,000 rows, ~2.3 GB, 18 files of 130 MB ---
+  OOM after 250s -- this is the measurement: RuntimeError: driver iceberg_driver.py error: iceberg driver failed
+Traceback (most recent call last):
+  File "/opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapters/drivers/iceberg_driver.py",
+  SKIP 50,000,000 keys @ 8g: already failed lower down
+
+--- 50,000,000 distinct keys, heap 24g: 150,000,000 rows, ~3.3 GB, 24 files of 139 MB ---
+  ok: compact=324.025s ingest=64.208s candidates=20000000 groups=1
+
+--- 100,000,000 distinct keys, heap 24g: 300,000,000 rows, ~6.5 GB, 48 files of 139 MB ---
+  ERROR after 382s -- this is the measurement: RuntimeError: driver iceberg_driver.py error: iceberg driver failed
+Traceback (most recent call last):
+  File "/opt/mor/mor-faithfulness/cost-study/src/mor_harness/adapters/drivers/iceberg_driver.py",
+
+============================================================================================
+heap 8g: ceiling between 20,000,000 and 35,000,000 distinct keys
+heap 24g: ceiling between 50,000,000 and 100,000,000 distinct keys
+local reference: 8 GB heap, ok at 20M (397 s compaction), OOM at 50M
+SKIPPED 1 point(s), named so this is not read as full coverage:
+  50,000,000 keys @ 8g: a smaller key count already failed at this heap
+
+PASS
+
+evidence -> /opt/mor/results/exp3_ceiling.json
+exp3_ceiling exit=0  (t+10129s)
+
+[1m=== summary ===[0m  (t+10129s)
+  exp1_cost          exit=0
+  exp2_correctness   exit=0
+  exp3_ceiling       exit=0
+  total wall: 168 min
+
+[1m=== packaging results (exit code 0) ===[0m  (t+10129s)

@@ -1,0 +1,78 @@
+{
+  "config": {
+    "seed": 101,
+    "base_keys": 1200,
+    "versions_per_key_mean": 4,
+    "op_mix": [
+      0.8,
+      0.15,
+      0.05
+    ],
+    "ts_step_ms": 1,
+    "insert_rate": 0.05,
+    "base_ts_ms": 1700000000000
+  },
+  "n_keys_total": 1260,
+  "origin_counts": {
+    "base": 1200,
+    "insert": 60
+  },
+  "terminal_counts": {
+    "update-tail": 1006,
+    "reinsert-tail": 69,
+    "delete-tail": 185
+  },
+  "eligible_count": 1075,
+  "eligible_fraction": 0.8532,
+  "n_competitive": {
+    "min": 2,
+    "mean": 5.677,
+    "max": 50
+  },
+  "min_positive_gap_over_eligible": {
+    "n": 1075,
+    "min": 6,
+    "max": 7127,
+    "mean": 1722.4,
+    "median": 1166,
+    "p05": 69,
+    "p10": 138,
+    "p25": 433,
+    "p50": 1166,
+    "p75": 2517,
+    "p90": 4349,
+    "p95": 5405,
+    "histogram": {
+      "0-49": 38,
+      "50-99": 43,
+      "100-199": 63,
+      "200-399": 103,
+      "400-799": 171,
+      "800-1599": 232,
+      "1600-3199": 229,
+      "3200-6399": 179,
+      ">=6400": 17
+    }
+  },
+  "scaling_property_check": {
+    "note": "real harness ts-delta vs sigma*clamp(z,+-4); deviation is pure int() rounding",
+    "max_abs_deviation_ms": {
+      "400.0": {
+        "max_abs": 0.9998,
+        "mean_abs": 0.490642
+      },
+      "1500.0": {
+        "max_abs": 0.9997,
+        "mean_abs": 0.50087
+      },
+      "6000.0": {
+        "max_abs": 0.9996,
+        "mean_abs": 0.506519
+      }
+    }
+  },
+  "files": {
+    "per_key_csv": "seed101_perkey.csv",
+    "skew_sample_csv": "seed101_skew_sample.csv"
+  }
+}

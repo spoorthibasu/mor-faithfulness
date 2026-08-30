@@ -1,0 +1,153 @@
+category,source,precombine_value,classification,note
+official_hudi,hudi.apache.org blog: Debezium CDC (2022),_event_lsn,SAFE,official CDC blog: Postgres LSN as source-ordering-field
+official_hudi,hudi.apache.org quick-start (Spark/Py/SQL),ts,UNCLEAR,canonical ordering-field example; bare timestamp
+official_hudi,hudi.apache.org flink-quick-start,ts,UNCLEAR,Flink ordering.fields=ts
+official_hudi,hudi.apache.org writing_data (batch),ts,UNCLEAR,official batch-write example (ordering.fields=ts)
+official_hudi,hudi.apache.org quick-start (guidance text),created_at,VULNERABLE,doc text: use created_at timestamp as ordering field for CDC/out-of-order
+official_hudi,apache/hudi hudi-notebooks 03-scd-type2,effective_date,VULNERABLE,SCD2 business effective date
+github_repo,VitoMakarevich/hudi-issue-014,meta.lsn,SAFE,MONOTONIC LSN as precombine (only clear safe config in code sample)
+github_repo,ClickHouse/ClickHouse (data-lakes-importer),ts,UNCLEAR,importer default
+github_repo,ZTO-Express/fire (docs),id,UNCLEAR,framework docs example; non-timestamp
+github_repo,zhisheng17/flink-learning (StreamingWrite),ts,UNCLEAR,Flink streaming write example
+github_repo,easysql/easy_sql,ts,UNCLEAR,rtdw example
+github_repo,wearearima/hudi-exercise,title,UNCLEAR,exercise; non-timestamp
+github_repo,ak-arun/aws_glue,Total_Sales,UNCLEAR,"measure column, not timestamp"
+github_repo,shuigedeng/taotao-cloud-project,uuid,UNCLEAR,non-timestamp key
+github_repo,karlsie/data-engineering,ts,UNCLEAR,spark-hudi docs
+github_repo,VarshiniSathishkannan/pyspark,ts,UNCLEAR,interview Q
+github_repo,nyaparl/newrepo (Glue),timestamp,UNCLEAR,glue code; generic ts
+github_repo,Ren294/SmartTraffic_Lakehouse (traffic merge),timestamp,UNCLEAR,generic ts
+github_repo,Ren294/SmartTraffic_Lakehouse (weather merge),datetimeEpoch,UNCLEAR,generic epoch
+github_repo,ARUROY111/Data-Engineering,age,UNCLEAR,"measure column, not timestamp"
+github_repo,georgepap9808/gcp_scripts,ts,UNCLEAR,csv_to_hudi
+github_repo,varunvilva/hadoop-hive-spark-hudi docker,timestamp,UNCLEAR,demo notebook; generic ts
+github_repo,oamazonasgabriel/hudi-on-glue-quick-start,ts,UNCLEAR,glue quickstart
+github_repo,Fedomn/spark-knowledge (df_write),ts,UNCLEAR,batch write
+github_repo,Didone/spark-glue,ts,UNCLEAR,pydeequ notebook
+github_repo,AWS-Big-Data-Projects/big-data-solutions (general-py),occupancy1,UNCLEAR,non-timestamp
+github_repo,danielford831/python-playground,timestamp,UNCLEAR,stream_to_hudi; generic ts
+github_repo,akshayar/apache-hudi-samples,ts,UNCLEAR,kinesis streaming sample
+github_repo,victorcuevasv/tpcbench (ship_mode),sm_ship_mode_sk,UNCLEAR,"surrogate key, not timestamp"
+github_repo,victorcuevasv/tpcbench (catalog_sales),cs_item_sk,UNCLEAR,"surrogate key, not timestamp"
+github_repo,leesf/hudi-demos,ts,UNCLEAR,partition demo
+github_repo,alod83/Learning-and-Operating-Presto,dob,UNCLEAR,date-of-birth; static business date
+github_repo,Tandoy/Bigdata-learn (usage),ts,UNCLEAR,usage doc
+github_repo,melkimohamed/hudi-hive2,ts,UNCLEAR,docker demo
+github_repo,hocanint-amzn/ProductReviewsProcessing,timestamp,UNCLEAR,product reviews notebook
+github_repo,RajasekarSribalan/Apache-Spark,timestamp,UNCLEAR,streaming example
+github_repo,MuziMin0222/muzimin-bigdata-study (process),date,UNCLEAR,generic date
+github_repo,chriswangzheyi/Instructions,ts,UNCLEAR,comment claims 'commit time' but literal ts
+github_repo,bakea/dataengine-example,ts,UNCLEAR,spark hoodie example
+github_repo,Rajesh2015/hoodi-demo,Date,UNCLEAR,generic Date
+github_repo,smdahmed/hudi (macquarie-mar),timestamp,UNCLEAR,'combine duplicate'; generic ts
+github_repo,rangareddy/Ranga_Hudi_Experiments (10-13),ts,UNCLEAR,experiments
+github_repo,rangareddy/Ranga_Hudi_Experiments (015),name,UNCLEAR,non-timestamp
+github_repo,baptvit/open-table-formats-labs (datahub),ts,UNCLEAR,materialized hoodie.properties
+github_repo,PixelQuasar/hse-pipelines-course,timestamp,UNCLEAR,materialized hoodie.properties
+github_repo,iand675/wireform,id,UNCLEAR,non-timestamp
+github_repo,datafusion-contrib/datafusion-dft,longField,UNCLEAR,test fixture hoodie.properties
+github_repo,apache/incubator-xtable (demo data),_c0,UNCLEAR,auto column name (demo fixture)
+github_repo,NobodyzHome/helloworld,ts,UNCLEAR,flink sql demo
+github_repo,AntiO2/pixels-spark,ts,UNCLEAR,flink record-level-index test script
+github_repo,my0113/hudi-quickstart,ts,UNCLEAR,hudi quickstart clone (note: uses changeDateField var elsewhere)
+github_repo,zhisheng17/flink-learning (CDCSync),order_date,VULNERABLE,Flink CDC->Hudi example
+github_repo,Joshua-omolewa/Stock_streaming_pipeline,event_time,VULNERABLE,stock streaming pipeline
+github_repo,gameofdatas/datalake,tran_date,VULNERABLE,deltastreamer conf
+github_repo,Ren294/SmartTraffic_Lakehouse (accidents),accident_time,VULNERABLE,event time
+github_repo,Ren294/SmartTraffic_Lakehouse (gold/table_config),last_update,VULNERABLE,last-update time
+github_repo,ameymeher/Hudi-Lakehouse-ETL (CDC from logs),updated_at,VULNERABLE,CDC load from logs
+github_repo,Fedomn/spark-knowledge (streaming),Creation_Time,VULNERABLE,creation time
+github_repo,MacHu-GWU/rds_to_datalake-project,update_at,VULNERABLE,RDS CDC to datalake
+github_repo,MacHu-GWU/dynamodb_to_datalake-project,update_at,VULNERABLE,DynamoDB CDC to datalake
+github_repo,AntiO2/lakehouse-experiment-agent,freshness_ts,VULNERABLE,freshness timestamp
+github_repo,arkady-emelyanov/qlik-replicate-cdc,crdate,VULNERABLE,Qlik Replicate CDC transform
+github_repo,AWS-Big-Data-Projects/big-data-solutions (glue),last_update_time,VULNERABLE,glue pyspark example
+github_repo,shubhwip/flink-samples,book_date,VULNERABLE,Flink Hudi reader; business date
+github_repo,isouravsengupta/ai-data-engineer-handbook,updated_at,VULNERABLE,handbook example
+github_repo,sagarlakshmipathy/finnhub-data-pipeline,transaction_time,VULNERABLE,finnhub pipeline
+github_repo,dude1141/AWS,load_date,VULNERABLE,glue v1 job
+github_repo,ducnguyent/crypto-data-pipeline,event_time,VULNERABLE,crypto pipeline
+github_repo,hj2016/hudi-test,lastupdatedttm,VULNERABLE,last-updated datetime
+github_repo,Kyofin/awsome-programming-note,last_update_time,VULNERABLE,note example
+github_repo,Tandoy/Bigdata-learn (Hive integ),update_time,VULNERABLE,update time
+github_repo,nickdala/hudi-incremental-data-processing,update_time,VULNERABLE,incremental ingest
+github_repo,haplone/docs,kafka_timestamp,VULNERABLE,structured streaming; kafka record ts
+github_repo,Whitilied/kafka-spark-hudi-hive-demo,kafka_timestamp,VULNERABLE,kafka->hudi demo
+github_repo,MuziMin0222/muzimin-bigdata-study (MoR),lastupdatedttm,VULNERABLE,last-updated datetime
+github_repo,gfn9cho/SparkIngestion,UpdateTime,VULNERABLE,update time
+github_repo,datacouch-io/hudi-on-minio,last_update_date,VULNERABLE,materialized hoodie.properties
+github_repo,baptvit/open-table-formats-labs (accounts),created_at,VULNERABLE,materialized hoodie.properties
+github_repo,baptvit/mineracao-dados-massivos,tpep_pickup_datetime,VULNERABLE,NYC taxi pickup datetime (conf default)
+github_repo,alio-programmer/Clickstream-Kafka-Pipeline,timestamp_ms,VULNERABLE,clickstream event ts (hoodie.properties)
+github_repo,FireFramework/fire (flink example),createTime,VULNERABLE,Flink SQL create time
+github_repo,sagarlakshmipathy/hudi-cdc,updated_at,VULNERABLE,Hudi CDC demo README
+github_repo,findbene/Atlas,updated_at,VULNERABLE,MOR CDC merge; note text conflates updated_at/ts_ms with 'monotonic'
+github_repo,DataLinkDC/dinky,update_time,VULNERABLE,"Flink SQL template; comment: 'takes max value, default ts'"
+github_repo,izhangzhihao/Real-time-Data-Warehouse,ts_updated,VULNERABLE,Flink SQL RTDW README
+github_repo,springMoon/sqlSubmit,etl_update_time,VULNERABLE,Flink SQL demo
+vendor_blog,Halodoc Engineering blog,ar_h_change_seq,SAFE,MONOTONIC AWS DMS change-sequence field (safe)
+vendor_blog,aws-samples/build-dynamodb-integration-with-kinesis,time_stamp,UNCLEAR,DynamoDB->Kinesis EMR sample; generic ts
+vendor_blog,GoogleCloudDataproc/cloud-dataproc,ts,UNCLEAR,Dataproc spark-hudi codelab
+vendor_blog,GoogleCloudPlatform/data-analytics-golden-demo,ts,UNCLEAR,GCP golden demo
+vendor_blog,StarRocks docs (quick_start/hudi),users,UNCLEAR,StarRocks Hudi quickstart; non-timestamp col
+vendor_blog,opentelekomcloud-docs mapreduce-service,ts,UNCLEAR,OTC MRS getting-started
+vendor_blog,opentelekomcloud-docs data-warehouse-service,col_int,UNCLEAR,OTC DWS doc; placeholder-ish col
+vendor_blog,devlive-community-docs (Hudi 0.15 DDL),ts,UNCLEAR,community docs SQL DDL example
+vendor_blog,apachecn hudi-050-doc-zh,ts,UNCLEAR,Hudi 0.5.0 doc default value ts
+vendor_blog,bitsondatadev/trino-getting-started,users,UNCLEAR,Trino+Hudi tutorial
+vendor_blog,alberttwong/onehouse-demos,_c0,UNCLEAR,Onehouse demo; auto column name
+vendor_blog,adobe/lake-pulse (examples),id,UNCLEAR,Adobe lake-pulse example data
+vendor_blog,PacktPublishing/Engineering-Lakehouses-Open-Table-Formats,ts,UNCLEAR,Packt book ch04
+vendor_blog,mkukreja1/blogs,key,UNCLEAR,blog notebook; non-timestamp
+vendor_blog,bournewang blog (apache-hudi-tutorial),ts,UNCLEAR,personal tutorial
+vendor_blog,dobachi memo-blog,ts,UNCLEAR,blog
+vendor_blog,dongkelun blog,ts,UNCLEAR,blog (hoodie.properties=ts)
+vendor_blog,xushiyan/apachehudi-from0to1 (book),ts,UNCLEAR,'Apache Hudi from 0 to 1' book
+vendor_blog,soumilshah1995/code-snippets,ts,UNCLEAR,Hudi educator snippet
+vendor_blog,soumilshah1995/DebeziumFlinkHudiSync,order_number,UNCLEAR,"Debezium CDC; order id, not version"
+vendor_blog,theneoai/awesome-skills (lakehouse-expert),timestamp,UNCLEAR,AI skill scenario; generic ts
+vendor_blog,Onehouse blog (incremental processing),ts,UNCLEAR,Onehouse getting-started tutorial
+vendor_blog,DEV.to Sagar (Hudi on AWS Glue),ts,UNCLEAR,trips-table Glue tutorial
+vendor_blog,aws-samples/aws-glue-streaming-etl-with-hudi,date,UNCLEAR,Glue streaming ETL; generic date
+vendor_blog,AWS Big Data blog (Glue Studio visual editor),DATE,UNCLEAR,precombine key field in visual editor
+vendor_blog,"Medium simpsons (Hudi committer, CRUD)",date_col,UNCLEAR,basic CRUD tutorial; generic date
+vendor_blog,Alibaba Cloud Flink (Hudi result table),ts,UNCLEAR,Alibaba Flink Hudi connector docs
+vendor_blog,Medium Plumbers (COW explained),year,UNCLEAR,COW deep-dive; non-timestamp
+vendor_blog,Databricks Community (Hudi in Databricks),ts,UNCLEAR,Databricks SQL CREATE TABLE preCombineField
+vendor_blog,aws-samples/aws-glue-samples,updated_at,VULNERABLE,AWS Glue Hudi dataframe notebook
+vendor_blog,aws-samples/dbt-glue,eventtime,VULNERABLE,AWS dbt-glue README
+vendor_blog,dbt-labs/docs.getdbt.com,eventtime,VULNERABLE,dbt Glue setup docs
+vendor_blog,aws/aws-emr-containers-best-practices,last_update_time,VULNERABLE,AWS EMR-on-EKS best practices
+vendor_blog,aws-samples/emr-studio-notebook-examples,creation_date,VULNERABLE,EMR serverless notebook
+vendor_blog,aws-samples/spark-on-aws-lambda,last_upd_timestamp,VULNERABLE,AWS Lambda spark sample
+vendor_blog,dacort/modern-data-lake-storage-layers,last_update_time,VULNERABLE,widely-cited MDLSL notebook
+vendor_blog,PacktPublishing/Simplify-Big-Data-Analytics-EMR,last_update_time,VULNERABLE,Packt book chapter 11
+vendor_blog,PacktPublishing/Serverless-ETL-and-Analytics-AWS-Glue,record_creation_time,VULNERABLE,Packt book ch13 kafka consumer
+vendor_blog,nmukerje/EMR-Hudi-Workshop,order_date,VULNERABLE,AWS EMR Hudi workshop
+vendor_blog,soumilshah1995/apache-hudi-delta-streamer-labs,updated_at,VULNERABLE,deltastreamer lab
+vendor_blog,soumilshah1995/universal-postgres-ingestion-deltastreamer,_event_origin_ts_ms,VULNERABLE,Postgres CDC via Debezium; event ts_ms
+vendor_blog,vasilyu1983/AI-Agents-public (skill template),created_at,VULNERABLE,AI-generated data-lake skill template
+vendor_blog,vasilyu1983/AI-Agents-public (skill template),updated_at,VULNERABLE,AI-generated skill template alt example
+vendor_blog,theneoai/awesome-skills (lakehouse-expert),updated_at,VULNERABLE,AI skill 'standards' reference
+vendor_blog,AWS Glue Developer Guide,updated_at,VULNERABLE,AWS Glue Hudi Spark example
+vendor_blog,"AWS Big Data blog (HudiJob.py, hudi-on-glue)",update_ts_dms,VULNERABLE,DMS update timestamp
+vendor_blog,Huawei Cloud DLI (Flink SQL Hudi),order_time,VULNERABLE,Flink SQL Hudi sink; business event time
+vendor_blog,olivermascarenhas.com (analytical data lake),updateDate,VULNERABLE,personal blog; update date
+vendor_blog,AWS EMR docs (work with Hudi dataset),last_update_time,VULNERABLE,EMR ReleaseGuide Spark example
+vendor_blog,Medium Eswaramoorthy (COW read/write),src_rcv_ts,VULNERABLE,source-received timestamp (wall-clock)
+vendor_blog,Medium Soumil Shah (Hudi Streamer LocalStack),replicadmstimestamp,VULNERABLE,DMS replication timestamp
+qa_forum,apache/hudi issue #2075,VERSION,SAFE,asker uses monotonic VERSION (but string-compare breaks >9)
+qa_forum,apache/hudi issue #5000,version,SAFE,asker: 'using version as my preCombineKey'
+qa_forum,apache/hudi issue #7335,ts,UNCLEAR,asker wants update only when incoming ts greater
+qa_forum,apache/hudi issue #11421,timestamp,UNCLEAR,asker reports LOWER timestamps overwriting higher (realized failure)
+qa_forum,apache/hudi issue #8780,sort_key_a,UNCLEAR,generic sort key; config-change conflict
+qa_forum,apache/hudi issue #2345,ts,UNCLEAR,default DEFAULT_PRECOMBINE_FIELD_OPT_VAL=ts
+qa_forum,apache/hudi issue #8451,timestamp,UNCLEAR,structured streaming insert precombine issue
+qa_forum,apache/hudi issue #9870,timestamp,UNCLEAR,upsert producing duplicate data
+qa_forum,apache/hudi issue #9635,ts,UNCLEAR,COW vs MOR inconsistent precombine
+qa_forum,apache/hudi issue #6074,ts,UNCLEAR,Flink SQL data duplication same partition
+qa_forum,apache/hudi issue #9714,time,UNCLEAR,MOR duplicate data w/ metadata table
+qa_forum,Apache Hudi dev list msg303149,"timestamp,rider",UNCLEAR,composite ordering demo (timestamp + non-ts)
+qa_forum,apache/hudi issue #4501,updated_at,VULNERABLE,duplicate records across partitions
+qa_forum,apache/hudi issue #6869,abcd.recordedAt,VULNERABLE,nested business event timestamp
+qa_forum,apache/hudi issue #10587,eff_fm_cent_tz,VULNERABLE,effective-from timestamp; upsert w/ RLI

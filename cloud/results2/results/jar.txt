@@ -1,0 +1,1 @@
+-rw-r--r-- 1 root root 47175176 Aug 20 13:29 /opt/mor/iceberg/spark/v3.5/spark-runtime/build/libs/iceberg-spark-runtime-3.5_2.12-1.11.0-SNAPSHOT.jar

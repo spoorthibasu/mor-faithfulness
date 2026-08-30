@@ -1,0 +1,84 @@
+{
+ "config": {
+  "commits": 40,
+  "rows_per_commit": 1500,
+  "payload_bytes": 200,
+  "rewrite_opts": "max-file-group-size-bytes=1500000,min-input-files=2,audit-cache-scan=false",
+  "interleave_frac": 0.0
+ },
+ "arms": [
+  {
+   "files_per_commit": 1,
+   "scatter": "block",
+   "commits": 40,
+   "groups_total": 10,
+   "groups_gated": 10,
+   "groups_audited": 0,
+   "clearance": 1.0,
+   "live_rows": 14522,
+   "oracle_valid": null,
+   "oracle_expected_live_rows": 14522,
+   "oracle_stale_wins": 0,
+   "arm": "1 file/commit"
+  },
+  {
+   "files_per_commit": 4,
+   "scatter": "block",
+   "commits": 40,
+   "groups_total": 9,
+   "groups_gated": 9,
+   "groups_audited": 0,
+   "clearance": 1.0,
+   "live_rows": 14522,
+   "oracle_valid": null,
+   "oracle_expected_live_rows": 14522,
+   "oracle_stale_wins": 0,
+   "arm": "4 files, contiguous"
+  },
+  {
+   "files_per_commit": 4,
+   "scatter": "roundrobin",
+   "commits": 40,
+   "groups_total": 9,
+   "groups_gated": 0,
+   "groups_audited": 9,
+   "clearance": 0.0,
+   "live_rows": 14522,
+   "oracle_valid": null,
+   "oracle_expected_live_rows": 14522,
+   "oracle_stale_wins": 0,
+   "arm": "4 files, hash-scattered"
+  },
+  {
+   "files_per_commit": 8,
+   "scatter": "roundrobin",
+   "commits": 40,
+   "groups_total": 10,
+   "groups_gated": 0,
+   "groups_audited": 10,
+   "clearance": 0.0,
+   "live_rows": 14522,
+   "oracle_valid": null,
+   "oracle_expected_live_rows": 14522,
+   "oracle_stale_wins": 0,
+   "arm": "8 files, hash-scattered"
+  },
+  {
+   "files_per_commit": 8,
+   "scatter": "roundrobin",
+   "commits": 1,
+   "groups_total": 1,
+   "groups_gated": 0,
+   "groups_audited": 1,
+   "clearance": 0.0,
+   "live_rows": 1500,
+   "oracle_valid": null,
+   "oracle_expected_live_rows": 1500,
+   "oracle_stale_wins": 0,
+   "arm": "1 commit, 8 scattered (vacuous)"
+  }
+ ],
+ "failures": [
+  "VACUOUS-CASE ASSERTION FAILED: a single-sequence group cleared only 0%. Either the fix does not group by sequence number as intended, or the arm did not build single-sequence groups. Not a soundness problem, but the gate is rejecting a case the theorem says is always safe."
+ ]
+}

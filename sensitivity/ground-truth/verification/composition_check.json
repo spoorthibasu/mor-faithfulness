@@ -1,0 +1,60 @@
+{
+  "operating_point": {
+    "clock_skew_ms": 1500,
+    "ooo_rate": 0.1,
+    "dup_rate": 0.0,
+    "schema_change_freq": 0.0
+  },
+  "note": "Combined skew+ooo point not used to fit anything; components are standalone single-mechanism rates. Product law assumes independent mechanisms.",
+  "total_keys": 1260,
+  "formats": {
+    "iceberg": {
+      "measured_violation_rate": 0.089683,
+      "measured_n_violations": 113,
+      "components": {
+        "clock_skew_1500": {
+          "standalone_P_viol": 0.0,
+          "source": "mechanism-inert: orders by lsn; pure skew=6000 measured 0.000"
+        },
+        "ooo_0.10": {
+          "standalone_P_viol": 0.089683,
+          "source": "pure ooo=0.10 measured (113/1260)"
+        }
+      },
+      "predicted_product_law": 0.089683,
+      "abs_error_measured_minus_predicted": 0.0
+    },
+    "hudi": {
+      "measured_violation_rate": 0.310317,
+      "measured_n_violations": 391,
+      "components": {
+        "clock_skew_1500": {
+          "standalone_P_viol": 0.310317,
+          "source": "pure skew=1500 measured (391/1260)"
+        },
+        "ooo_0.10": {
+          "standalone_P_viol": 0.0,
+          "source": "mechanism-inert: precombine ignores checkpoint order; pure hudi ooo=0.5 measured 0.000"
+        }
+      },
+      "predicted_product_law": 0.310317,
+      "abs_error_measured_minus_predicted": 0.0
+    },
+    "delta": {
+      "measured_violation_rate": 0.089683,
+      "measured_n_violations": 113,
+      "components": {
+        "clock_skew_1500": {
+          "standalone_P_viol": 0.0,
+          "source": "mechanism-inert: orders by lsn; pure skew=6000 measured 0.000"
+        },
+        "ooo_0.10": {
+          "standalone_P_viol": 0.089683,
+          "source": "reconstructed = iceberg (Delta identical on ooo)"
+        }
+      },
+      "predicted_product_law": 0.089683,
+      "abs_error_measured_minus_predicted": 0.0
+    }
+  }
+}

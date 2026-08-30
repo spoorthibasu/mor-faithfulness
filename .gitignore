@@ -1,0 +1,26 @@
+# OS / editor
+.DS_Store
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+*.egg-info/
+
+# Lean build outputs + Mathlib cache (restore with `lake exe cache get`)
+lean/.lake/
+
+# Regenerable Iceberg/Spark warehouses — these bake absolute local paths and are
+# NOT committed. Regenerate from the generators/scripts (see each package README).
+checker/fixtures/wh/
+checker/fixtures/expected.json
+checker/fixtures/ivy/
+checker/realworld/tables/
+checker/spark-warehouse/
+cost-study/spark-warehouse/
+cost-study/results/_corollary_wh/
+
+# Scratch run warehouses (default under the system temp dir; override via MOR_*_WH)
+_wh/

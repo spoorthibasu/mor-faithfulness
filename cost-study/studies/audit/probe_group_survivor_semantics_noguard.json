@@ -1,0 +1,93 @@
+{
+ "live_before": [
+  [
+   1,
+   "v3",
+   100
+  ]
+ ],
+ "files_before": [
+  {
+   "path": "v3.parquet",
+   "records": 1,
+   "content": 0
+  },
+  {
+   "path": "v2.parquet",
+   "records": 1,
+   "content": 0
+  },
+  {
+   "path": "v1.parquet",
+   "records": 1,
+   "content": 0
+  },
+  {
+   "path": "d3.parquet",
+   "records": 1,
+   "content": 2
+  },
+  {
+   "path": "d2.parquet",
+   "records": 1,
+   "content": 2
+  }
+ ],
+ "sequence_numbers": [
+  [
+   "v3.parquet",
+   3
+  ],
+  [
+   "v2.parquet",
+   2
+  ],
+  [
+   "v1.parquet",
+   1
+  ],
+  [
+   "d3.parquet",
+   3
+  ],
+  [
+   "d2.parquet",
+   2
+  ]
+ ],
+ "rewrite": {
+  "rewritten_data_files": 2,
+  "added_data_files": 0
+ },
+ "summary": {
+  "mor.audit.groups-total": "1",
+  "mor.audit.stale-wins-keys": "[]",
+  "mor.audit.groups-gated": "0",
+  "mor.audit.cross-group": "false",
+  "mor.audit.key-columns": "id",
+  "mor.audit.stale-wins-keys-spilled": "false",
+  "mor.audit.ordering-column": "lsn",
+  "mor.audit.stale-wins-count": "0",
+  "mor.audit.verdict": "decided",
+  "mor.audit.groups-audited": "1"
+ },
+ "single_survivor_guard": "false",
+ "live_after": [
+  [
+   1,
+   "v3",
+   100
+  ]
+ ],
+ "controls": {
+  "live_before_ok": true,
+  "rewritten_data_files": 2,
+  "groups_total": 1,
+  "groups_gated": 0,
+  "groups_audited": 1
+ },
+ "verdict_count": 0,
+ "verdict_keys": "[]",
+ "model_faithful": false,
+ "failures": []
+}
