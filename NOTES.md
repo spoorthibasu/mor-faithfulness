@@ -503,7 +503,9 @@ Decide empirically once the stock jar builds and I can test a mark-based read on
 
 ## Entry 9 — Fork foundation PROVEN (ready to implement)
 
-- Clone: `~/IdeaProjects/iceberg-mor-fork` @ `apache-iceberg-1.10.2` (HEAD 57396d62, tag confirmed).
+- Clone: `~/IdeaProjects/iceberg-mor-fork` @ `apache-iceberg-1.10.2` (HEAD 57396d62, tag
+  confirmed). That hash is not local: the tag peels to it in any clone of `apache/iceberg`
+  (`git rev-parse apache-iceberg-1.10.2^{}`), so the build below starts from public source.
 - Build: `./gradlew -DsparkVersions=3.5 -DflinkVersions= -DkafkaVersions= -DscalaVersion=2.12
   :iceberg-spark:iceberg-spark-runtime-3.5_2.12:shadowJar -x test` (JDK17), **2m44s**, jar at
   `spark/v3.5/spark-runtime/build/libs/iceberg-spark-runtime-3.5_2.12-1.11.0-SNAPSHOT.jar` (45M, shaded).

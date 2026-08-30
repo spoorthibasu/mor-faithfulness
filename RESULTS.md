@@ -732,10 +732,12 @@ re-derives this:
 Stable across baselines: `apache-iceberg-1.10.2-rc1` gives the same +657 −4, and `git diff -w`
 (ignoring whitespace) also gives +657 −4. **739 is not any of these**; the nearest is 661.
 
-**Provenance of the source.** The mechanism is committed in the local Iceberg fork on branch
-`mor-audit-preserving-compaction`, commit `ba2ba43`, on top of the `apache-iceberg-1.10.2` tag.
-That fork is not published — its `origin` is `apache/iceberg.git` upstream — so the published
-artifact is the patch file below, regenerated from that commit.
+**Provenance of the source.** The mechanism is **one commit on top of the
+`apache-iceberg-1.10.2` tag** — that tag peels to upstream commit `57396d62`, which anyone can
+check out — on branch `mor-audit-preserving-compaction` of a local clone whose `origin` is
+`apache/iceberg.git`. That clone is not published, so its commit hash `ba2ba43` is a local record
+and resolves for no one else. The reproducible form is the patch file below: check out the public
+tag, apply it, and the result is that commit's two files.
 
 **The published patch matches this figure**, as of 2026-08-23.
 `cost-study/studies/audit/iceberg-1.10.2-stale-wins-audit.patch` is **+657 −4** across the same
