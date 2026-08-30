@@ -835,23 +835,116 @@ was not run against a v3 table.
 
 Each is a case where a measurement reported success or a clean result while doing nothing. Listed
 because the paper's methodology section claims positive controls throughout, and this is the evidence
-that the claim is load-bearing rather than decorative.
+that the claim is load-bearing rather than decorative. §6.7 makes the claim in one sentence and cites
+this section for the cases, so that they are recorded rather than narrated.
 
-1. **Scorer read the wrong summary property** — read `stale-wins-keys` in cross-group mode instead of
-   `cross-group-keys`, manufacturing a 0% recall reading for a mode whose purpose is to restore recall.
-2. **A scale point below `min-input-files`** — 3 files against a floor of 5, so no rewrite was planned
-   at all; the run looked simply fast rather than skipped.
-3. **OOM conflated with a configuration cap** — the cross-group ceiling summary reported a memory
-   ceiling where the failure was Spark's `maxResultSize`, a different thing.
-4. **A probe verdict that ignored its own floor arm** — concluded delete-set reconstruction dominated
-   from a ratio that could not distinguish it from a shuffle, while the floor arm showed delete
-   application was free.
-5. **`pgrep -f` matching its own shell** — the watcher's command line contained the pattern, so the
-   process always appeared alive; two waiter loops spun indefinitely after their target had exited.
-6. **An arm that failed every run read as unstable** — a hyphen in a generated SQL identifier made
-   every run of that arm die on `DROP TABLE`, and the empty arm was reported as an unstable one.
-7. **Compaction mutating the table in place** — the first Phase 8 verification left the table
-   laundered, so a re-run would have checked an already-clean table and passed for the wrong reason.
+Each entry gives the measurement, how it failed silently, what it produced instead of an error, and
+what the control now checks. Everything below is taken from `NOTES.md` and the scripts named; where
+the record is thinner than the summary, the entry says so.
+
+**1. Scorer read the wrong summary property.**
+- *Measurement:* recall of the cross-group arm, in the repeated straddling benchmark.
+- *Silent failure:* the arm was scored against `mor.audit.stale-wins-keys`, but cross-group mode
+  writes its merged verdict to `mor.audit.cross-group-keys`.
+- *What it produced:* **0% recall for the mode whose purpose is recall** — a false zero manufactured
+  by the scorer, not by the mechanism.
+- *Control now:* both properties are scored and reported side by side.
+- Scripts: `cost-study/studies/audit/bench_straddle_repeat.py`, `diagnose_straddle_fp.py`.
+
+**2. A scale point below `min-input-files`.**
+- *Measurement:* the 1M-distinct-key point of the cross-group candidate-map ceiling run.
+- *Silent failure:* 3 data files against Iceberg's `min-input-files` default of 5, so no rewrite was
+  planned and no audit summary was written at all — `groups-total` absent.
+- *What it produced:* **0.19 s next to 22.7 s at 5M keys**, which reads as superb scaling rather than
+  as a skipped run.
+- *Control now:* the point is reported INVALID rather than fast, on the absent summary. `NOTES.md`
+  Entry 46 calls it the Entry-32 no-op trap wearing a different hat.
+
+**3. OOM conflated with a configuration cap.**
+- *Measurement:* the cross-group ceiling sweep at a 24 GB driver heap, 100M distinct keys.
+- *Silent failure:* the run died on Spark's default 1 GB `spark.driver.maxResultSize` —
+  **1027.9 MiB > 1024 MiB** — which is a tunable config cap, not the heap, and the summary reported
+  it as a memory ceiling.
+- *What it produced:* a heap ceiling at 24 GB that had never been established.
+- *Control now:* the two limits are reported as separate findings. At 8 GB the heap ceiling is
+  genuinely between 20M and 35M keys; at 24 GB the heap ceiling is stated as **not established**.
+- Script: `cloud/exp3_ceiling.py`.
+
+**4. A probe verdict that ignored its own floor arm.**
+- *Measurement:* attributing the audit's overhead between delete-set reconstruction and shuffle.
+- *Silent failure:* the verdict fired on `aggregate_only / full_scan = 0.84 > 0.7`, a threshold that
+  cannot distinguish "the aggregation pays for deletes" from "the aggregation pays for a shuffle".
+  The `no_deletes` floor arm existed to separate them and the verdict did not consult it.
+- *What it produced:* a confident "delete-set reconstruction dominates" that the arm's own data
+  contradicted — the floor arm showed delete application was free.
+- *Control now:* the verdict consults the floor arm and prints the plain-read versus rewrite-path
+  caveat. The consequence was accepted rather than papered over: **no sentence in §6.4 claims where
+  the cost lives.**
+- Script: `cloud/probe_pass_cost.py`.
+
+**5. `pgrep -f` matching its own shell.**
+- *Measurement:* a watcher waiting for a long run to finish.
+- *Silent failure:* the watcher's own command line contained the pattern it searched for, so the
+  target process always appeared alive.
+- *What it produced:* two waiter loops that spun indefinitely after their target had exited.
+- ⚠️ **The repository's record of this case is one line.** `NOTES.md` refers to it only in passing,
+  as "the `pgrep` self-match", while naming its family; there is no entry narrating it and no script
+  is identified. The four elements above are all that is recorded, and no control is recorded as
+  having been added. It is listed because it happened, not because it is documented to the standard
+  of the other six.
+
+**6. An arm that failed every run read as unstable.**
+- *Measurement:* the first run of the clearance-nondeterminism diagnostic.
+- *Silent failure:* the arm's tag was `single-thread`, and the hyphen makes an invalid SQL
+  identifier, so every run of that arm died on `DROP TABLE`.
+- *What it produced:* **"PINNING THE POOL IS NOT SUFFICIENT"**, drawn from an arm that produced no
+  runs at all. An empty arm was read as an unstable one.
+- *Control now:* the script refuses to draw a verdict from an arm that produced no runs. In the same
+  pass, the sweep's header stopped hardcoding "1 file/commit" — that would have made a silently
+  ignored `MOR_SWEEP_FPC` indistinguishable from a real result — and the FPC=4 run's environment was
+  checked against the live process before its numbers were trusted.
+- Script: `cost-study/studies/audit/diagnose_clearance_nondeterminism.py`.
+
+**7. Compaction mutating the table in place.**
+- *Measurement:* the first Phase 8 end-to-end verification against the real Postgres CDC pipeline.
+- *Silent failure:* compaction mutates the table in place, so the first run left the table in the
+  laundered state.
+- *What it produced:* nothing wrong on that run — the hazard is the next one. Re-running against the
+  leftover would have checked an already-laundered table and reported a clean pass for entirely the
+  wrong reason.
+- *Control now:* `phase8-cdc/verify_end_to_end.py` regenerates the table from the plan on every run.
+- Recorded alongside it: that same first run also failed on a field name, reading `classification`
+  where the report writes `type`, and was caught only because the counts block disagreed with the
+  verdict line.
+
+### A different shape, which no positive control catches
+
+The seven above are all the same species: an operation did not run, and its output still looked
+plausible. A positive control that the operation happened is the answer to that species. One failure
+in this work was **not** of that shape, and is recorded here because the control that fixes the other
+seven would not have caught it.
+
+The claim was a **1 GB `spark.driver.maxResultSize`** limit, stated in a draft of §6.3 as a measured
+quantity. Its chain:
+
+1. A run failed, and `cloud/exp3_ceiling.py` stored the error as `err[:600]` — truncating **from the
+   front**, so the Java exception was the part discarded.
+2. A belief about the cause was formed without the diagnostic, and written into a classifier: the
+   `maxResultSize` branch exists only in `cloud/exp5_heap_ceiling.py`.
+3. **`exp5_heap_ceiling.py` never ran.** The classifier that encoded the belief was never executed,
+   so the belief was never tested. `cloud/exp3_ceiling.py`, which did run, has no `maxResultSize`
+   branch at all.
+4. The belief reached a draft as a stated quantity with no measurement behind it.
+
+Nothing here is a no-op reporting success. Every operation ran or failed honestly; what propagated
+was an untested belief, through a truncation that destroyed the evidence and a classifier that was
+never exercised. The search that established this is recorded in the orphaned-figures table below:
+all seven logs under `cloud/` return zero hits for `maxResultSize`, `OutOfMemoryError` and
+`GC overhead limit`, and session 1 kept no `spark-events/`. The claim was removed from the paper
+rather than softened.
+
+Note this is distinct from case 3 above, which shares the `maxResultSize` name. In case 3 a run
+genuinely died on that cap and the summary mislabelled it; here no run is known to have hit it at all.
 
 ---
 

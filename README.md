@@ -470,4 +470,11 @@ job-graph runtime (`cost-study/README.md`, "Cost labeling caveat").
   interleaved baseline with the cache dropped between runs, and the ingest control is reported
   alongside so a reader can see whether the machine stayed still. Absolute times from
   different sessions are not comparable.
+- **Every measurement carries a positive control, and the reason is written down.** Seven
+  measurements in this work silently declined to run while producing plausible output: a rewrite
+  skipped for being below `min-input-files` and read as superb scaling, an arm whose every run died
+  on a malformed SQL identifier and was read as unstable, a compaction that left its table laundered
+  so the next run would have passed against already-clean data. `RESULTS.md` §11 records each one —
+  the measurement, how it failed silently, what it produced instead of an error, and what the control
+  now checks — together with one failure of a different shape that no positive control catches.
 - No bibliography is included here; that lives in the paper source, not this artifact.
