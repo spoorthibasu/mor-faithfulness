@@ -656,9 +656,17 @@ the `off` column: 137.286, 140.408, 141.043, 139.781, 140.469).
 | The superseded "1.4×" | **1.416** (→ 1.42, paper says 1.4×) | derived, paired median `gateOFF`/`off`, `cost-study/studies/audit/bench_coldcache.json`, `11GB` arm |
 | That baseline's CV | **14.9%** | derived, same arm's `off` values |
 
-❌ **"roughly 38 GB free for page cache" (§6.1) is NOT sourced.** No artifact records it and it does
-not fall out of the host figures: 123 GiB total − 32 GB heap − 44.93 GB table ≈ 46 GB, not 38. Treat
-as ORPHANED until someone reconstructs it.
+**CLOSED 2026-08-30 — no longer cited, not reconstructed.** This was flagged ❌ because "roughly
+38 GB free for page cache" could not be sourced: no artifact records it, and it does not fall out of
+the host figures — 123 GiB total − 32 GB heap − 44.93 GB table ≈ 46 GB, not 38. The number was never
+sourced and still cannot be. What changed is that the paper stopped making the claim. §6.4's "Where
+the baseline was taken" was rewritten to keep the method and drop the figure, and now reads "on a
+16-core, 123 GiB machine with the table on local NVMe, with the cache dropped through the kernel
+instead of by memory pressure." The wide-margin claim survives where it is supportable, in §6.7:
+the cost measurement was moved to "a host whose memory exceeds the working set by a wide margin."
+The ORPHANED flag lapses by its own definition, which is scoped to figures the paper uses. Do not
+resurrect the 38 GB figure; if a page-cache headroom number is ever wanted, derive it and show the
+arithmetic.
 
 ### §4.4 — Table 1 caption, the four-cell subset
 
