@@ -1,0 +1,1482 @@
+{
+ "iceberg_version": "1.10.2",
+ "commits": 50,
+ "rows_per_commit": 200,
+ "delete_window": 20,
+ "rotation_period_commits": 10,
+ "data_files_before": 50,
+ "delete_files_before": 49,
+ "data_seq_before": {
+  "min": 1,
+  "max": 50
+ },
+ "delete_seq_before": {
+  "min": 2,
+  "max": 50
+ },
+ "snapshot_sequence_number_before": 50,
+ "manifests_before": [
+  {
+   "path": "07811ad5-b6e1-4c5e-b9a3-7ca31ac55325-m0.avro",
+   "min_sequence_number": 50,
+   "added_snapshot_id": 1423967657094589448
+  },
+  {
+   "path": "0f5bd9a3-eac2-41e8-8624-c32a616e5696-m0.avro",
+   "min_sequence_number": 49,
+   "added_snapshot_id": 6880499109384464681
+  },
+  {
+   "path": "870a27ad-87af-4cf7-ae54-1289e338fe70-m0.avro",
+   "min_sequence_number": 48,
+   "added_snapshot_id": 7940439772837597687
+  },
+  {
+   "path": "b536b839-21bd-45df-a75a-5cf01b45a326-m0.avro",
+   "min_sequence_number": 47,
+   "added_snapshot_id": 8745198868349200891
+  },
+  {
+   "path": "cabab5a5-0ded-405b-9b06-5b2df1dae509-m0.avro",
+   "min_sequence_number": 46,
+   "added_snapshot_id": 8312736155463134348
+  },
+  {
+   "path": "565809c3-c351-4894-808a-1d27edab3359-m0.avro",
+   "min_sequence_number": 45,
+   "added_snapshot_id": 6392264330121681788
+  },
+  {
+   "path": "3eff5295-9cf2-4e36-bb6e-80b35af33a74-m0.avro",
+   "min_sequence_number": 44,
+   "added_snapshot_id": 8145850797103550581
+  },
+  {
+   "path": "c3d00e91-e675-4259-b75b-b65568388b67-m0.avro",
+   "min_sequence_number": 43,
+   "added_snapshot_id": 6926648085594577628
+  },
+  {
+   "path": "9fd61bef-2325-46f9-90f5-e9deccc6042d-m0.avro",
+   "min_sequence_number": 42,
+   "added_snapshot_id": 8460103718357845239
+  },
+  {
+   "path": "7f0c997f-7ab0-4788-9e5e-31d47c2f0801-m0.avro",
+   "min_sequence_number": 41,
+   "added_snapshot_id": 881410728437986541
+  },
+  {
+   "path": "d8222401-fbaa-4ada-9444-7e4050273667-m0.avro",
+   "min_sequence_number": 40,
+   "added_snapshot_id": 6999624672909490970
+  },
+  {
+   "path": "550f5d71-5f5b-497d-ad08-99121165b725-m0.avro",
+   "min_sequence_number": 39,
+   "added_snapshot_id": 3949185692546101655
+  },
+  {
+   "path": "0be0b931-0e01-4c06-9562-ad5bd4f4aa88-m0.avro",
+   "min_sequence_number": 38,
+   "added_snapshot_id": 3130707248324360140
+  },
+  {
+   "path": "bf4cc6d2-cc73-4667-ac87-d8bc96226509-m0.avro",
+   "min_sequence_number": 37,
+   "added_snapshot_id": 6176068286321386468
+  },
+  {
+   "path": "8194ff46-abd8-468c-a444-b67f7ca46f8b-m0.avro",
+   "min_sequence_number": 36,
+   "added_snapshot_id": 1888663779925323842
+  },
+  {
+   "path": "8b5751b4-eede-48ad-8d73-40bb08545c7a-m0.avro",
+   "min_sequence_number": 35,
+   "added_snapshot_id": 2554359241766521151
+  },
+  {
+   "path": "cf430593-9afd-4a9a-bbb6-7a28ddafe3ee-m0.avro",
+   "min_sequence_number": 34,
+   "added_snapshot_id": 7411302670320313120
+  },
+  {
+   "path": "08af51d4-18f1-44b7-a579-990b48655839-m0.avro",
+   "min_sequence_number": 33,
+   "added_snapshot_id": 2219793259168159497
+  },
+  {
+   "path": "f1c8afb4-3940-4241-a9d8-42a8b1610e76-m0.avro",
+   "min_sequence_number": 32,
+   "added_snapshot_id": 5085464507383590166
+  },
+  {
+   "path": "171eb218-408d-4689-818b-653a9196113f-m0.avro",
+   "min_sequence_number": 31,
+   "added_snapshot_id": 705756334582836120
+  },
+  {
+   "path": "85975141-ef4d-45d3-9959-5e3f0c54421f-m0.avro",
+   "min_sequence_number": 30,
+   "added_snapshot_id": 364945750688891189
+  },
+  {
+   "path": "8e556f0c-2905-442d-8f3b-8b00c5c04fd2-m0.avro",
+   "min_sequence_number": 29,
+   "added_snapshot_id": 1540596597654528794
+  },
+  {
+   "path": "abad863d-955d-4240-a528-cb566cbbf888-m0.avro",
+   "min_sequence_number": 28,
+   "added_snapshot_id": 8717720405861335133
+  },
+  {
+   "path": "8e33985a-6342-4807-a1e9-78898588057c-m0.avro",
+   "min_sequence_number": 27,
+   "added_snapshot_id": 1687742848508476245
+  },
+  {
+   "path": "7d423f0a-d06c-4810-990c-393b10def340-m0.avro",
+   "min_sequence_number": 26,
+   "added_snapshot_id": 6828645567293523958
+  },
+  {
+   "path": "467f9a0c-72fe-4d7f-b586-c49c6903a68b-m0.avro",
+   "min_sequence_number": 25,
+   "added_snapshot_id": 977155603460952505
+  },
+  {
+   "path": "129c8820-d890-45e7-9ef4-b00bba0baba9-m0.avro",
+   "min_sequence_number": 24,
+   "added_snapshot_id": 6213992890429996385
+  },
+  {
+   "path": "1a3c166b-9448-4e1d-ab68-9e7d1ac5b0d7-m0.avro",
+   "min_sequence_number": 23,
+   "added_snapshot_id": 3198905891268291828
+  },
+  {
+   "path": "ae602b59-dfc8-4105-a0fd-768071a43ba0-m0.avro",
+   "min_sequence_number": 22,
+   "added_snapshot_id": 871700029488930559
+  },
+  {
+   "path": "64c978d8-b8df-4675-80b3-a64d2ce37100-m0.avro",
+   "min_sequence_number": 21,
+   "added_snapshot_id": 9173208496580993595
+  },
+  {
+   "path": "12e80739-8d55-4adc-b2cf-11d815e32d8e-m0.avro",
+   "min_sequence_number": 20,
+   "added_snapshot_id": 8000681044688013792
+  },
+  {
+   "path": "5120cd71-56bc-47b8-9b82-17e816f17fe1-m0.avro",
+   "min_sequence_number": 19,
+   "added_snapshot_id": 3599757116429428335
+  },
+  {
+   "path": "d6fe7e48-bd70-4e11-943a-58ee1f6b2c97-m0.avro",
+   "min_sequence_number": 18,
+   "added_snapshot_id": 2456059400293155317
+  },
+  {
+   "path": "5a861b77-e253-426e-b9e5-86621f3c2b8d-m0.avro",
+   "min_sequence_number": 17,
+   "added_snapshot_id": 3775926710033431638
+  },
+  {
+   "path": "6b040b92-ea64-49b1-a233-a6894dd05b7f-m0.avro",
+   "min_sequence_number": 16,
+   "added_snapshot_id": 4170020059088121771
+  },
+  {
+   "path": "3422e169-524d-4dab-a030-e304d6d17352-m0.avro",
+   "min_sequence_number": 15,
+   "added_snapshot_id": 4373182888380891945
+  },
+  {
+   "path": "6243b599-16b5-48e7-9ed5-39270c2ab589-m0.avro",
+   "min_sequence_number": 14,
+   "added_snapshot_id": 192100512433757315
+  },
+  {
+   "path": "87603a80-5fc6-4f95-b94e-45ce2dddc59a-m0.avro",
+   "min_sequence_number": 13,
+   "added_snapshot_id": 3148044607271174554
+  },
+  {
+   "path": "667f0cae-0f86-44da-ad88-96569dbe0c23-m0.avro",
+   "min_sequence_number": 12,
+   "added_snapshot_id": 3857903898163948155
+  },
+  {
+   "path": "d413837f-3e3d-447e-bdea-4708a473ba9e-m0.avro",
+   "min_sequence_number": 11,
+   "added_snapshot_id": 1311935844484671102
+  },
+  {
+   "path": "48c679bb-7eee-4e3e-975f-e5775a05b88c-m0.avro",
+   "min_sequence_number": 10,
+   "added_snapshot_id": 7544763071675880089
+  },
+  {
+   "path": "c050136b-1943-4e9f-a830-011e4623ce12-m0.avro",
+   "min_sequence_number": 9,
+   "added_snapshot_id": 1509015865367509037
+  },
+  {
+   "path": "119e5ce0-6875-4539-a582-18a8171f1b14-m0.avro",
+   "min_sequence_number": 8,
+   "added_snapshot_id": 4922259420026854798
+  },
+  {
+   "path": "2a22de7b-3b6c-4f14-8f38-c5fed3eeb553-m0.avro",
+   "min_sequence_number": 7,
+   "added_snapshot_id": 4731916756742856559
+  },
+  {
+   "path": "5aeff803-c6d2-4811-8113-28a09aafdaf7-m0.avro",
+   "min_sequence_number": 6,
+   "added_snapshot_id": 1403775958492404726
+  },
+  {
+   "path": "1aa4bc12-d0e2-403d-8537-c8209810fa17-m0.avro",
+   "min_sequence_number": 5,
+   "added_snapshot_id": 1684180748807130462
+  },
+  {
+   "path": "72873b10-2100-4b02-8df5-a37fe3e9ac88-m0.avro",
+   "min_sequence_number": 4,
+   "added_snapshot_id": 3338867625938294446
+  },
+  {
+   "path": "db6f9359-ec80-4397-b97d-b4e47184cde8-m0.avro",
+   "min_sequence_number": 3,
+   "added_snapshot_id": 2926086419573083276
+  },
+  {
+   "path": "a69aaf50-22b7-491c-96b1-eda41acdfc97-m0.avro",
+   "min_sequence_number": 2,
+   "added_snapshot_id": 5389119543561650098
+  },
+  {
+   "path": "f3dc87a5-9623-48e6-aab4-2e566b6ed338-m0.avro",
+   "min_sequence_number": 1,
+   "added_snapshot_id": 5554211066465122617
+  }
+ ],
+ "delete_manifests_before": [
+  {
+   "path": "07811ad5-b6e1-4c5e-b9a3-7ca31ac55325-m1.avro",
+   "min_sequence_number": 50,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "0f5bd9a3-eac2-41e8-8624-c32a616e5696-m1.avro",
+   "min_sequence_number": 49,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "870a27ad-87af-4cf7-ae54-1289e338fe70-m1.avro",
+   "min_sequence_number": 48,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "b536b839-21bd-45df-a75a-5cf01b45a326-m1.avro",
+   "min_sequence_number": 47,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "cabab5a5-0ded-405b-9b06-5b2df1dae509-m1.avro",
+   "min_sequence_number": 46,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "565809c3-c351-4894-808a-1d27edab3359-m1.avro",
+   "min_sequence_number": 45,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "3eff5295-9cf2-4e36-bb6e-80b35af33a74-m1.avro",
+   "min_sequence_number": 44,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "c3d00e91-e675-4259-b75b-b65568388b67-m1.avro",
+   "min_sequence_number": 43,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "9fd61bef-2325-46f9-90f5-e9deccc6042d-m1.avro",
+   "min_sequence_number": 42,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "7f0c997f-7ab0-4788-9e5e-31d47c2f0801-m1.avro",
+   "min_sequence_number": 41,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "d8222401-fbaa-4ada-9444-7e4050273667-m1.avro",
+   "min_sequence_number": 40,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "550f5d71-5f5b-497d-ad08-99121165b725-m1.avro",
+   "min_sequence_number": 39,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "0be0b931-0e01-4c06-9562-ad5bd4f4aa88-m1.avro",
+   "min_sequence_number": 38,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "bf4cc6d2-cc73-4667-ac87-d8bc96226509-m1.avro",
+   "min_sequence_number": 37,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "8194ff46-abd8-468c-a444-b67f7ca46f8b-m1.avro",
+   "min_sequence_number": 36,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "8b5751b4-eede-48ad-8d73-40bb08545c7a-m1.avro",
+   "min_sequence_number": 35,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "cf430593-9afd-4a9a-bbb6-7a28ddafe3ee-m1.avro",
+   "min_sequence_number": 34,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "08af51d4-18f1-44b7-a579-990b48655839-m1.avro",
+   "min_sequence_number": 33,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "f1c8afb4-3940-4241-a9d8-42a8b1610e76-m1.avro",
+   "min_sequence_number": 32,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "171eb218-408d-4689-818b-653a9196113f-m1.avro",
+   "min_sequence_number": 31,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "85975141-ef4d-45d3-9959-5e3f0c54421f-m1.avro",
+   "min_sequence_number": 30,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "8e556f0c-2905-442d-8f3b-8b00c5c04fd2-m1.avro",
+   "min_sequence_number": 29,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "abad863d-955d-4240-a528-cb566cbbf888-m1.avro",
+   "min_sequence_number": 28,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "8e33985a-6342-4807-a1e9-78898588057c-m1.avro",
+   "min_sequence_number": 27,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "7d423f0a-d06c-4810-990c-393b10def340-m1.avro",
+   "min_sequence_number": 26,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "467f9a0c-72fe-4d7f-b586-c49c6903a68b-m1.avro",
+   "min_sequence_number": 25,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "129c8820-d890-45e7-9ef4-b00bba0baba9-m1.avro",
+   "min_sequence_number": 24,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "1a3c166b-9448-4e1d-ab68-9e7d1ac5b0d7-m1.avro",
+   "min_sequence_number": 23,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "ae602b59-dfc8-4105-a0fd-768071a43ba0-m1.avro",
+   "min_sequence_number": 22,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "64c978d8-b8df-4675-80b3-a64d2ce37100-m1.avro",
+   "min_sequence_number": 21,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "12e80739-8d55-4adc-b2cf-11d815e32d8e-m1.avro",
+   "min_sequence_number": 20,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "5120cd71-56bc-47b8-9b82-17e816f17fe1-m1.avro",
+   "min_sequence_number": 19,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "d6fe7e48-bd70-4e11-943a-58ee1f6b2c97-m1.avro",
+   "min_sequence_number": 18,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "5a861b77-e253-426e-b9e5-86621f3c2b8d-m1.avro",
+   "min_sequence_number": 17,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "6b040b92-ea64-49b1-a233-a6894dd05b7f-m1.avro",
+   "min_sequence_number": 16,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "3422e169-524d-4dab-a030-e304d6d17352-m1.avro",
+   "min_sequence_number": 15,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "6243b599-16b5-48e7-9ed5-39270c2ab589-m1.avro",
+   "min_sequence_number": 14,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "87603a80-5fc6-4f95-b94e-45ce2dddc59a-m1.avro",
+   "min_sequence_number": 13,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "667f0cae-0f86-44da-ad88-96569dbe0c23-m1.avro",
+   "min_sequence_number": 12,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "d413837f-3e3d-447e-bdea-4708a473ba9e-m1.avro",
+   "min_sequence_number": 11,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "48c679bb-7eee-4e3e-975f-e5775a05b88c-m1.avro",
+   "min_sequence_number": 10,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "c050136b-1943-4e9f-a830-011e4623ce12-m1.avro",
+   "min_sequence_number": 9,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "119e5ce0-6875-4539-a582-18a8171f1b14-m1.avro",
+   "min_sequence_number": 8,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "2a22de7b-3b6c-4f14-8f38-c5fed3eeb553-m1.avro",
+   "min_sequence_number": 7,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "5aeff803-c6d2-4811-8113-28a09aafdaf7-m1.avro",
+   "min_sequence_number": 6,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "1aa4bc12-d0e2-403d-8537-c8209810fa17-m1.avro",
+   "min_sequence_number": 5,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "72873b10-2100-4b02-8df5-a37fe3e9ac88-m1.avro",
+   "min_sequence_number": 4,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "db6f9359-ec80-4397-b97d-b4e47184cde8-m1.avro",
+   "min_sequence_number": 3,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "a69aaf50-22b7-491c-96b1-eda41acdfc97-m1.avro",
+   "min_sequence_number": 2,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  }
+ ],
+ "rewrite_result": {
+  "rewritten_data_files_count": 50,
+  "added_data_files_count": 1,
+  "rewritten_bytes_count": 160146,
+  "failed_data_files_count": 0,
+  "removed_delete_files_count": 0
+ },
+ "data_files_after": 1,
+ "delete_files_after": 41,
+ "snapshot_sequence_number_after": 51,
+ "manifests_after": [
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m58.avro",
+   "min_sequence_number": 50,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m1.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m5.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m7.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m0.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m3.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m6.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m2.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m4.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m8.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m9.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m10.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m11.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m12.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m13.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m14.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m15.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m18.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m16.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m17.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m19.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m20.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m21.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m22.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m23.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m24.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m25.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m26.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m27.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m28.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m29.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m30.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m31.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m32.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m33.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m34.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m35.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m36.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m37.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m38.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m39.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m40.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m41.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m42.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m43.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m44.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m45.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m46.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m47.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m48.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m49.avro",
+   "min_sequence_number": 51,
+   "added_snapshot_id": 7699879766781367699
+  }
+ ],
+ "delete_manifests_after": [
+  {
+   "path": "07811ad5-b6e1-4c5e-b9a3-7ca31ac55325-m1.avro",
+   "min_sequence_number": 50,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m54.avro",
+   "min_sequence_number": 51,
+   "added": 0,
+   "existing": 0,
+   "deleted": 1
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m50.avro",
+   "min_sequence_number": 51,
+   "added": 0,
+   "existing": 0,
+   "deleted": 1
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m55.avro",
+   "min_sequence_number": 51,
+   "added": 0,
+   "existing": 0,
+   "deleted": 1
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m53.avro",
+   "min_sequence_number": 51,
+   "added": 0,
+   "existing": 0,
+   "deleted": 1
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m56.avro",
+   "min_sequence_number": 51,
+   "added": 0,
+   "existing": 0,
+   "deleted": 1
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m52.avro",
+   "min_sequence_number": 51,
+   "added": 0,
+   "existing": 0,
+   "deleted": 1
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m51.avro",
+   "min_sequence_number": 51,
+   "added": 0,
+   "existing": 0,
+   "deleted": 1
+  },
+  {
+   "path": "a2b79e4e-35f2-4a33-9c67-51a1150a6a17-m57.avro",
+   "min_sequence_number": 51,
+   "added": 0,
+   "existing": 0,
+   "deleted": 1
+  },
+  {
+   "path": "7f0c997f-7ab0-4788-9e5e-31d47c2f0801-m1.avro",
+   "min_sequence_number": 41,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "d8222401-fbaa-4ada-9444-7e4050273667-m1.avro",
+   "min_sequence_number": 40,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "550f5d71-5f5b-497d-ad08-99121165b725-m1.avro",
+   "min_sequence_number": 39,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "0be0b931-0e01-4c06-9562-ad5bd4f4aa88-m1.avro",
+   "min_sequence_number": 38,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "bf4cc6d2-cc73-4667-ac87-d8bc96226509-m1.avro",
+   "min_sequence_number": 37,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "8194ff46-abd8-468c-a444-b67f7ca46f8b-m1.avro",
+   "min_sequence_number": 36,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "8b5751b4-eede-48ad-8d73-40bb08545c7a-m1.avro",
+   "min_sequence_number": 35,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "cf430593-9afd-4a9a-bbb6-7a28ddafe3ee-m1.avro",
+   "min_sequence_number": 34,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "08af51d4-18f1-44b7-a579-990b48655839-m1.avro",
+   "min_sequence_number": 33,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "f1c8afb4-3940-4241-a9d8-42a8b1610e76-m1.avro",
+   "min_sequence_number": 32,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "171eb218-408d-4689-818b-653a9196113f-m1.avro",
+   "min_sequence_number": 31,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "85975141-ef4d-45d3-9959-5e3f0c54421f-m1.avro",
+   "min_sequence_number": 30,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "8e556f0c-2905-442d-8f3b-8b00c5c04fd2-m1.avro",
+   "min_sequence_number": 29,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "abad863d-955d-4240-a528-cb566cbbf888-m1.avro",
+   "min_sequence_number": 28,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "8e33985a-6342-4807-a1e9-78898588057c-m1.avro",
+   "min_sequence_number": 27,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "7d423f0a-d06c-4810-990c-393b10def340-m1.avro",
+   "min_sequence_number": 26,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "467f9a0c-72fe-4d7f-b586-c49c6903a68b-m1.avro",
+   "min_sequence_number": 25,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "129c8820-d890-45e7-9ef4-b00bba0baba9-m1.avro",
+   "min_sequence_number": 24,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "1a3c166b-9448-4e1d-ab68-9e7d1ac5b0d7-m1.avro",
+   "min_sequence_number": 23,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "ae602b59-dfc8-4105-a0fd-768071a43ba0-m1.avro",
+   "min_sequence_number": 22,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "64c978d8-b8df-4675-80b3-a64d2ce37100-m1.avro",
+   "min_sequence_number": 21,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "12e80739-8d55-4adc-b2cf-11d815e32d8e-m1.avro",
+   "min_sequence_number": 20,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "5120cd71-56bc-47b8-9b82-17e816f17fe1-m1.avro",
+   "min_sequence_number": 19,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "d6fe7e48-bd70-4e11-943a-58ee1f6b2c97-m1.avro",
+   "min_sequence_number": 18,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "5a861b77-e253-426e-b9e5-86621f3c2b8d-m1.avro",
+   "min_sequence_number": 17,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "6b040b92-ea64-49b1-a233-a6894dd05b7f-m1.avro",
+   "min_sequence_number": 16,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "3422e169-524d-4dab-a030-e304d6d17352-m1.avro",
+   "min_sequence_number": 15,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "6243b599-16b5-48e7-9ed5-39270c2ab589-m1.avro",
+   "min_sequence_number": 14,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "87603a80-5fc6-4f95-b94e-45ce2dddc59a-m1.avro",
+   "min_sequence_number": 13,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "667f0cae-0f86-44da-ad88-96569dbe0c23-m1.avro",
+   "min_sequence_number": 12,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "d413837f-3e3d-447e-bdea-4708a473ba9e-m1.avro",
+   "min_sequence_number": 11,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "48c679bb-7eee-4e3e-975f-e5775a05b88c-m1.avro",
+   "min_sequence_number": 10,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "c050136b-1943-4e9f-a830-011e4623ce12-m1.avro",
+   "min_sequence_number": 9,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "119e5ce0-6875-4539-a582-18a8171f1b14-m1.avro",
+   "min_sequence_number": 8,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "2a22de7b-3b6c-4f14-8f38-c5fed3eeb553-m1.avro",
+   "min_sequence_number": 7,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "5aeff803-c6d2-4811-8113-28a09aafdaf7-m1.avro",
+   "min_sequence_number": 6,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "1aa4bc12-d0e2-403d-8537-c8209810fa17-m1.avro",
+   "min_sequence_number": 5,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "72873b10-2100-4b02-8df5-a37fe3e9ac88-m1.avro",
+   "min_sequence_number": 4,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "db6f9359-ec80-4397-b97d-b4e47184cde8-m1.avro",
+   "min_sequence_number": 3,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  },
+  {
+   "path": "a69aaf50-22b7-491c-96b1-eda41acdfc97-m1.avro",
+   "min_sequence_number": 2,
+   "added": 1,
+   "existing": 0,
+   "deleted": 0
+  }
+ ],
+ "data_files_after_detail": [
+  {
+   "file": "00000-25-1217170f-9364-4fd1-b56f-7b8418788f61-0-00001.parquet",
+   "data_sequence_number": 50
+  }
+ ],
+ "min_data_sequence_number_after": 50,
+ "min_manifest_sequence_number_after": 50,
+ "removed_delete_files": [
+  {
+   "file": "c42-del.parquet",
+   "data_sequence_number": 42
+  },
+  {
+   "file": "c43-del.parquet",
+   "data_sequence_number": 43
+  },
+  {
+   "file": "c44-del.parquet",
+   "data_sequence_number": 44
+  },
+  {
+   "file": "c45-del.parquet",
+   "data_sequence_number": 45
+  },
+  {
+   "file": "c46-del.parquet",
+   "data_sequence_number": 46
+  },
+  {
+   "file": "c47-del.parquet",
+   "data_sequence_number": 47
+  },
+  {
+   "file": "c48-del.parquet",
+   "data_sequence_number": 48
+  },
+  {
+   "file": "c49-del.parquet",
+   "data_sequence_number": 49
+  }
+ ],
+ "retained_delete_files": [
+  {
+   "file": "c10-del.parquet",
+   "data_sequence_number": 10
+  },
+  {
+   "file": "c11-del.parquet",
+   "data_sequence_number": 11
+  },
+  {
+   "file": "c12-del.parquet",
+   "data_sequence_number": 12
+  },
+  {
+   "file": "c13-del.parquet",
+   "data_sequence_number": 13
+  },
+  {
+   "file": "c14-del.parquet",
+   "data_sequence_number": 14
+  },
+  {
+   "file": "c15-del.parquet",
+   "data_sequence_number": 15
+  },
+  {
+   "file": "c16-del.parquet",
+   "data_sequence_number": 16
+  },
+  {
+   "file": "c17-del.parquet",
+   "data_sequence_number": 17
+  },
+  {
+   "file": "c18-del.parquet",
+   "data_sequence_number": 18
+  },
+  {
+   "file": "c19-del.parquet",
+   "data_sequence_number": 19
+  },
+  {
+   "file": "c2-del.parquet",
+   "data_sequence_number": 2
+  },
+  {
+   "file": "c20-del.parquet",
+   "data_sequence_number": 20
+  },
+  {
+   "file": "c21-del.parquet",
+   "data_sequence_number": 21
+  },
+  {
+   "file": "c22-del.parquet",
+   "data_sequence_number": 22
+  },
+  {
+   "file": "c23-del.parquet",
+   "data_sequence_number": 23
+  },
+  {
+   "file": "c24-del.parquet",
+   "data_sequence_number": 24
+  },
+  {
+   "file": "c25-del.parquet",
+   "data_sequence_number": 25
+  },
+  {
+   "file": "c26-del.parquet",
+   "data_sequence_number": 26
+  },
+  {
+   "file": "c27-del.parquet",
+   "data_sequence_number": 27
+  },
+  {
+   "file": "c28-del.parquet",
+   "data_sequence_number": 28
+  },
+  {
+   "file": "c29-del.parquet",
+   "data_sequence_number": 29
+  },
+  {
+   "file": "c3-del.parquet",
+   "data_sequence_number": 3
+  },
+  {
+   "file": "c30-del.parquet",
+   "data_sequence_number": 30
+  },
+  {
+   "file": "c31-del.parquet",
+   "data_sequence_number": 31
+  },
+  {
+   "file": "c32-del.parquet",
+   "data_sequence_number": 32
+  },
+  {
+   "file": "c33-del.parquet",
+   "data_sequence_number": 33
+  },
+  {
+   "file": "c34-del.parquet",
+   "data_sequence_number": 34
+  },
+  {
+   "file": "c35-del.parquet",
+   "data_sequence_number": 35
+  },
+  {
+   "file": "c36-del.parquet",
+   "data_sequence_number": 36
+  },
+  {
+   "file": "c37-del.parquet",
+   "data_sequence_number": 37
+  },
+  {
+   "file": "c38-del.parquet",
+   "data_sequence_number": 38
+  },
+  {
+   "file": "c39-del.parquet",
+   "data_sequence_number": 39
+  },
+  {
+   "file": "c4-del.parquet",
+   "data_sequence_number": 4
+  },
+  {
+   "file": "c40-del.parquet",
+   "data_sequence_number": 40
+  },
+  {
+   "file": "c41-del.parquet",
+   "data_sequence_number": 41
+  },
+  {
+   "file": "c5-del.parquet",
+   "data_sequence_number": 5
+  },
+  {
+   "file": "c50-del.parquet",
+   "data_sequence_number": 50
+  },
+  {
+   "file": "c6-del.parquet",
+   "data_sequence_number": 6
+  },
+  {
+   "file": "c7-del.parquet",
+   "data_sequence_number": 7
+  },
+  {
+   "file": "c8-del.parquet",
+   "data_sequence_number": 8
+  },
+  {
+   "file": "c9-del.parquet",
+   "data_sequence_number": 9
+  }
+ ],
+ "removed_sequence_numbers": [
+  42,
+  43,
+  44,
+  45,
+  46,
+  47,
+  48,
+  49
+ ],
+ "retained_sequence_numbers_range": {
+  "min": 2,
+  "max": 50
+ },
+ "filter_prediction_min_live_data_seq": {
+  "threshold": 50,
+  "predicted_removed_count": 48,
+  "matches_actual": false,
+  "predicted_not_removed": [
+   "c10-del.parquet",
+   "c11-del.parquet",
+   "c12-del.parquet",
+   "c13-del.parquet",
+   "c14-del.parquet",
+   "c15-del.parquet",
+   "c16-del.parquet",
+   "c17-del.parquet"
+  ],
+  "removed_not_predicted": []
+ },
+ "filter_prediction_min_manifest_seq": {
+  "threshold": 50,
+  "predicted_removed_count": 48,
+  "matches_actual": false,
+  "predicted_not_removed": [
+   "c10-del.parquet",
+   "c11-del.parquet",
+   "c12-del.parquet",
+   "c13-del.parquet",
+   "c14-del.parquet",
+   "c15-del.parquet",
+   "c16-del.parquet",
+   "c17-del.parquet"
+  ],
+  "removed_not_predicted": []
+ },
+ "failures": []
+}

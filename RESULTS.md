@@ -887,6 +887,58 @@ cleanup at 30 days (`delta.enableExpiredLogCleanup`) is likewise still unobserve
 touches data files only, and the `_delta_log` commits are intact throughout — which is why the log
 could still name the deleted files afterwards.
 
+## 10g. §4.4 — which 8 delete files the default rewrite removes (2026-08-30)
+
+Artifact: `cost-study/studies/audit/probe_rewrite_delete_retention.json`; script
+`cost-study/studies/audit/probe_rewrite_delete_retention.py`. `NOTES.md` Entries 6 and 14 both
+carried this as unexplained: default `rewrite_data_files` removes a **constant 8** delete files in
+every cell, independent of the pre-compaction total (50, 27, 42, 50, 28, 35, 50, 28). Entry 6 named
+the probe that would settle it; this is that probe. Stock Iceberg 1.10.2, 50 commits each writing one
+data file and one equality delete at the same sequence number.
+
+| Figure | Value | Source |
+|---|---|---|
+| Data files, before → after | **50 → 1** | read, `data_files_before` / `data_files_after` |
+| Delete files, before → after | **49 → 41** | read, `delete_files_before` / `delete_files_after` |
+| Delete files removed | **8** | read, `removed_delete_files` |
+| Their sequence numbers | **42, 43, 44, 45, 46, 47, 48, 49** | read, `removed_sequence_numbers` |
+| Surviving data file's data sequence number | **50** | read, `min_data_sequence_number_after` |
+| Retained delete sequence numbers | span **2 – 50** | read, `retained_sequence_numbers_range` |
+| `rewrite_data_files` own accounting | `removed_delete_files_count: 0` | read, `rewrite_result` |
+
+**Which 8: the eight highest delete sequence numbers strictly below the surviving data file's.** The
+low end of the range is *kept*. The removal is manifest-granular — each commit wrote its own
+single-entry delete manifest (49 of them, below the merge threshold of 100), and after the rewrite
+exactly 8 of those manifests carry one deleted entry each.
+
+⚠️ **The commit-time filter is refuted as the explanation.** `ManifestFilterManager` drops a live
+delete entry at `entry.dataSequenceNumber() > 0 && < minSequenceNumber`. Measured,
+`minSequenceNumber = 50` — both the minimum live data sequence number and the minimum
+`ManifestFile::minSequenceNumber` over the data manifests after the rewrite. That condition predicts
+**48** removed. The actual is **8**, at the opposite end of the range. Reading the filter forward, as
+Entry 6 did, gives the wrong answer; this measurement is what shows it.
+
+**The 8 is invariant to every workload axis varied.** At 30 commits: 29 delete files → 21, again
+**8** removed, again the top eight (`22 … 29`) against a surviving sequence number of 30. Varying the
+delete rotation period (5, 10, 20 commits) at 50 commits leaves it at **8** with the identical set
+`42 … 49`. So it depends on neither the delete-file count nor which keys each delete covers.
+
+**Positive controls, all passing (`failures: []`).** The probe this replaces was inconclusive because
+a single data file no-ops bin-pack under `min-input-files`, which reports success while doing nothing.
+
+| Control | Result |
+|---|---|
+| C1 more than one data file and more than one delete file before the rewrite | 50 data, 49 delete |
+| C2 the rewrite actually rewrote, measured before and after **in this run** | 50 → 1 data files |
+| C3 delete files were removed in this run, so the comparison is not vacuous | 8 removed |
+| C4 every delete file is an equality delete, so no other filter branch is in play | all `content == 2` |
+
+**What is settled and what is not.** Settled: *which* 8, that the removal is manifest-granular, and
+that the filter-forward reading is wrong. **Not settled: why eight.** No cause is asserted. The
+number is invariant to every workload axis tried, which bounds what it can depend on without
+identifying it; narrowing it further means varying engine-side defaults rather than workload ones.
+Recorded as characterised-but-unexplained rather than fitted to the number.
+
 ## 11. Silent-success incidents — SEVEN
 
 Each is a case where a measurement reported success or a clean result while doing nothing. Listed

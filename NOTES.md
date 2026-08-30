@@ -689,6 +689,41 @@ STALE_WINS masking, which is unaffected by orphan-delete counts). Tie-in to the 
 removes the 1.10.2 orphans): `remove-dangling-deletes` removes 0 (Entry 6), so neither the constant-8
 bin-pack removal nor the dangling option touches the orphans that carry NEEDS_CONTEXT keys.
 
+**WHICH 8 — MEASURED (2026-08-30). The commit-time filter is REFUTED as the explanation; the constant
+survives the measurement.** Artifact `cost-study/studies/audit/probe_rewrite_delete_retention.json`,
+script `probe_rewrite_delete_retention.py`. This is the metadata probe Entry 6 named: build the cell
+shape (50 commits, one data file + one equality delete each, same sequence number), run a default
+`rewrite_data_files`, and read the surviving data file's data sequence number and every delete file's
+from `.entries` before and after, in the same run. Stock Iceberg 1.10.2.
+
+- **The constant reproduces exactly.** 50 data files → 1; 49 delete files → 41; **8 removed**.
+- **Which 8: the eight HIGHEST delete sequence numbers strictly below the surviving data file's.**
+  Removed `[42, 43, 44, 45, 46, 47, 48, 49]`; the surviving data file carries sequence number **50**
+  (`use-starting-sequence-number` default true, so it takes the starting snapshot's number). Retained
+  deletes span `[2, 50]` — the low end is *kept*.
+- **The commit-time filter does NOT reproduce this.** `entry.dataSequenceNumber() > 0 && < minSequenceNumber`
+  with `minSequenceNumber = 50` (min live data sequence number, and also the min
+  `ManifestFile::minSequenceNumber` over data manifests after the rewrite) predicts **48** removed. The
+  actual is 8, and it is the opposite end of the range. The Entry-6 reading of the filter is therefore
+  ruled out as the mechanism for the 8, and Entry 6's own "still open" note is what this settles.
+- **`rewrite_data_files` does not claim the removal**: its result reports
+  `removed_delete_files_count: 0`, so these 8 do not go through the action's own accounting.
+- **It is manifest-granular.** Every commit produced its own single-entry delete manifest (49 of them;
+  no merging — `commit.manifest.min-count-to-merge` defaults to 100). After the rewrite there are still
+  49, of which exactly **8 carry one DELETED entry each**.
+- **8 does not depend on the total, nor on the delete rotation.** 30 commits: 29 delete files → 21,
+  again **8 removed**, again the top eight, `[22 … 29]`, against a surviving sequence number of 30.
+  Varying the delete window (rotation period 5, 10, 20 commits at 50 commits) leaves it at **8** with
+  the identical set `[42 … 49]`. So it is invariant to delete-file count and to which keys each delete
+  covers. Reproduce with `MOR_COMMITS` / `MOR_WIN_DIV`.
+
+**What this does and does not establish.** It settles *which* 8 — the top eight below the surviving
+sequence number, manifest-granular — and it refutes the filter-forward reading. It does **not**
+establish *why eight*. No cause is asserted here: the number is invariant to every workload axis
+varied so far, which bounds what it can depend on but does not identify it. The next thing that would
+narrow it is varying engine-side defaults rather than workload ones. Recorded as characterised-but-
+unexplained rather than fitted to a story.
+
 **§5 framing recommendation (do NOT edit §5 yet — decide first).** Split the two classes:
 - **STALE_WINS**: structural, **engine-independent** (405/405 on both) — headline unaffected.
 - **NEEDS_CONTEXT**: **maintenance-configuration-dependent** — under default modern `rewrite_data_files`
