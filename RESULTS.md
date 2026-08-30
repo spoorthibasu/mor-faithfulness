@@ -703,8 +703,9 @@ The paper said **739** in three places (abstract, §1 contributions, §5.6). It 
 reconcile against the fork under any convention. Measured **657 added lines**; the paper was
 corrected to 657 in all three.
 
-**Baseline:** tag `apache-iceberg-1.10.2` in `~/IdeaProjects/iceberg-mor-fork`. HEAD is exactly
-that tag (`git diff --quiet apache-iceberg-1.10.2 HEAD` is empty).
+**Baseline:** tag `apache-iceberg-1.10.2` in `~/IdeaProjects/iceberg-mor-fork`. HEAD is one
+commit past that tag — `ba2ba43`, the mechanism itself — and the working tree is clean, so the
+numstat below compares the tag against that commit's content.
 
 **Command:**
 
