@@ -438,9 +438,54 @@ strip the orphans and converge 1.10.2 → 1.6.1. **That was wrong.** Measured:
   is not a fallback artifact; it's the real behavior. `verdicts_after` stays `{FAITHFUL: 1260}` either way.
 - ⇒ **The NC→FAITHFUL relabeling is DURABLE on 1.10.2 bin-pack**, and is *not* removed by the dangling-
   delete cleanup option. This is a *stronger* result than "converges to 1.6.1": modern Iceberg's default
-  maintenance durably certifies the fully-suppressed abstentions as FAITHFUL. (Why RemoveDanglingDeletes
-  spares them: presumably the rewritten data file's sequence number leaves the equality deletes
-  non-dangling by Iceberg's criterion — exact criterion not yet pinned; flagged, not blocking.)
+  maintenance durably certifies the fully-suppressed abstentions as FAITHFUL.
+
+**Why the option spares them — READ FROM THE SOURCE (2026-08-30). The earlier conjecture was WRONG.**
+It is not the rewritten file's sequence number. On these tables the action never evaluates any
+criterion at all. `RemoveDanglingDeletesSparkAction.execute()`
+(`spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/`, tag `apache-iceberg-1.10.2`)
+short-circuits before doing any work:
+
+```java
+if (table.specs().size() == 1 && table.spec().isUnpartitioned()) {
+  // ManifestFilterManager already performs this table-wide delete on each commit
+  return ImmutableRemoveDanglingDeleteFiles.Result.builder()
+      .removedDeleteFiles(Collections.emptyList())
+      .build();
+}
+```
+
+The harness creates its tables unpartitioned with a single spec (`iceberg_driver.py:485`, no
+`PARTITIONED BY`), so that branch is taken and the result is empty. The call path is real —
+`RewriteDataFilesSparkAction` lines 183–189 construct the action and call `execute()` when the option
+is set — which is exactly why the CALL succeeds with `exception: None` and removes nothing. The
+option is not being ignored; it runs an action that declines to act on unpartitioned tables.
+
+**The criterion the action WOULD apply, on a partitioned table**, from its javadoc and its filter:
+group live data files (`content == 0 AND status < 2`) by `(partition, spec_id)`, take
+`min(sequence_number)`, then a delete file is dangling when that minimum is null, or `content == 1`
+(position) and `sequence_number < min`, or `content == 2` (equality) and `sequence_number <= min`.
+Equality deletes use `<=`; position deletes use `<`.
+
+**The commit-time path the comment points at, also read.** `MergingSnapshotProducer.apply` computes
+`minDataSequenceNumber` as the minimum `ManifestFile::minSequenceNumber` over the surviving data
+manifests, floored by `base.lastSequenceNumber()`, and hands it to
+`ManifestFilterManager.dropDeleteFilesOlderThan`. The filter drops a live delete entry when
+`entry.dataSequenceNumber() > 0 && entry.dataSequenceNumber() < minSequenceNumber` — **strictly less
+than**, unlike the action's `<=` for equality deletes. And compaction commits the rewritten file at
+the STARTING snapshot's sequence number rather than a new one
+(`RewriteDataFilesCommitManager.commitFileGroups`; `use-starting-sequence-number` defaults true),
+for the reason its own javadoc gives: "This avoids commit conflicts with updates that add newer
+equality deletes at a higher sequence number."
+
+**STILL OPEN — why exactly 8, and NOT to be guessed at.** The above explains why the *option* removes
+nothing. It does not explain the constant 50 → 42 under default rewrite. Reading the commit-time
+filter forward from a single rewritten data file carrying the starting snapshot's sequence number
+predicts a different outcome from the measured one, so some step in that chain is not as simple as
+this reading makes it. Rather than fit a story to the number, the gap is left recorded. What would
+settle it: a metadata probe on a kept compacted table, reading the surviving data file's data
+sequence number and each retained delete file's from `entries`/`all_delete_files`, which decides the
+comparison directly — the probe Entry 14 already deferred.
 - 1.6.1's default rewrite still ends at 50→1 (strips them), so the **1.6.1 "keys vanish" behavior is
   specific to old bin-pack**; on 1.9.2+ the keys persist as FAITHFUL. What (if anything) removes the
   orphans on 1.10.2 is now OPEN (expire won't — they're live in the current snapshot). The §5 framing
