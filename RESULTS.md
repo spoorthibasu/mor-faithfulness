@@ -265,7 +265,7 @@ delta (136.20 − 135.58 = 0.62 s) plus sub-second stages.
 
 ### Experiment 7 — stage instrumentation of the 91 s partial aggregation
 
-Artifact: `cloud/results3/exp7_stage_detail.json`, committed in `234469b`.
+Artifact: `cloud/results3/exp7_stage_detail.json`.
 
 **This is a THIRD run, not the stage-attribution run above and not one of the five
 interleaved rounds in §6 above.** The
@@ -337,7 +337,7 @@ unaffected.
 
 ### Experiment 4 — shuffle partitions, and the source of 1.77×
 
-Artifact: `cloud/results3/exp4_shuffle_fix.json`, committed in `234469b` (third cloud session).
+Artifact: `cloud/results3/exp4_shuffle_fix.json` (third cloud session).
 Configuration: 32 commits × 3,600,000 rows, `files_per_commit=4`, contiguous ordering, 32 GB heap.
 `audited_fx` raises `spark.sql.shuffle.partitions` to 64; the other arms leave the harness default of 1.
 
@@ -743,11 +743,12 @@ two files, contains `bySeq` (5 occurrences), and applies cleanly to a fresh chec
 `apache-iceberg-1.10.2` tag, reproducing the fork's two files byte-for-byte.
 
 ⚠️ **HISTORICAL: the patch published before 2026-08-23 was a different, pre-fix mechanism.**
-Up to commit `3660ff6` the file was **+624 −4** and implemented the gate by sorting individual
+That earlier patch was **+624 −4** and implemented the gate by sorting individual
 FILES and tracking a running maximum across them — the per-file comparison §5.3 describes as
 wrong. It predates the per-sequence fix that `discarded_seq_lt_visible_seq` in
-`lean/MorFaithful/GateSoundness.lean` licenses. Any result quoted against a patch obtained
-before 2026-08-23 was produced by the pre-fix gate.
+`lean/MorFaithful/GateSoundness.lean` licenses. Identify it by the discriminators below rather
+than by a commit: the pre-fix patch sorts files, the fixed one groups by sequence. Any result
+quoted against a patch obtained before 2026-08-23 was produced by the pre-fix gate.
 
 ⚠️ **`runningMaxOrd` is NOT a marker of the pre-fix version.** The variable name survives into
 the fixed implementation, where the running maximum is taken over DISTINCT SEQUENCES rather
@@ -856,10 +857,10 @@ that the claim is load-bearing rather than decorative.
 | Figure | Status | What it would take |
 |---|---|---|
 | ~~Gate layout probe, pre-fix values~~ | **RESOLVED 2026-08-21.** Regenerated into `cost-study/studies/audit/probe_gate_filelayout_PREFIX.json`; post-fix gate restored and regression-checked. | — |
-| ~~1.77×~~ | **RESOLVED 2026-08-21.** It is a median of ratios and appears nowhere as a string; recomputed from the per-round raw times in `cloud/results3/exp4_shuffle_fix.json` (committed in `234469b`). See §6, Experiment 4. | — |
+| ~~1.77×~~ | **RESOLVED 2026-08-21.** It is a median of ratios and appears nowhere as a string; recomputed from the per-round raw times in `cloud/results3/exp4_shuffle_fix.json`. See §6, Experiment 4. | — |
 | **1 GB `maxResultSize`** | **UNSUPPORTABLE — remove from the paper.** No surviving log names it. All seven logs under `cloud/` return zero hits for `maxResultSize`, `OutOfMemoryError`, `GC overhead limit`; session 1 kept no `spark-events/`; and `exp3_ceiling.py` stores `err[:600]`, truncating from the front so the Java exception is discarded. exp3's classifier has **no `maxResultSize` branch at all** — that branch exists only in `exp5_heap_ceiling.py`, which was written on this belief and **never ran**. The belief was never tested. | Nothing recoverable. The claim comes out of §6.3 and the two-limits distinction reduces to the 8 GB OOM alone. Do not soften it to "a driver-side limit". |
 | **1,898 of 1,902** | **Derived, not read.** The inputs are all in the artifact; the split itself is not. | Present as a derivation, or add the field to the sweep's output. |
-| ~~Six community artifacts~~ | **RESOLVED 2026-08-21.** Committed as `survey/community_artifacts.json` (commit `5de7f82`) with URL, identifier, artifact date, access date, state and verbatim quotes for each, plus the iceberg-go scoping constraint and the rejected DBZ-9521. | — |
+| ~~Six community artifacts~~ | **RESOLVED 2026-08-21.** Committed as `survey/community_artifacts.json` with URL, identifier, artifact date, access date, state and verbatim quotes for each, plus the iceberg-go scoping constraint and the rejected DBZ-9521. | — |
 | ~~Capture table (paper Table 2) as eight rows~~ | **RESOLVED 2026-08-29.** Artifact has nine cells; the ninth is a zero-capture clean control. The caption now states that it is omitted. | — |
 | **Ingest control: 1.006× vs 1.0048×** | **Two different experiments.** 1.0059× is `cloud/results/results/exp1_cost.json` (cost-table run, paper Table 3); 1.0048× is `cloud/results2/results/exp1_cost.json` (capture-cost run). | Say which run each figure belongs to; do not merge them. |
 | **Ingest control: 1.073× vs 1.0042×** | **Same data, different inclusion rule.** 1.0733× includes the session's first run; 1.0042× excludes it. | State which rule is being applied. |
