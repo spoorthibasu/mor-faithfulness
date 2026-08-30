@@ -831,6 +831,62 @@ Flink**. The mechanism is writer-independent — any engine that does not read b
 a file with no `_row_id` column, and the two harness writer paths agree exactly — but Flink itself
 was not run against a v3 table.
 
+## 10f. §4.5 / §6.7 — Delta's VACUUM deletion, observed rather than read off a constant (2026-08-30)
+
+Artifact: `cost-study/studies/delta/probe_delta_vacuum.json`; script
+`cost-study/studies/delta/probe_delta_vacuum.py`. §6.7 listed Delta's expiry among the results
+weaker than the rest, because the deletion was read from default constants and never observed:
+the tombstone retention is one week and `spark.databricks.delta.retentionDurationCheck.enabled`
+refuses a zero-hour `VACUUM`. That guard is disableable, so the deletion can be watched instead of
+inferred. Engine **delta-spark 3.2.0**, the version the rest of the Delta work uses.
+
+Table: 50 keys, six `MERGE` commits, so each commit supersedes the previous file (Delta's `MERGE`
+is copy-on-write, one data file per version).
+
+| Figure | Value | Source |
+|---|---|---|
+| Guard key, read from the shipped classes | `spark.databricks.delta.retentionDurationCheck.enabled` | read, `guard_key_in_shipped_classes` |
+| Guard default | **true** | read, `guard_default` |
+| `delta.deletedFileRetentionDuration` default | **interval 1 week** | read, `tombstone_retention_default` (unchanged from Entry 36) |
+| Data files before / after | **6 → 1** | read, `files_on_disk_before` / `files_on_disk_after` |
+| Superseded files named in the log before the run | **5** | read, `superseded_named_in_log` |
+| Files deleted | **5**, and they are exactly the 5 named | read, `files_deleted` |
+| Current version's file | **survives**, still reads 50 rows | read, `files_kept`, `current_rows_after` |
+| `VACUUM` in `DESCRIBE HISTORY` | `VACUUM START`, `VACUUM END` | read, `history` |
+
+**The deletion behaves as §4.5 describes.** The five superseded data files were deleted; the current
+version's file was not; the deleted set equals the superseded set exactly, in both directions.
+
+**Positive controls, all passing (`failures: []`).** The point of each is that an empty directory
+proves nothing if the files were never written.
+
+| Control | Result |
+|---|---|
+| C1 the superseded files are named from the log's `remove` actions and asserted **present on disk** before the run | 5 named, 5 present |
+| C2 they are **reachable** before the run — time travel to v3 reads | 50 rows, `lsn` 3–3 |
+| C3 the **guard is real**: `RETAIN 0 HOURS` at the default must be refused | refused — "Are you sure you would like to vacuum files with such a low retention period?" |
+| C4 `VACUUM` reports itself in the history, so a no-op cannot pass | `VACUUM START` / `VACUUM END` |
+| C5 the files named in C1 are the ones gone, by name, and the current file survives | 5/5 gone, current intact, sets equal |
+| C6 every data file **v3's snapshot stood on** is deleted | 1/1 |
+
+⚠️ **`count(*)` after the deletion is not evidence of readability.** In a fresh process, time travel
+to v3 returns `count(*) = 50` against a file that no longer exists — Delta answers it from the
+per-file statistics in the log without opening any data file. Forcing a real read (`sum(lsn)`, or
+fetching rows) fails with `org.apache.spark.SparkFileNotFoundException`. The current version passes
+the same real read: `sum(lsn) = 300`, rows `[6, 6, 6]`. Any future check of "can this version still
+be read" must use an aggregate the statistics cannot serve.
+
+⚠️ **An in-session re-read is also not evidence.** Reading v3 again in the JVM that ran the `VACUUM`
+returns 50 rows from cached state. The probe records that reading separately, labelled as such, and
+draws its conclusion only from the fresh process and from file existence on disk.
+
+**What remains inferred.** The one-week wait itself was not served: the run disables the guard and
+passes `RETAIN 0 HOURS`, so what is observed is *what `VACUUM` deletes*, not *when it would fire on
+its own*. The one-week figure is still a constant read from the shipped classes. Automatic log
+cleanup at 30 days (`delta.enableExpiredLogCleanup`) is likewise still unobserved; this probe
+touches data files only, and the `_delta_log` commits are intact throughout — which is why the log
+could still name the deleted files afterwards.
+
 ## 11. Silent-success incidents — SEVEN
 
 Each is a case where a measurement reported success or a clean result while doing nothing. Listed

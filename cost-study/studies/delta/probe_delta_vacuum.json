@@ -1,0 +1,111 @@
+{
+ "delta_package": "io.delta:delta-spark_2.12:3.2.0",
+ "tombstone_retention_default": "interval 1 week",
+ "tombstone_retention_key": "delta.deletedFileRetentionDuration",
+ "guard_key_in_shipped_classes": "spark.databricks.delta.retentionDurationCheck.enabled",
+ "guard_default_in_shipped_classes": "Some(true)",
+ "guard_default": "true",
+ "files_on_disk_before": 6,
+ "log_add_actions": 6,
+ "log_remove_actions": 5,
+ "superseded_named_in_log": [
+  "part-00000-0cd7189e-9c54-4e92-8168-4068f9f7daed-c000.snappy.parquet",
+  "part-00000-44617fa1-2dd5-43e4-985e-b3f91bf7fd99-c000.snappy.parquet",
+  "part-00000-5f3467d0-de65-4174-9b3d-eb685cba0e80-c000.snappy.parquet",
+  "part-00000-e0785732-f9e7-4cfe-9c7b-d6788a63f4ea-c000.snappy.parquet",
+  "part-00000-f3d088d1-b282-4f1e-9e70-470a2a6d629a-c000.snappy.parquet"
+ ],
+ "current_version_files": [
+  "part-00000-390509de-72d5-4548-b624-5804665653d2-c000.snappy.parquet"
+ ],
+ "time_travel_v3_before": {
+  "min_lsn": 3,
+  "max_lsn": 3,
+  "rows": 50
+ },
+ "guard_blocks_zero_hour": true,
+ "guard_error": "requirement failed: Are you sure you would like to vacuum files with such a low retention period? If you have",
+ "dry_run_paths": 5,
+ "files_on_disk_after": 1,
+ "files_deleted": [
+  "part-00000-0cd7189e-9c54-4e92-8168-4068f9f7daed-c000.snappy.parquet",
+  "part-00000-44617fa1-2dd5-43e4-985e-b3f91bf7fd99-c000.snappy.parquet",
+  "part-00000-5f3467d0-de65-4174-9b3d-eb685cba0e80-c000.snappy.parquet",
+  "part-00000-e0785732-f9e7-4cfe-9c7b-d6788a63f4ea-c000.snappy.parquet",
+  "part-00000-f3d088d1-b282-4f1e-9e70-470a2a6d629a-c000.snappy.parquet"
+ ],
+ "files_kept": [
+  "part-00000-390509de-72d5-4548-b624-5804665653d2-c000.snappy.parquet"
+ ],
+ "history": [
+  [
+   8,
+   "VACUUM END"
+  ],
+  [
+   7,
+   "VACUUM START"
+  ],
+  [
+   6,
+   "MERGE"
+  ],
+  [
+   5,
+   "MERGE"
+  ],
+  [
+   4,
+   "MERGE"
+  ],
+  [
+   3,
+   "MERGE"
+  ],
+  [
+   2,
+   "MERGE"
+  ],
+  [
+   1,
+   "MERGE"
+  ],
+  [
+   0,
+   "CREATE TABLE"
+  ]
+ ],
+ "v3_snapshot_files": [
+  "part-00000-44617fa1-2dd5-43e4-985e-b3f91bf7fd99-c000.snappy.parquet"
+ ],
+ "v3_snapshot_files_deleted": [
+  "part-00000-44617fa1-2dd5-43e4-985e-b3f91bf7fd99-c000.snappy.parquet"
+ ],
+ "fresh_process_readback": {
+  "v3": {
+   "count_star": 50,
+   "count_star_note": "may be served from log statistics, not from data",
+   "data_readable": false,
+   "data_error": ": org.apache.spark.SparkException: Job aborted due to stage failure: Task 0 in stage 15.0 failed 1 times, most recent failure: Lost task 0.0 in stage 15.0 (TID 158) (100.64.56.19 executor driver): org.apache.spark.SparkFileNotFoundException: File file:/private",
+   "data_error_type": "Py4JJavaError"
+  },
+  "current": {
+   "count_star": 50,
+   "count_star_note": "may be served from log statistics, not from data",
+   "sum_lsn": 300,
+   "rows_fetched": [
+    6,
+    6,
+    6
+   ],
+   "data_readable": true
+  }
+ },
+ "time_travel_v3_after_in_session": {
+  "rows": 50,
+  "readable": true,
+  "note": "served from this JVM's caches; not evidence"
+ },
+ "current_rows_after": 50,
+ "failures": []
+}
