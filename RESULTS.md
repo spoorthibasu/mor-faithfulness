@@ -700,10 +700,17 @@ sees `S_MAX` = 120.7M < `D_MAX` = 130.7M and reports a stale win. Narrative at `
 
 ### §6.7 — "compressed 143×"
 
-❌ **No artifact.** Recorded only as a narrative incident at `NOTES.md:1374`: the first payload
-generator sliced overlapping windows from a small pool and parquet dictionary-compressed 24 MB of
-logical data to 167 KB. 24 MB ÷ 167 KB ≈ 147, so even the ratio in the note is approximate. The
-figure is reproducible only by rebuilding the discarded generator. Treat as ORPHANED.
+**CLOSED 2026-08-30 — no longer cited, not reconstructed.** This was flagged ❌ for having no
+artifact. It is recorded only as a narrative incident at `NOTES.md:1374`: the first payload generator
+sliced overlapping windows from a small pool and parquet dictionary-compressed 24 MB of logical data
+to 167 KB. 24 MB ÷ 167 KB ≈ 147, so even the ratio in the note is approximate, and the figure is
+reproducible only by rebuilding the discarded generator. None of that has changed and the figure
+still cannot be sourced. What changed is that the paper does not cite it: §6.7 carries no compression
+ratio, and the only compression claim anywhere in the paper is §6.1's qualitative one, that payloads
+are "high-entropy by construction, so that compression does not collapse a nominally large table into
+a small one" — a statement about how the generator was built, needing no artifact. The ORPHANED flag
+lapses by its own definition, which is scoped to figures the paper uses. Do not resurrect 143× or
+147×; the incident is worth keeping as narrative, the ratio is not worth quoting.
 
 ## 10d. The mechanism's line count (2026-08-23)
 

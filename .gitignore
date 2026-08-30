@@ -1,6 +1,7 @@
 # OS / editor
 .DS_Store
 .idea/
+*.iml
 
 # Python
 __pycache__/
