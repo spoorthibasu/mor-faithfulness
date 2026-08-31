@@ -513,6 +513,66 @@ Artifact: `phase8-cdc/results/phase8_parallel_race.json`.
 configuration in which the pipeline reordered by itself. Not a rate. Nothing here says how often such
 a reorder occurs in the field, or how often real deployments are configured this way.*
 
+### What the Phase 8 harness actually is, and what the sink actually does (2026-08-30)
+
+Read from source while scoping a follow-up run. Both findings bear on how the 27-key result of the
+parallel-sink run is described, and neither changes any measured figure.
+
+**The harness does not run Flink.** `phase8-cdc/generators/MorPhase8CdcTest.java` and
+`MorPhase8ParallelTest.java` contain **zero** occurrences of `StreamExecutionEnvironment`,
+`DataStream` and `env.execute`, and zero of `kafka` or `jdbc`. Both instantiate the connector's
+`IcebergWriter` and `IcebergCommitter` directly (`MorPhase8CdcTest.java:118, :189`;
+`MorPhase8ParallelTest.java:129, :133, :226`) and read their input from a committed file —
+`-Dmor.plan` = `oracle/write_plan.tsv` for the induced run, `-Dmor.events` =
+`oracle/events_lsn_order.tsv` for the parallel run. The Docker stack produces the event log and the
+LSN oracle: `oracle/capture_lsn_oracle.py` drains the topic through
+`docker exec mor-kafka kafka-console-consumer.sh`. **It is not in the loop when the Iceberg table is
+written.** The routing that the parallel run varies is a line of Java in the test,
+`MorPhase8ParallelTest.java:149`:
+
+```java
+int st = Math.floorMod(e.note.hashCode(), PARALLELISM);
+```
+
+**The connector Phase 8 writes through has no distribution option at all.** Across the 19 main-source
+Java files of `flink-cdc-pipeline-connector-iceberg`: `distribution` **0** matches, `DISTRIBUTION`
+**0**, `partitioner` **0**, `PartitionKey` **0**, `keyBy` **0**. Its pre-write topology is a
+pass-through (`IcebergSink.java:88`):
+
+```java
+public DataStream<Event> addPreWriteTopology(DataStream<Event> dataStream) {
+    return dataStream;
+}
+```
+
+So its default is **no redistribution**: the writers see whatever partitioning arrives. The one
+`partitionCustom` in the file is in `addPostCommitTopology`, gated on `compactionOptions.isEnabled()`
+and shuffling *by table id* for the compaction operator — not a write distribution.
+
+**The contrast the framing constraints draw belongs to a different component, and is accurate about
+it.** Iceberg's own `iceberg-flink` `FlinkSink` does have `write.distribution-mode`
+(`TableProperties.java:341`, values `none` / `hash`) and under `case HASH:` with equality fields set
+it distributes by them (`flink/v1.20/.../FlinkSink.java`, tag `apache-iceberg-1.10.2`):
+
+```java
+LOG.info("Distribute rows by equality fields, because there are equality fields set "
+    + "and table is unpartitioned");
+return input.keyBy(new EqualityFieldKeySelector(iSchema, flinkRowType, equalityFieldIds));
+```
+
+⚠️ **Consequence for the prose.** Framing constraint 1 above contrasts the Phase 8 configuration with
+"the Iceberg Flink sink's default, which distributes by the equality fields". That is true of
+`iceberg-flink`'s `FlinkSink`, which Phase 8 did **not** use. The component it did use has no such
+option and performs no redistribution, so the contrast is drawn against a sink the run did not
+exercise. The parallel run's own javadoc is precise about what it does — "assigns each event to a
+subtask by hashing `note`" — so this is a mis-aimed contrast, not a misdescribed run. Whether §6.6
+changes is an author decision; nothing here is edited into the paper.
+
+**What this rules out.** A "naturally clean table from the real stack" cannot be obtained by
+re-running Phase 8 with the sink at its default, because there is no sink default to set: the routing
+lives in the test. Producing one needs a real Flink job with the `iceberg-flink` sink, fed from Kafka
+— different work from re-running Phase 8.
+
 ## 9. Configuration-exposure survey
 
 Artifacts: `survey/hudi_precombine_survey.csv`, `survey/classify.py`.
@@ -953,6 +1013,61 @@ that the filter-forward reading is wrong. **Not settled: why eight.** No cause i
 number is invariant to every workload axis tried, which bounds what it can depend on without
 identifying it; narrowing it further means varying engine-side defaults rather than workload ones.
 Recorded as characterised-but-unexplained rather than fitted to the number.
+
+## 10h. §6.4 — does the metadata gate clear the real CDC table? (2026-08-30)
+
+Artifact: `cost-study/studies/audit/probe_gate_on_phase8.json`; script
+`cost-study/studies/audit/probe_gate_on_phase8.py`. The standing objection to §6.4 is that the gate
+may clear exactly where the problem does not occur, so "the gate removes essentially all of the
+capture cost" could hold only on tables that never needed auditing. §6.6's table is the one real
+pipeline in the paper, so what the gate does to it bounds part of that.
+
+Measured on the **pre-compaction** state of the Phase 8 table, reached by rolling back to snapshot
+`3253760871779525870` (sequence number 4). All five snapshots survive in the committed run's
+warehouse, so nothing was rebuilt and the Docker stack was not needed. Forked jar
+`iceberg-spark-runtime-3.5_2.12-1.11.0-SNAPSHOT`, gate on, `min-input-files=2` as the original run
+used.
+
+| Arm | Groups total | Gated | Audited | Source |
+|---|---|---|---|---|
+| **Phase 8 CDC table** | **1** | **0** | **1** | read, `phase8_groups` |
+| Clean control, same shape, ascending LSN | **1** | **1** | **0** | read, `clean_groups` |
+
+The audit found the violation while auditing: `mor.audit.stale-wins-count: 1`,
+`stale-wins-keys: [[42]]` — the same key the Phase 8 run recorded.
+
+**Both sides matter.** The gate audited the group holding a real violation, which is soundness
+demonstrated on real-pipeline data rather than on the generator. And a control of the same shape —
+four commits, four equality deletes, strictly ascending LSN, written through the same Java-API path —
+is **cleared**, which is the first gate clearance measured outside the synthetic sweep.
+
+⚠️ **This bounds soundness, not cost.** The Phase 8 table was **built to contain an induced reorder**
+(`oracle/build_write_plan.py` assigns key 42's versions to checkpoints in inverted LSN order, and
+`verify_end_to_end.py` says so). A table constructed to hold a violation being audited is the gate
+doing its job; it says nothing about what the gate costs on a realistic table that has no violation.
+The clean control is not a real-pipeline table either — see §8's note on the harness. The objection
+therefore remains open, and closing it needs a real CDC table with no induced reorder.
+
+**Positive controls, all passing (`failures: []`).**
+
+| Control | Result |
+|---|---|
+| C1 rolled back to the pre-compaction state, not the compacted leftover | 4 data files, 4 equality deletes, 200 rows |
+| C4 the manifests carry non-null ordering bounds, so the gate has bounds to read | **4/4** data files |
+| C5 the group spans more than one data sequence number | seqs `[1, 2, 3, 4]` |
+| C2 compaction actually ran | 4 data files rewritten, 1 added |
+| C3 the audit wrote a summary | `mor.audit.*` present |
+| C6 the gate can clear *something*, so it is not stuck auditing everything | clean control 1/1 gated |
+
+C4 is the Entry 18 failure mode: a gate that finds no bounds falls through to auditing everything
+while appearing to work, and would be indistinguishable from this result without the check. C6 is
+what makes the Phase 8 number interpretable at all.
+
+**The artifact is protected.** The warehouse embeds absolute paths and compaction mutates in place,
+so the probe tars it first, restores it after, and verifies by tree checksum
+(`artifact_restored_identical: true`). During development one run died between the rollback and the
+restore and did leave the table mutated; it was restored from the tar and an `atexit` hook now
+guarantees the restore.
 
 ## 11. Silent-success incidents — SEVEN
 

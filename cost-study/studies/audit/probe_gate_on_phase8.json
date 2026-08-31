@@ -1,0 +1,68 @@
+{
+ "jar": "iceberg-spark-runtime-3.5_2.12-1.11.0-SNAPSHOT.jar",
+ "pre_snapshot": 3253760871779525870,
+ "rollback": "ok",
+ "pre": {
+  "data_files": 4,
+  "delete_files": 4,
+  "rows": 200,
+  "distinct_data_sequence_numbers": [
+   1,
+   2,
+   3,
+   4
+  ]
+ },
+ "ordering_column_field_id": 4,
+ "pre_data_files_with_ordering_bounds": 4,
+ "rewrite_result": {
+  "rewritten_data_files_count": 4,
+  "added_data_files_count": 1,
+  "rewritten_bytes_count": 6662,
+  "failed_data_files_count": 0,
+  "removed_delete_files_count": 0
+ },
+ "phase8_audit_summary": {
+  "mor.audit.groups-total": "1",
+  "mor.audit.key-columns": "id",
+  "mor.audit.ordering-column": "lsn",
+  "mor.audit.stale-wins-count": "1",
+  "mor.audit.stale-wins-keys": "[[42]]",
+  "mor.audit.groups-audited": "1",
+  "mor.audit.groups-gated": "0",
+  "mor.audit.cross-group": "false",
+  "mor.audit.stale-wins-keys-spilled": "false",
+  "mor.audit.verdict": "decided"
+ },
+ "phase8_groups": {
+  "total": "1",
+  "gated": "0",
+  "audited": "1"
+ },
+ "clean_rewrite_result": {
+  "rewritten_data_files_count": 4,
+  "added_data_files_count": 1,
+  "rewritten_bytes_count": 8067,
+  "failed_data_files_count": 0,
+  "removed_delete_files_count": 0
+ },
+ "clean_audit_summary": {
+  "mor.audit.groups-total": "1",
+  "mor.audit.key-columns": "id",
+  "mor.audit.ordering-column": "lsn",
+  "mor.audit.stale-wins-count": "0",
+  "mor.audit.stale-wins-keys": "[]",
+  "mor.audit.groups-audited": "0",
+  "mor.audit.groups-gated": "1",
+  "mor.audit.cross-group": "false",
+  "mor.audit.stale-wins-keys-spilled": "false",
+  "mor.audit.verdict": "decided"
+ },
+ "clean_groups": {
+  "total": "1",
+  "gated": "1",
+  "audited": "0"
+ },
+ "artifact_restored_identical": true,
+ "failures": []
+}
