@@ -972,7 +972,17 @@ layout (checker's read-only adapter for per-key file provenance) + Iceberg's gre
   diagnosis was an **assertion that the pre-compaction table must have >1 data file** — a degenerate input
   produces a believable zero rather than an error. Keep such guards in any layout analysis.
 
-## Entry 23 — Phase 5 IMPLEMENTATION: opt-in cross-group merge (complete, still one-sided)
+## Entry 23 — Phase 5 IMPLEMENTATION: opt-in cross-group merge (complete, still one-sided) [REFUTED — see header]
+
+**REFUTED by Entry 45. "Still one-sided" is WRONG for the base (per-group) mode.** This entry is where
+that claim was made — "completeness is achieved without losing the one-sided property: 0 false positives
+in both modes at both sizes" — and Entry 45 quotes it as "the draft" without naming the entry, so until
+now nothing linked the two. The zero-FP columns below are real but were structurally incapable of
+showing otherwise (Entry 47): this cell has no key with more than one surviving version, and per-group
+mode cannot emit a false positive where no key does. On a workload that has them, per-group mode
+reported **180,000 false positives** in 1 of 6 identical runs
+(`cost-study/studies/audit/bench_straddle_repeat.json`). Cross-group mode, the subject of this entry,
+is one-sided; the base mode it is compared against here is not. Everything below stands as written.
 
 `audit-cross-group=true` (**default off**; base path untouched, byte-identical when off). Each group
 contributes per-key partials — max ordering among versions it DISCARDED, plus the survivor's ordering and
@@ -1181,7 +1191,7 @@ theoretical and could not be exercised by an honest test without constructing a 
 violating keys. Recommendation: implement it together with a large-violation test, or state the threshold
 and the design in the paper and mark the spill as future work. Do not ship an untested spill path.
 
-## Entry 27 — Overhead at a second scale: the cost is FIXED, not marginal (and ingest is untouched)
+## Entry 27 — Overhead at a second scale: the cost is FIXED, not marginal (and ingest is untouched) [FALSIFIED — see body]
 
 Repeated the benchmark at 4,000 base keys (3.4x the rows: 1,123 -> 3,776), 6 fresh-JVM repeats/arm.
 This run's ingest control is **clean** (spread 1.2%), unlike the sf1 run (8.9%, load-contaminated), so
@@ -1221,6 +1231,11 @@ cross 13.09 s — a **1.2% spread**, within run-to-run noise. The audit only alt
   that row is weaker evidence than the 4,000-key row (6/6 clean).
 
 ## Entry 28 — Phase 5 scale probe MEASURED: groups == partitions; straddling is decided by partition ⊆ key
+
+**Scope.** Measured on 32 trivially-small files, seven orders below the size cap, where partitioning is
+the only thing that can split a group. It does not generalise to "size never straddles": §6.3 bin-packs
+a 6.93 GB table into six 1 GB groups by size alone, and §5.5 lists an unpartitioned or single-partition
+table over the group-size limit as a straddling regime in its own right.
 
 Entry 24 argued this from source; this measures it. Two tables, identical data (200 keys x 8 versions,
 8 commits, 32 data files), differing only in partition spec. Per-key partition spread is measured from
@@ -1669,7 +1684,7 @@ instruction I did **not** build the mechanism for Hudi.
 **Correction to an in-flight claim:** I said the incremental-query probe would convert that inference into
 a measurement. It did not — it showed the incremental API merges too. The inference stands as inference.
 
-## Entry 36 — Phase 7 (Delta): OPTIMIZE destroys nothing, and CDF *is* the evidence the paper asks for
+## Entry 36 — Phase 7 (Delta): OPTIMIZE destroys nothing, and CDF is off by default and expires
 
 Source-and-docs characterization only: no sweep ported, no checker built. Two small probes
 plus constants read from the shipped `delta-spark 3.2.0` classes.
@@ -2357,7 +2372,7 @@ into a single "ceiling between X and Y". That summary is misleading: it would ha
 cap as a memory ceiling. The per-point outcome field was correct throughout; only the summary was
 wrong. Fix before the next run.
 
-## Entry 49 — Fail closed on straddling, and cache the scan that was being read twice
+## Entry 49 — Fail closed on straddling, and cache the scan that was being read twice [caching FALSIFIED — see Entry 63]
 
 Two changes, both prompted by the cloud run.
 
@@ -3100,3 +3115,36 @@ It is not a rate, and nothing here says how often real deployments are configure
 
 One caveat carried from the checker's own output: the parallel table has 1 position-delete file that
 the checker notes it does not analyse. The equality-delete path is what is being checked.
+
+## Entry 63 — Caching the marked scan is FALSIFIED: it costs 50% more, and Entry 49 called this outcome in advance
+
+Entry 49 added `audit-cache-scan` on the reasoning that the marked scan is consumed twice — once by the
+aggregation, once by the survivor write — so the 1.96x headline might have been measuring a missing
+`cache()` rather than anything about the design. It named the falsification condition at the time:
+"caching did not help, so 1.96x is the design" would be a perfectly good outcome and would settle the
+question the other way. That is what happened.
+
+Paired arms on the same instance and table shape, 5 repeats (`cloud/results2/results/exp1_cost.json`,
+tabulated in `RESULTS.md` §6 "Capture cost and the cache falsification"):
+
+| arm | median compact | paired ratio vs `off` |
+|---|---|---|
+| `off` | 137.25 s | — |
+| `capture_uncached` | 264.14 s | **1.91x** (range 1.85–1.98) |
+| `capture_cached` | 389.95 s | **2.86x** (range 2.55–2.86) |
+
+**Caching loses, and not narrowly: 2.86x against 1.91x, worse in all five rounds.** The reason is the one
+Entry 49 anticipated and the patch comment already recorded — at this scale the cached representation of a
+wide row exceeds the columnar file it replaces, so `MEMORY_AND_DISK` spills and the persist costs more than
+the re-read it avoids. The double-materialisation model was wrong for a second reason too, established
+separately in Entry 52: there is no second table scan. The audited run reads 45.4 GB against stock's
+44.4 GB, because column pruning survives the rewrite's scan-task path. What is paid twice is the row
+count, not the bytes.
+
+So the 1.96x/1.91x in the paper is the design, not an implementation artifact, and the question Entry 49
+opened is closed. The paper reports the uncached figure and states the cached comparison alongside it.
+
+**One consequence I have not resolved.** `audit-cache-scan` still defaults to `true` in the patch
+(`options.getOrDefault(AUDIT_CACHE_SCAN, "true")`), which is the arm that measured 2.86x. Anyone running
+the mechanism at its defaults gets the slower path, not the one the paper reports. Flagged, not changed:
+flipping a default is a code change and belongs with a rebuild and a re-run, not with a notes edit.
