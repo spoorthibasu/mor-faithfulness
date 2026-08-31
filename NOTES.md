@@ -844,7 +844,7 @@ already sets this). Cost me several dead-end runs; noted so it doesn't recur.
 M3 COMPLETE. Remaining in M2→M4: Puffin spill (M2b, deferred — inline summary suffices at these sizes) and
 formalizing the throwaway `scratchpad/validate_*` scripts into the repo test suite.
 
-## Entry 19 — Phase 5: multi-group straddling. Per-group detection is INCOMPLETE, never WRONG.
+## Entry 19 — Phase 5: multi-group straddling. Per-group detection is INCOMPLETE, never WRONG. [REFUTED — see header]
 
 **REFUTED by Entry 45. The "no false positives, provably" argument below is WRONG.** It assumes a key
 has one global survivor. A key can have several, spread across groups, and the single-survivor guard
