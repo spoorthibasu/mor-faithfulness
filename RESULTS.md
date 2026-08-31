@@ -713,7 +713,7 @@ the `off` column: 137.286, 140.408, 141.043, 139.781, 140.469).
 |---|---|---|
 | Baseline spread | **1.0274×** (→ 1.03×) | derived, max ÷ min of the `off` column |
 | Coefficient of variation | **1.05%** (→ 1.1%) | derived, stdev ÷ mean of the `off` column |
-| The superseded "1.4×" | **1.416** (→ 1.42, paper says 1.4×) | derived, paired median `gateOFF`/`off`, `cost-study/studies/audit/bench_coldcache.json`, `11GB` arm |
+| The superseded "1.4×" | **1.416** (→ 1.42; the paper now reports 1.96×/1.91× and cites 1.4× only as the superseded, noisier figure) | derived, paired median `gateOFF`/`off`, `cost-study/studies/audit/bench_coldcache.json`, `11GB` arm |
 | That baseline's CV | **14.9%** | derived, same arm's `off` values |
 
 **CLOSED 2026-08-30 — no longer cited, not reconstructed.** This was flagged ❌ because "roughly

@@ -621,7 +621,9 @@ Next: M2 — verdict into the rewrite snapshot summary (`mor.audit.*`) + Puffin 
 §7 argues the change a format needs to keep faithfulness checkable after compaction is *narrow*. This is
 the concrete measurement of "narrow", on Iceberg 1.10.2:
 
-**One modified file, no core/reader/spec changes.** The stale-wins capture lives entirely in
+**One modified file, no core/reader/spec changes.** **[Superseded by Entry 38: with the Puffin
+spill added the mechanism is two files, and the settled line count is 657 — see `RESULTS.md` §10d.]**
+The stale-wins capture lives entirely in
 `spark/v3.5/.../actions/SparkBinPackFileRewriteRunner.java` (the bin-pack runner). It required:
 - **No change to `DeleteFilter`** (the discard predicate) — it already carries the ordering column at the
   rewrite's whole-row projection and already *marks* (vs. drops) when `_deleted` is requested.
@@ -843,6 +845,14 @@ M3 COMPLETE. Remaining in M2→M4: Puffin spill (M2b, deferred — inline summar
 formalizing the throwaway `scratchpad/validate_*` scripts into the repo test suite.
 
 ## Entry 19 — Phase 5: multi-group straddling. Per-group detection is INCOMPLETE, never WRONG.
+
+**REFUTED by Entry 45. The "no false positives, provably" argument below is WRONG.** It assumes a key
+has one global survivor. A key can have several, spread across groups, and the single-survivor guard
+counts survivors *within* the group being rewritten — so a key with three survivors can present as
+single-survivor locally and be reported. Measured: **180,000 false positives** in 1 of 6 identical
+per-group runs (`cost-study/studies/audit/bench_straddle_repeat.json`); Entry 45 has the mechanism and
+the closed-form confirmation. Cross-group mode is what restores one-sidedness. Everything below stands
+as written — it is the record of what I believed and why, not a result.
 
 Forced multi-group via `max-file-group-size-bytes=20000, min-input-files=2` on `ooo50_sf1_s101` (50 files
 → **6 groups**). Driver knob `MOR_REWRITE_OPTS="k=v,..."` passes stock planner options; no rebuild.
@@ -1186,7 +1196,8 @@ its numbers are the trustworthy ones. Load-filtered medians (keep repeats whose 
 | | | base | 2.546 s | +0.664 s | **+35.2%** |
 | | | cross | 2.978 s | +1.095 s | **+58.2%** |
 
-**Fixed-cost hypothesis CONFIRMED.** Data grew 3.4x, yet: baseline compaction time did **not** grow
+**Fixed-cost hypothesis CONFIRMED.** **[Falsified by Entry 33: at a genuinely data-dominated
+scale the overhead does not amortise away. This confirmation held only at toy scale.]** Data grew 3.4x, yet: baseline compaction time did **not** grow
 (2.09 s -> 1.88 s — it is job-launch bound, not data bound), and the audit's absolute overhead **fell**
 (base 1.08 -> 0.66 s; cross 1.92 -> 1.10 s) rather than scaling with rows. The audit adds a fixed extra
 Spark stage (one aggregation shuffle + a driver collect); it does not add per-row work that grows with
@@ -1820,7 +1831,8 @@ under test actually happened.
 Entry 12 measured the mechanism as **one modified file**. With the Puffin spill added that is no longer
 accurate. Current, from the committed patch (`cost-study/studies/audit/iceberg-1.10.2-stale-wins-audit.patch`):
 
-**677 lines across 2 files, both in the Spark action layer:**
+**677 lines across 2 files, both in the Spark action layer** (the settled count is **657 added
+lines**; `RESULTS.md` §10d computes every convention and states which one the paper uses)**:**
 - `spark/v3.5/.../actions/SparkBinPackFileRewriteRunner.java` — capture (`_deleted` projection + per-key
   aggregation), the metadata gate, the cross-group accumulators, spill deferral.
 - `spark/v3.5/.../actions/RewriteDataFilesSparkAction.java` — merging the verdict into the commit summary,
@@ -1834,7 +1846,8 @@ Still unchanged, and this is the part that carries the §7 argument:
   the existing statistics-file registration, both already in the spec.
 
 So the narrowness claim for the paper is: *the whole mechanism, including detection, the cost gate,
-the optional cross-group merge and the spill, is 677 lines in two Spark-layer files; the format needs
+the optional cross-group merge and the spill, is two Spark-layer files (657 added lines, `RESULTS.md`
+§10d); the format needs
 nothing new.* That is a stronger statement than "one file" was, because it now covers persistence that
 survives maintenance rather than a side-file that would not.
 
@@ -2096,7 +2109,8 @@ from its own construction rather than measuring it.
 
 Evidence: `cost-study/studies/audit/validate_oracle_guard.py`, `validate_oracle_guard.json`.
 
-Patch size updated: **686 lines / 2 files** (was 677); the delta is the test-only
+Patch size updated: **686 lines / 2 files** (was 677) by the count in use at the time; the settled
+figure is **657 added lines** (`RESULTS.md` §10d). The delta here is the test-only
 `audit-require-single-survivor` switch. Paper updated in all three places it is quoted.
 
 ## Entry 44 — L1c: one-sidedness at GB scale (Entry 40's "cannot give" is now given)
@@ -2229,7 +2243,8 @@ candidate map lives in the JVM, so those RSS figures do not measure the map. The
 * **\S6.1** — closed-form derivation as a structural-independence argument.
 * **\S6.3** — ingest control reported as 8.0% overall / 3.8% excluding the first cold-start run, with
   the warmup-exclusion stated as a rule.
-* Patch size 677 -> **686 lines / 2 files** in all three places it is quoted.
+* Patch size 677 -> **686 lines / 2 files** in all three places it is quoted. [Both figures are
+  superseded: the settled count is **657 added lines**, `RESULTS.md` §10d.]
 
 Compiles clean: 0 errors, 0 undefined references, body ends on p12 with references starting there
 (13 pages total). At the page limit with no headroom.

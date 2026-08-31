@@ -31,6 +31,7 @@ a silent violation, and what enforcing the safe discipline costs.
 | `cost-study/` | `mor_harness`: the workload harness engine, and the enforcement-cost study (storage + throughput) that runs on it. The `sensitivity/` study uses the same engine. |
 | `cost-study/studies/audit/` | The audit-preserving compaction mechanism: the Iceberg patch, the construction oracle's validation, the scale and straddling studies, and the persistence/reachability tests. |
 | `cloud/` | One-shot provisioning and experiment runner for a single large-memory cloud instance, for the measurements that do not fit on a laptop. |
+| `phase8-cdc/` | **The one study driven by a real database, connector and sink.** A live Postgres → Debezium → Kafka → Flink CDC → Iceberg pipeline, ordered by the Postgres WAL LSN, with the compose file, the two Java generators that drive it, the LSN oracle captured independently of the Iceberg table, and the end-to-end verification. Every other measurement in this artifact runs on the synthetic generator; the FLINK-38450 reproduction in `checker/realworld/` uses the real connector but a hand-authored workload, not a live database. |
 | `NOTES.md` | Running design journal: decisions, rejected alternatives, dead ends, and the corrections made to earlier results. Written as the work happened, not reconstructed. |
 
 The FLINK-38450 **fix** itself is not included here; it is Apache Flink CDC
@@ -66,7 +67,7 @@ into the `lean/MorFaithful/*.lean` sources.
 | Faithfulness needs *global* coherence; local coherence is insufficient | `MOR.prefixFaithful_iff_globalCoherent`, `local_coherence_insufficient` | `Global.lean:61`, `Global.lean:113` |
 | Claim B: no purely-local ordering scheme can guarantee faithfulness | `local_scheme_admits_unfaithful_config`, `local_scheme_admits_unfaithful_prefix` | `LocalImpossible.lean:188`, `LocalImpossible.lean:230` |
 | All-versions ≡ updates-only reduction, and where injectivity is required | `MOR.faithful_iff_faithful'`, `del_reduction_needs_inj` | `UpdatesModel.lean:179`, `UpdatesModel.lean:281` |
-| No `sorry`, only the 3 standard axioms | 15 theorems audited | `lean/AXIOM_AUDIT.txt` |
+| No `sorry`, only the 3 standard axioms | 21 theorems audited | `lean/AXIOM_AUDIT.txt` |
 
 ### Empirical
 
@@ -89,7 +90,8 @@ into the `lean/MorFaithful/*.lean` sources.
 | The single-survivor guard is load bearing: with it disabled the injected FLINK-38450 duplicates become 1,000 false positives; enabled, 0, with all 3,000 real detections kept | `cost-study/studies/audit/validate_oracle_guard.py`, `validate_oracle_guard.json` |
 | Straddling costs soundness: per-group mode reported 180,000 non-violations in 1 of 6 identical runs; cross-group returned 171,000 of 171,000 with 0 false positives in 3 of 3 | `cost-study/studies/audit/bench_straddle_repeat.py`, `bench_straddle_repeat.json`, `diagnose_straddle_fp.py` |
 | Persistence is about reachability: a registered Puffin blob survives `remove_orphan_files`; a byte-identical unregistered sidecar does not | `cost-study/studies/audit/test_puffin_spill.py`, `run_orphan_cleanup.py` |
-| Cost: gate-cleared table indistinguishable from stock; forced capture a median 1.4x baseline on a cold page cache | `cost-study/studies/audit/bench_coldcache.py`, `bench_coldcache.json` |
+| A violation from a real CDC pipeline, not the generator: over 200 keys and 230 change events the checker flagged 27 keys `STALE_WINS`, Postgres confirms 27 of 27 with none stale by LSN unflagged, and compaction then reports the table faithful with the served rows unchanged at 200 | `phase8-cdc/results/phase8_end_to_end.json`, `phase8-cdc/oracle/lsn_oracle.json`, `phase8-cdc/verify_end_to_end.py`, `phase8-cdc/compose/docker-compose.yml` |
+| Cost: gate-cleared table indistinguishable from stock; forced capture a median 1.96x baseline, replicated at 1.91x on a second instance, and 1.77x once the shuffle partition count is matched to the machine | `cloud/results/results/exp1_cost.json` (1.96x), `cloud/results2/results/exp1_cost.json` (1.91x replication), `cloud/results3/exp4_shuffle_fix.json` (1.77x); the superseded 11 GB laptop arm is `cost-study/studies/audit/bench_coldcache.json` |
 | Cross-group scaling ceiling: 20M distinct keys survive on an 8 GB heap, 50M dies with a JVM heap OOM | `cost-study/studies/audit/bench_scale_groups.py`, `bench_scale_groups.json` |
 | Survey: 3% safe / 41% vulnerable of 152 public Hudi precombine configs (the paper's conservative headline; generic timestamps and non-timestamp business columns not counted as vulnerable). A looser bound that also counts generic wall-clock timestamps reaches 78% (supplementary, not the paper's figure) | `survey/REPORT.md`, `survey/hudi_precombine_survey.csv` |
 
@@ -223,9 +225,13 @@ runs. It is therefore required for soundness under straddling, not an optional i
 to recall.
 
 **Cost.** On a table whose ordering the gate can clear, compaction is indistinguishable from
-the stock rewrite. Forced capture costs a median 1.4x the baseline (cold page cache, 11 GB
-table, five interleaved repeats). An earlier pre-registered prediction that the overhead
-would be a fixed single-digit percentage was falsified and is recorded as such in `NOTES.md`.
+the stock rewrite. Forced capture costs a median 1.96x the baseline (cold page cache, 53 GB
+table, five interleaved rounds on a 16-core/123 GiB instance), replicated at 1.91x on a
+second, separately provisioned instance of the same type, and 1.77x once the shuffle
+partition count is matched to the machine. An earlier 1.4x, from a laptop baseline whose
+coefficient of variation was 14.9%, is superseded; `RESULTS.md` records both. An earlier
+pre-registered prediction that the overhead would be a fixed single-digit percentage was
+falsified and is recorded as such in `NOTES.md`.
 
 **Persistence.** A registered Puffin blob survives `remove_orphan_files`; a byte-identical
 sidecar referenced only from a snapshot-summary property string is deleted by the same call.
@@ -276,7 +282,9 @@ checker/.venv/bin/python cost-study/studies/audit/bench_straddle_repeat.py
 checker/.venv/bin/python cost-study/studies/audit/run_orphan_cleanup.py
 ```
 
-Each writes its evidence next to itself as JSON. Timings assume a laptop-class machine; the
+The first three write their evidence next to themselves as JSON; `run_orphan_cleanup.py`
+prints its result, and the committed persistence evidence is
+`cost-study/studies/audit/test_puffin_spill.json`. Timings assume a laptop-class machine; the
 cost measurements are sensitive to page-cache state and are reported as ratios for that
 reason.
 

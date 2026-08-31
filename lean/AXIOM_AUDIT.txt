@@ -17,7 +17,7 @@ three standard classical axioms
 and, in particular, that NONE of them depends on `sorryAx`: i.e. there are no
 `sorry` placeholders or admitted goals anywhere in the proof trees below.
 
-All 15 theorems report exactly [propext, Classical.choice, Quot.sound].
+All 21 theorems report exactly [propext, Classical.choice, Quot.sound].
 No `sorryAx`. No custom or project-local axioms.
 
 ------------------------------------------------------------------------------
@@ -39,6 +39,12 @@ Raw `#print axioms` output
 'Mor.MOR.prefixFaithful_iff_prefixFaithful'' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Mor.MOR.faithful'_of_linear' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Mor.del_reduction_needs_inj' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Mor.MOR.discarded_seq_lt_visible_seq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Mor.MOR.staleWin_distinct_seq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Mor.MOR.same_seq_both_visible' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Mor.MOR.discarded_seq_lt_visible_seq'' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Mor.MOR.staleWin_distinct_seq'' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Mor.MOR.same_seq_both_visible'' depends on axioms: [propext, Classical.choice, Quot.sound]
 
 ------------------------------------------------------------------------------
 Regenerate this file
@@ -47,6 +53,9 @@ Regenerate this file
     cd lean
     lake exe cache get            # fetch prebuilt Mathlib oleans (first time only)
     lake build                    # build the MorFaithful library
-    lake env lean MorFaithful/AxiomCheck.lean > AXIOM_AUDIT.txt
+    lake env lean MorFaithful/AxiomCheck.lean
+
+The Raw block above is that command's verbatim output; the surrounding prose is
+this file's own framing and is not machine-generated.
 
 The theorem name -> paper claim map is in the top-level README.md.
