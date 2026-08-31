@@ -92,7 +92,7 @@ into the `lean/MorFaithful/*.lean` sources.
 | Persistence is about reachability: a registered Puffin blob survives `remove_orphan_files`; a byte-identical unregistered sidecar does not | `cost-study/studies/audit/test_puffin_spill.py`, `run_orphan_cleanup.py` |
 | A violation from a real CDC pipeline, not the generator: over 200 keys and 230 change events the checker flagged 27 keys `STALE_WINS`, Postgres confirms 27 of 27 with none stale by LSN unflagged, and compaction then reports the table faithful with the served rows unchanged at 200 | `phase8-cdc/results/phase8_end_to_end.json`, `phase8-cdc/oracle/lsn_oracle.json`, `phase8-cdc/verify_end_to_end.py`, `phase8-cdc/compose/docker-compose.yml` |
 | Cost: gate-cleared table indistinguishable from stock; forced capture a median 1.96x baseline, replicated at 1.91x on a second instance, and 1.77x once the shuffle partition count is matched to the machine | `cloud/results/results/exp1_cost.json` (1.96x), `cloud/results2/results/exp1_cost.json` (1.91x replication), `cloud/results3/exp4_shuffle_fix.json` (1.77x); the superseded 11 GB laptop arm is `cost-study/studies/audit/bench_coldcache.json` |
-| Cross-group scaling ceiling: 20M distinct keys survive on an 8 GB heap, 50M dies with a JVM heap OOM | `cost-study/studies/audit/bench_scale_groups.py`, `bench_scale_groups.json` |
+| Cross-group scaling ceiling: 20M distinct keys survive on an 8 GB heap and 35M dies with a JVM heap OOM. The laptop sweep tested only 20M and 50M, bracketing the ceiling as 20M–50M; the cloud run added the 35M point and tightened it | `cost-study/studies/audit/bench_scale_groups.py`, `bench_scale_groups.json` (laptop sweep: 20M ok, 50M OOM), `cloud/results/results/exp3_ceiling.json` (the 35M point, and 50M clearing at a 24 GB heap) |
 | Survey: 3% safe / 41% vulnerable of 152 public Hudi precombine configs (the paper's conservative headline; generic timestamps and non-timestamp business columns not counted as vulnerable). A looser bound that also counts generic wall-clock timestamps reaches 78% (supplementary, not the paper's figure) | `survey/REPORT.md`, `survey/hudi_precombine_survey.csv` |
 
 ## Compaction masking, in detail
@@ -239,8 +239,10 @@ falsified and is recorded as such in `NOTES.md`.
 sidecar referenced only from a snapshot-summary property string is deleted by the same call.
 
 **Scaling limit.** Cross-group mode keeps an O(distinct keys) candidate map on the driver.
-On an 8 GB heap it survives 20 million distinct keys and dies with a JVM heap OOM by 50
-million.
+On an 8 GB heap it survives 20 million distinct keys and dies with a JVM heap OOM at 35
+million. The laptop sweep tested only 20M and 50M and could bracket the ceiling no tighter than
+20M–50M; a later cloud run added the 35M point, which OOMs, so the bracket is 20M–35M. At a 24 GB
+heap 50M clears.
 
 ### The oracle
 
