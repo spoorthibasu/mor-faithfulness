@@ -778,9 +778,11 @@ The paper said **739** in three places (abstract, §1 contributions, §5.6). It 
 reconcile against the fork under any convention. Measured **657 added lines**; the paper was
 corrected to 657 in all three.
 
-**Baseline:** tag `apache-iceberg-1.10.2` in `~/IdeaProjects/iceberg-mor-fork`. HEAD is one
-commit past that tag — `ba2ba43`, the mechanism itself — and the working tree is clean, so the
-numstat below compares the tag against that commit's content.
+**Baseline:** tag `apache-iceberg-1.10.2` in `~/IdeaProjects/iceberg-mor-fork`. HEAD is two
+commits past that tag — `ba2ba43`, the mechanism itself, then `e464711`, which flips
+`audit-cache-scan` to default false (NOTES.md Entry 64) — and the working tree is clean, so the
+numstat below compares the tag against HEAD's content. The second commit is line-count neutral:
+it changes two literals and rewrites one comment at the same length, so the totals are unchanged.
 
 **Command:**
 
@@ -808,10 +810,10 @@ re-derives this:
 Stable across baselines: `apache-iceberg-1.10.2-rc1` gives the same +657 −4, and `git diff -w`
 (ignoring whitespace) also gives +657 −4. **739 is not any of these**; the nearest is 661.
 
-**Provenance of the source.** The mechanism is **one commit on top of the
+**Provenance of the source.** The mechanism is **two commits on top of the
 `apache-iceberg-1.10.2` tag** — that tag peels to upstream commit `57396d62`, which anyone can
 check out — on branch `mor-audit-preserving-compaction` of a local clone whose `origin` is
-`apache/iceberg.git`. That clone is not published, so its commit hash `ba2ba43` is a local record
+`apache/iceberg.git`. That clone is not published, so its commit hashes `ba2ba43` and `e464711` are local records
 and resolves for no one else. The reproducible form is the patch file below: check out the public
 tag, apply it, and the result is that commit's two files.
 

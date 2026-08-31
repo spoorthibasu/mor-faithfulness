@@ -152,7 +152,7 @@ index a42ce0e..3676b32 100644
        String errorMessage =
            String.format(
 diff --git a/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/SparkBinPackFileRewriteRunner.java b/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/SparkBinPackFileRewriteRunner.java
-index 6d2ef58..c62ed53 100644
+index 6d2ef58..9fc56cf 100644
 --- a/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/SparkBinPackFileRewriteRunner.java
 +++ b/spark/v3.5/spark/src/main/java/org/apache/iceberg/spark/actions/SparkBinPackFileRewriteRunner.java
 @@ -18,17 +18,137 @@
@@ -263,7 +263,7 @@ index 6d2ef58..c62ed53 100644
 +  private boolean auditGate = true;
 +  private boolean auditCrossGroup = false;
 +  private boolean auditRequireSingleSurvivor = true;
-+  private boolean auditCacheScan = true;
++  private boolean auditCacheScan = false;
 +  private boolean auditFailClosed = true;
 +  // Cross-group merge state (only populated when auditCrossGroup): per key, the max ordering value among
 +  // versions DISCARDED in any group, and the ordering value of the key's single surviving version
@@ -313,7 +313,7 @@ index 6d2ef58..c62ed53 100644
 +      this.auditCrossGroup = Boolean.parseBoolean(options.getOrDefault(AUDIT_CROSS_GROUP, "false"));
 +      this.auditRequireSingleSurvivor =
 +          Boolean.parseBoolean(options.getOrDefault(AUDIT_REQUIRE_SINGLE_SURVIVOR, "true"));
-+      this.auditCacheScan = Boolean.parseBoolean(options.getOrDefault(AUDIT_CACHE_SCAN, "true"));
++      this.auditCacheScan = Boolean.parseBoolean(options.getOrDefault(AUDIT_CACHE_SCAN, "false"));
 +      this.auditFailClosed = Boolean.parseBoolean(options.getOrDefault(AUDIT_FAIL_CLOSED, "true"));
 +      this.spillThresholdBytes =
 +          Long.parseLong(options.getOrDefault(AUDIT_SPILL_THRESHOLD, "65536"));
@@ -405,12 +405,12 @@ index 6d2ef58..c62ed53 100644
 +    markedCols[tableCols.size()] =
 +        functions.col(MetadataColumns.IS_DELETED.name()).alias(DELETED_FLAG);
 +    Dataset<Row> marked = loaded.select(markedCols);
-+    // The aggregation below and the survivor write further down are two actions over the same scan.
-+    // Without a cache Spark runs the whole thing twice -- re-reading Parquet and re-applying the
-+    // delete filter -- which is roughly a doubling, and roughly what the measured overhead was. So
-+    // cache between them. Note this is not free at scale: the cached representation of wide rows can
-+    // exceed the Parquet it came from, and MEMORY_AND_DISK will spill. Whether it actually wins is an
-+    // empirical question, which is why the uncached path stays reachable behind AUDIT_CACHE_SCAN.
++    // The aggregation below and the survivor write are two actions over the same scan, so without a
++    // cache Spark re-reads Parquet and re-applies the delete filter for each. Caching between them
++    // was measured rather than assumed, and it LOSES: 2.86x baseline cached against 1.91x uncached
++    // at 53 GB, worse in all five rounds, because the cached wide row exceeds the columnar file it
++    // replaces and MEMORY_AND_DISK spills. Hence the default is OFF; the cached path stays reachable
++    // behind AUDIT_CACHE_SCAN. See NOTES.md Entry 63 and RESULTS.md section 6.
 +    if (auditCacheScan) {
 +      marked = marked.persist(StorageLevel.MEMORY_AND_DISK());
 +    }

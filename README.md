@@ -189,7 +189,9 @@ string is not reachable.
 | `audit-key-columns` | — | Key columns the verdict is reported against. |
 | `audit-gate` | `true` | Skip groups whose ordering bounds admit no inversion. |
 | `audit-cross-group` | `false` | Merge per-key partials table-wide. Forces the gate off. |
-| `audit-spill-threshold` | `65536` | Bytes above which the key list spills to Puffin. |
+| `audit-spill-threshold-bytes` | `65536` | Bytes above which the key list spills to Puffin. |
+| `audit-cache-scan` | `false` | Persist the marked scan between the aggregation and the survivor write. Measured and rejected: 2.86x baseline cached against 1.91x uncached at 53 GB, worse in all five rounds. Off by default; the cached path stays reachable so the comparison is reproducible. |
+| `audit-fail-closed` | `true` | With more than one file group and cross-group mode off, publish `undecidable` instead of an unsound per-group verdict. |
 | `audit-output-path` | — | Optional debug side-file sink. |
 | `audit-require-single-survivor` | `true` | **Tests only.** Disables the guard so it can be shown to be load bearing. Never turn it off elsewhere. |
 

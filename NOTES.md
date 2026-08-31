@@ -2415,7 +2415,8 @@ The cloud run measured forced capture at **1.96x**, and double materialisation a
 2x. So the headline cost number may have been measuring a missing `cache()` rather than anything about
 the design — which would make it an implementation artifact we published as a property.
 
-`audit-cache-scan` (default **true**) persists the marked scan at `MEMORY_AND_DISK` between the two
+`audit-cache-scan` (default **true** as shipped then; flipped to **false** in Entry 64 after the
+measurement) persists the marked scan at `MEMORY_AND_DISK` between the two
 actions and unpersists after the write. The uncached path stays reachable so both are measurable.
 
 **Not assuming this helps.** The cached representation of wide rows can exceed the Parquet it came
@@ -3144,7 +3145,46 @@ count, not the bytes.
 So the 1.96x/1.91x in the paper is the design, not an implementation artifact, and the question Entry 49
 opened is closed. The paper reports the uncached figure and states the cached comparison alongside it.
 
-**One consequence I have not resolved.** `audit-cache-scan` still defaults to `true` in the patch
+**One consequence I have not resolved.** [Resolved in Entry 64: the default is now `false`.]
+`audit-cache-scan` still defaults to `true` in the patch
 (`options.getOrDefault(AUDIT_CACHE_SCAN, "true")`), which is the arm that measured 2.86x. Anyone running
 the mechanism at its defaults gets the slower path, not the one the paper reports. Flagged, not changed:
 flipping a default is a code change and belongs with a rebuild and a re-run, not with a notes edit.
+
+## Entry 64 — audit-cache-scan defaults to false, verified in both directions
+
+Entry 63 closed the caching question and left one thing open: the option that enables the losing arm
+still defaulted to `true`, so anyone running the mechanism at its defaults measured 2.86x while the
+paper reports 1.96x/1.91x. §5.2 already said caching "made matters worse", so the shipped default
+contradicted the paper's own explanation. Flipped.
+
+**The change.** Two lines in `SparkBinPackFileRewriteRunner.java` — the field initialiser and the
+`getOrDefault` literal — plus the rationale comment above the `persist`, which argued for caching from
+the double-materialisation model and now records the measurement that refuted it. Rewritten at the same
+line count, so the patch is still **+657 −4** and `RESULTS.md` §10d and the paper's 657 stand unchanged.
+
+**Verified from runs, not from the source.** This repository has nine recorded cases of a configuration
+being accepted and changing nothing, so a source diff is not evidence. Both arms ran the M1 validation
+cell (`ooo50_sf1_s101`, 405 oracle stale-wins) on a rebuilt jar, with Spark's event log capturing block
+updates:
+
+| arm | `rdd_*` block updates | broadcast blocks | captured vs oracle |
+|---|---|---|---|
+| option unset (the new default) | **0** — nothing persisted | 33 | 405/405, 0 FP, 0 missed |
+| `audit-cache-scan=true` | **1**, `mem=true` | 30 | 405/405, 0 FP, 0 missed |
+
+The broadcast counts are the positive control: the instrument was recording block updates in both arms,
+so the zero in the first row is an absence of persistence and not an absence of logging. The compiled
+class independently shows `getOrDefault` reached with the string `false` (`javap -c`), which is the
+static half; the table above is the behavioural half.
+
+**Correctness is unaffected in both directions** — exact set equality with the engine-derived oracle,
+no false positives, no misses, in both arms.
+
+**Swept for anything assuming the old default.** The paper states that caching lost and never states a
+default, so it needs no change; the flip makes the artifact agree with §5.2 rather than contradict it.
+`RESULTS.md` never mentions the option. Entry 49's "(default **true**)" is now marked as historical
+rather than rewritten. Two further gaps surfaced while checking the README's options table, which had
+eight rows against the patch's ten: `audit-cache-scan` and `audit-fail-closed` were absent, and
+`audit-spill-threshold` was named without its `-bytes` suffix, so a reader copying it would have set an
+option the runner does not define. All four fixed.
