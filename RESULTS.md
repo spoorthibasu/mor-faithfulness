@@ -43,6 +43,33 @@ Per-cell stale-wins before compaction (identical on both releases):
 | `mixed_sf10_s101` | 4,200 | 3,776 | 1,072 | 424 |
 | **Total** | **18,900** | | **5,440** | **1,902** |
 
+### §4.1 — the checker comparison's delete-tail exclusion
+
+Artifact: `cost-study/results/compaction_mechanism.json`, arm `unsafe` (pre-compaction) unless noted.
+The checker comparison skips every key whose ground truth is `None`: `check.py:157`,
+`if truth.get(key) is None:  # delete-tail: checker is structurally blind here`. Those keys split
+into two buckets, both counted.
+
+| Figure | Value | Source |
+|---|---|---|
+| Keys excluded from the comparison by construction | **185** | derived, `n_ghost` + `n_correctly_absent` |
+| of which ghosts (deleted, still materialised) | **172** | read, `arms.unsafe.correctness.n_ghost` |
+| of which correctly absent | **13** | read, `arms.unsafe.correctness.n_correctly_absent` |
+| Excluded keys the checker calls FAITHFUL | **46** | read, `arms.unsafe.correctness.n_delete_tail_blind` |
+| The same, after compaction | **48** | read, `arms.unsafe_compact.correctness.n_delete_tail_blind` |
+| Total keys in the workload | **1,260** | read, `GROUND_TRUTH.md`: 1200 base + 60 inserted |
+| Eligible keys | **1,075** | read, `GROUND_TRUTH.md` line 194, `eligible_fraction = 1075/1260` |
+| Cross-check | 1,260 − 1,075 = **185** | derived, agrees with `n_ghost + n_correctly_absent` |
+
+⚠️ **The paper said 172 here until 2026-09-01, and a reader may have seen it.** 172 is the ghost
+bucket alone; the comparison also skips the 13 correctly-absent keys, so the number excluded is
+**185**. The two are related but not interchangeable, and 172 still appears legitimately in Table 1's
+caption for a different quantity entirely — the duplicate keys in the four-cell † subset (§4 below).
+
+⚠️ **46 is the pre-compaction arm.** The post-compaction arm gives 48. The paper quotes 46 alongside
+a sentence about the comparison before and after compaction, so if that sentence is ever reworded,
+check which arm it means.
+
 **The 773 vs 704 distinction.** They are different quantities and must not be interchanged.
 **773** is the count of DUPLICATE-classified keys in the masking sweep, checker-derived on **both**
 1.6.1 and 1.10.2 (identical in both files). **704** is the oracle's duplicate-trap count in the
@@ -72,12 +99,26 @@ should be presented as a derivation. The inputs (2,671, 773, 1,902) are all read
 1.9.2 only"). That much is a code reference, not a measured figure. **What the option DOES was
 measured** — see immediately below, and do not conflate the two.
 
-### Dangling-delete durability — MEASURED, ARTIFACT DID NOT SURVIVE
+### Dangling-delete durability — MEASURED; ONE ARM COMMITTED, ONE NOT
 
-⚠️ **This is a measured result with no committed JSON. It is NOT reproducible from an artifact in
-this repo.** Its only record is `NOTES.md` Entry 6 ("DURABILITY — EMPIRICALLY RESOLVED, and it
-OVERTURNS my source-based guess"). Indexed here because the measurement is load-bearing for §4.4 and
-its provenance otherwise lives nowhere durable.
+Two arms were measured and they are not in the same state. Do not describe the whole entry as
+unsourced.
+
+**The default-rewrite arm IS committed.** `rewrite_data_files` at its defaults takes 1.10.2 from
+50 data / 50 delete files to 1 / **42**, and both sides are fields in the sweep JSONs:
+
+| Figure | Value | Source |
+|---|---|---|
+| `ooo50_sf1_s101` before, 1.10.2 | 50 data / **50** delete | read, `cells.ooo50_sf1_s101.files_before`, `compaction_masking_sweep_ice1102.json` |
+| Same cell after, 1.10.2 | 1 data / **42** delete | read, `.files_after`, same file |
+| Same cell after, **1.6.1** | 1 data / **1** delete | read, `.files_after`, `compaction_masking_sweep.json` |
+| Cells showing 50/50 → 1/42 on 1.10.2 | **3** (`ooo50_sf1_s101`, `mixed_sf1_s101`, `ooo25_sf1_s101`) | read, all cells carry `files_before`/`files_after` |
+
+⚠️ **The `remove-dangling-deletes => true` arm has no committed JSON.** That arm is what establishes
+the relabelling is durable rather than merely default behaviour, and its only record is `NOTES.md`
+Entry 6 ("DURABILITY — EMPIRICALLY RESOLVED, and it OVERTURNS my source-based guess"). It is not
+reproducible from an artifact in this repo. `probe_rewrite_delete_retention.json` is a different
+experiment (50 commits, 50/49 → 41) and does not exercise the option.
 
 | Figure | Value | Source |
 |---|---|---|
