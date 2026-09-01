@@ -93,11 +93,31 @@ experiments on different workloads.
 ⚠️ The 1,898/4 split is **arithmetic on the artifact, not a field in it**. If the paper states it, it
 should be presented as a derivation. The inputs (2,671, 773, 1,902) are all read directly.
 
-**The 1.9.2 option** is `remove-dangling-deletes`, gated in the harness by
-`MOR_REWRITE_REMOVE_DANGLING=1` — read from
-`cost-study/src/mor_harness/adapters/drivers/iceberg_driver.py` (the comment states "Available >=
-1.9.2 only"). That much is a code reference, not a measured figure. **What the option DOES was
-measured** — see immediately below, and do not conflate the two.
+**The 1.7.0 option** is `remove-dangling-deletes`, gated in the harness by
+`MOR_REWRITE_REMOVE_DANGLING=1`
+(`cost-study/src/mor_harness/adapters/drivers/iceberg_driver.py`). That much is a code reference,
+not a measured figure. **What the option DOES was measured** — see immediately below, and do not
+conflate the two.
+
+⚠️ **This said 1.9.2 until 2026-09-01, and so did the paper.** The figure came from the harness
+comment at `iceberg_driver.py:548`, which read "Available >= 1.9.2 only" — a code reference that was
+never checked against the releases. It is wrong, and the comment has been corrected alongside this
+entry. Established by probing `RewriteDataFiles.java` on the upstream release tags:
+
+| Tag | `REMOVE_DANGLING_DELETES` | `REMOVE_DANGLING_DELETES_DEFAULT` |
+|---|---|---|
+| `apache-iceberg-1.5.0`, `1.6.0`, `1.6.1` | **absent** | — |
+| `apache-iceberg-1.7.0`, `1.7.1`, `1.8.0`, `1.9.0`, `1.9.2`, `1.10.2` | present | **`false`, unchanged throughout** |
+
+Method: `curl` on
+`raw.githubusercontent.com/apache/iceberg/apache-iceberg-<tag>/api/src/main/java/org/apache/iceberg/actions/RewriteDataFiles.java`,
+all nine returning 200. Added by
+[PR #9724](https://github.com/apache/iceberg/pull/9724), "Core, Spark: Remove dangling deletes as
+part of RewriteDataFilesAction", merged 2024-10-22, which ships in 1.7.0.
+
+**The default is the load-bearing part.** It is `false` at 1.7.0 and still `false` at 1.10.2, so
+nothing about this option changed between the two releases §2 compares, and it cannot be what
+explains the 50→1 versus 50→42 difference. §10g records that cause as unsettled.
 
 ### Dangling-delete durability — MEASURED; ONE ARM COMMITTED, ONE NOT
 

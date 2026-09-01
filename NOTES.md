@@ -428,7 +428,8 @@ not. Framing for the paper: report both, and separate the structural (STALE_WINS
 implementation-dependent (NEEDS_CONTEXT) class.
 
 **DURABILITY — EMPIRICALLY RESOLVED, and it OVERTURNS my source-based guess.** I initially reasoned from
-`REMOVE_DANGLING_DELETES_DEFAULT = false` (api `RewriteDataFiles.java:119`; option first appears at 1.9.2;
+`REMOVE_DANGLING_DELETES_DEFAULT = false` (api `RewriteDataFiles.java:119`; option first appears at
+**1.7.0**, not 1.9.2 as written here until 2026-09-01 — see `RESULTS.md` §2 for the tag probe;
 `RemoveDanglingDeletesSparkAction` exists v3.5/v4.0/v4.1) that `remove-dangling-deletes => true` would
 strip the orphans and converge 1.10.2 → 1.6.1. **That was wrong.** Measured:
 - `rewrite_data_files` DEFAULT on 1.10.2: `delete_files` 50→**42** (removes exactly 8, every cell — a
@@ -487,7 +488,10 @@ settle it: a metadata probe on a kept compacted table, reading the surviving dat
 sequence number and each retained delete file's from `entries`/`all_delete_files`, which decides the
 comparison directly — the probe Entry 14 already deferred.
 - 1.6.1's default rewrite still ends at 50→1 (strips them), so the **1.6.1 "keys vanish" behavior is
-  specific to old bin-pack**; on 1.9.2+ the keys persist as FAITHFUL. What (if anything) removes the
+  specific to old bin-pack**; on 1.10.2 the keys persist as FAITHFUL. [Written as "1.9.2+" until
+    2026-09-01. No release between 1.6.1 and 1.10.2 was ever measured, so the boundary is unknown:
+    the option arrives at 1.7.0 and the `FileRewriteRunner` bin-pack rewrite at 1.10.0 (Entry 3), and
+    neither was tested. Only the two measured endpoints are claimed.] What (if anything) removes the
   orphans on 1.10.2 is now OPEN (expire won't — they're live in the current snapshot). The §5 framing
   gets stronger: on the pinned engine the abstentions are durably laundered to FAITHFUL, full stop.
 - *Method note:* the standalone `dangling_probe.py` was inconclusive (single data file no-ops bin-pack,

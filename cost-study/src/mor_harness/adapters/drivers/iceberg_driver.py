@@ -544,8 +544,12 @@ def main():
     if PLAN.get("enforcement_mode") in ("safe_compact", "unsafe_compact"):
         tc = time.time()
         opt_pairs = []
-        # Durability probe (default off): pass remove-dangling-deletes so 1.9.2+ strips the
-        # orphaned equality deletes that default rewrite retains. Available >= 1.9.2 only.
+        # Durability probe (default off): pass remove-dangling-deletes to ask the engine to strip
+        # the orphaned equality deletes that default rewrite retains. Available >= 1.7.0 (PR #9724,
+        # merged 2024-10-22); absent at 1.6.1. Default is false in every release from 1.7.0 to
+        # 1.10.2, and on a single unpartitioned spec setting it true strips nothing -- see
+        # RESULTS.md section 2. This comment read ">= 1.9.2 only" until 2026-09-01 and was the
+        # source of that figure in the paper and in RESULTS.md.
         if os.environ.get("MOR_REWRITE_REMOVE_DANGLING") == "1":
             opt_pairs.append(("remove-dangling-deletes", "true"))
         # Stale-wins audit (forked runner; default off): capture the per-group verdict to a side file.
