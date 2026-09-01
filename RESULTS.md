@@ -244,6 +244,19 @@ State it as "classified OOM by the harness", not as a quoted Java error.
 
 ## 6. Cost
 
+**Session-to-host mapping.** This file indexes the cloud work by session directory; the paper
+(§6.1) indexes it by host, and names four: one laptop and three separately provisioned
+`i4i.4xlarge` instances. Each `cloud/run.sh` invocation provisions its own instance and releases it,
+so the sessions do not share hardware and the host blocks in the JSON cannot tell them apart — they
+are identical across all three. The mapping is therefore established from which experiment each
+directory holds:
+
+| Directory | Paper's host | Established by |
+|---|---|---|
+| `cloud/results` | **H2** | holds Table 3 (`off` 140.4 s, `gateON` 141.2 s, `gateOFF` 274.5 s, paired 1.96×); Table 3's caption names host H2 |
+| `cloud/results2` | **H3** | holds the 1.91× replication (`off` 137.25 s, `capture_uncached` 264.14 s), which Table 3's caption attributes to H3; also the 20-run/11-group straddling replication and the stage attribution, which §6.1 assigns to H3 |
+| `cloud/results3` | **the third instance** | holds the shuffle-partition experiment (`audited_fx`, 3 rounds, 1.77×), which §6.1 assigns to "the third"; NOTES.md Entry 53 calls it the third cloud session |
+
 ### Cost table (paper Table 3) — gate on/off, five interleaved rounds
 
 Artifact: `cloud/results/results/exp1_cost.json`. Configuration: 32 commits × 3,600,000 rows,
