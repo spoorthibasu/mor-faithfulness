@@ -1,5 +1,8 @@
 # MOR Faithfulness
 
+Companion artifact to the PVLDB paper *Audit-Preserving Compaction for Merge-on-Read
+Tables*, under review.
+
 Merge-on-read (MOR) change-data-capture materialization: when is the "current" row per key
 actually correct, can you tell from the physical table alone, and what happens to the
 evidence when routine maintenance runs?
