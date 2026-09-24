@@ -1,5 +1,7 @@
 # MOR Faithfulness Checker — Design Memo (v1, Iceberg equality-delete)
 
+This memo records the design as written before implementation. For current behaviour, see [`../README.md`](../README.md).
+
 Status: design for review. No detection logic is written yet. This memo answers the
 four questions posed and defines the check, the output, and the module boundary, then
 stops for your review.

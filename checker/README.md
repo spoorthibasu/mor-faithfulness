@@ -6,7 +6,7 @@ machine-checked theorem `mor_faithful`: per key, materialization is faithful exa
 the physical ordering value (Iceberg's data sequence number) is a linear extension of
 logical version order, under the rule that an equality delete at sequence number `D`
 suppresses a data record only when the data record's sequence number is strictly less
-than `D`.
+than `D`. Read-only means it never writes to the table or commits.
 
 The witness is `mult_phys(key)`: the number of data records for the key with sequence
 number >= the maximum equality-delete sequence number. This equals the number of rows a
@@ -17,7 +17,7 @@ MOR reader materializes for the key (`Corollaries.card_distinct_Zphys`).
 | `mult_phys` | verdict | meaning |
 |---|---|---|
 | `>= 2` | `DUPLICATE` | more than one row for a key (FLINK-38450). Decidable from physical state alone. |
-| `1`, survivor is the current version | `FAITHFUL` | correct (needs `--version-column`). |
+| `1`, survivor is the current version | `FAITHFUL` | no violation is detectable in the snapshot read (needs `--version-column`). Not a certificate that the table is correct. |
 | `1`, survivor is a stale version | `STALE_WINS` | one wrong row (needs `--version-column`). |
 | `1`, no version column | `UNDECIDABLE` | consistent, but the survivor's identity cannot be verified. Never reported as FAITHFUL. |
 | `0`, data existed, default | `NEEDS_CONTEXT` | every row for the key was suppressed: either a wrongly-suppressed current row or a legitimate delete. Physical metadata cannot tell them apart. Not a confirmed violation. |
@@ -39,12 +39,21 @@ Exit code: `0` faithful, `1` needs review (UNDECIDABLE or NEEDS_CONTEXT), `2` vi
 * `src/mor_checker/adapters/iceberg.py` reads the Iceberg `.entries` metadata table (where
   per-file sequence numbers live) and, for the exact pass, opens data and delete files
   through the table's read-only `FileIO`.
-* Read-only is enforced, not just intended: the table is opened as a `StaticTable` (no
-  commit surface) and `tests/test_readonly_contract.py` fails the build if any write,
-  commit, transaction, or maintenance API appears in an adapter.
+* The checker never writes to the table or commits. The table is opened as a
+  `StaticTable`, whose commits raise, and `tests/test_readonly_contract.py` fails the
+  build if any write, commit, transaction, or maintenance API appears in an adapter.
 
-Adding Hudi later means writing one adapter that emits the same `PhysicalLayout` with
-`seq` = the precombine / ordering-field value. The core is reused unchanged.
+Iceberg is the only adapter.
+
+## Requirements
+
+* A path to an Iceberg `*.metadata.json` file or a Hadoop-table directory.
+* Parquet data files.
+* An equality-delete merge-on-read table.
+* A version column (`--version-column`) for `FAITHFUL` and `STALE_WINS` verdicts. Without
+  one, keys with a single surviving row are reported `UNDECIDABLE`.
+* A table that fits in memory. The exact pass reads every live data and delete file and
+  holds all keys in memory at once.
 
 ## Install
 
@@ -68,7 +77,7 @@ This writes four tables under `fixtures/wh/db/` and `fixtures/expected.json`:
     mor-check <source> [--key-columns id] [--version-column ver] [--format text|json|both]
 
 `<source>` is a path to an Iceberg `*.metadata.json` file or a Hadoop-table directory.
-Exit code: `0` faithful, `1` undecidable, `2` violations.
+Exit code: `0` faithful, `1` needs review (UNDECIDABLE or NEEDS_CONTEXT), `2` violations.
 
     mor-check fixtures/wh/db/bad_equal_seq
     mor-check fixtures/wh/db/good_ascending --version-column ver
@@ -80,7 +89,7 @@ Exit code: `0` faithful, `1` undecidable, `2` violations.
 
 `tests/test_core.py` exercises the engine against the Lean corollaries with no fixtures;
 `tests/test_fixtures.py` is the four-fixture gate; `tests/test_readonly_contract.py`
-enforces read-only.
+enforces read-only, including that a commit on the checker's table raises.
 
 ## v1 scope
 

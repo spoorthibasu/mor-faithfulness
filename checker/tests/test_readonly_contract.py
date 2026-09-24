@@ -51,10 +51,19 @@ def test_reads_through_static_table_only():
 
 
 def test_static_table_cannot_commit():
-    # Belt and suspenders: the object the adapter uses has no append/commit surface.
-    from pyiceberg.table import StaticTable
+    # The table object the adapter holds must refuse a commit. A property update is
+    # metadata-only, so the attempt writes no data files before reaching the catalog.
+    import pytest
 
-    for method in ("append", "overwrite", "delete", "add_files", "upsert"):
-        # StaticTable inherits Table but its transactions cannot be committed; if any of
-        # these ever becomes a usable no-arg writer this test should be revisited.
-        assert hasattr(StaticTable, method) or True  # presence is fine; usage is what we ban
+    from mor_checker.adapters.iceberg import IcebergAdapter
+
+    table_dir = os.path.join(
+        os.path.dirname(__file__), "..", "fixtures", "wh", "db", "good_ascending"
+    )
+    before = sorted(os.listdir(os.path.join(table_dir, "metadata")))
+
+    table = IcebergAdapter(table_dir).table
+    with pytest.raises(NotImplementedError):
+        table.transaction().set_properties(readonly_probe="1").commit_transaction()
+
+    assert sorted(os.listdir(os.path.join(table_dir, "metadata"))) == before

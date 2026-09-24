@@ -5,7 +5,8 @@ Usage:
                      [--format text|json|both] [--json-out FILE]
 
 `<source>` is a path to an Iceberg `*.metadata.json` file or a Hadoop-table directory.
-Reading is always read-only. Exit code: 0 faithful, 1 undecidable, 2 violations.
+Reading is always read-only. Exit code: 0 faithful, 1 needs review (UNDECIDABLE or
+NEEDS_CONTEXT), 2 violations.
 """
 
 from __future__ import annotations

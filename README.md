@@ -76,7 +76,7 @@ into the `lean/MorFaithful/*.lean` sources.
 
 | Paper claim | Where verified |
 |---|---|
-| FLINK-38450 reproduced on the real unmodified pre-fix connector; checker flags DUPLICATE from metadata alone; DuckDB confirms 2 rows pre-fix, 1 post-fix | `checker/realworld/REPORT.md` (Tier 2), `checker/realworld/checker_reports/tier2_*.json`, `checker/realworld/results.json` |
+| FLINK-38450 reproduced on the real unmodified pre-fix connector; the checker's metadata screen flags a candidate (two data files at one sequence number with overlapping key ranges) and reading the data files confirms DUPLICATE; DuckDB confirms 2 rows pre-fix, 1 post-fix | `checker/realworld/REPORT.md` (Tier 2), `checker/realworld/checker_reports/tier2_*.json`, `checker/realworld/results.json` |
 | Detectability boundary on real writer output: UNDECIDABLE without a version column, FAITHFUL with one | `checker/realworld/REPORT.md` (Tier 1), `checker/realworld/checker_reports/tier1_*.json` |
 | Committed equality-delete MOR tables are essentially nonexistent in public repos (the "you cannot inspect it from outside" point) | `checker/realworld/committed_tables_phase1_report.md` |
 | Checker blind spot: 349 of 431 ghost keys (81%) are reported FAITHFUL by the physical-state checker (the oracle still catches them) | `sensitivity/SENSITIVITY_REPORT.md` (surprise 3) |

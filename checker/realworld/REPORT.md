@@ -59,8 +59,9 @@ is modified; the pre-fix vs post-fix difference is the connector version only.
 | **pre-fix** `84e474b78^` (unmodified) | **DUPLICATE** | 2 | **2 rows** (v1, v2) | two batches merged into one snapshot; data + equality-delete both at sequence number 1; delete not strictly greater, so it fails to suppress |
 | **post-fix** HEAD (`--version-column op_seq`) | **FAITHFUL** | 0 | **1 row** (v2, current) | batches committed as separate snapshots (seq 1, 2); the stale version is correctly suppressed |
 
-The checker flags the pre-fix DUPLICATE from **metadata alone** (the Tier-A equal-sequence
-screen fires; no version column needed), with localization: *"data file ...-00001.parquet and
+The checker's Tier-A metadata screen flags the pre-fix table as a candidate: two data files
+at one sequence number with overlapping key ranges. Reading the data files (Tier B) confirms
+DUPLICATE, with no version column needed, and localizes it: *"data file ...-00001.parquet and
 equality-delete file ...-00002.parquet, both at sequence number 1 ... the delete does not
 suppress it because 1 is not strictly greater than 1. 2 rows for key (1,) are visible."*
 DuckDB independently materializes 2 physical rows pre-fix and 1 post-fix, validating the
